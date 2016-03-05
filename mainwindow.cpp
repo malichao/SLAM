@@ -117,9 +117,6 @@ void MainWindow::openSerialPort()
             ui->actionConnect->setEnabled(false);
             ui->actionDisconnect->setEnabled(true);
             ui->actionConfigure->setEnabled(false);
-            ui->statusBar->showMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
-                                       .arg(p.name).arg(p.stringBaudRate).arg(p.stringDataBits)
-                                       .arg(p.stringParity).arg(p.stringStopBits).arg(p.stringFlowControl));
     } else {
         QMessageBox::critical(this, tr("Error"), serial->errorString());
 
@@ -158,11 +155,31 @@ void MainWindow::writeData(const QByteArray &data)
 //! [7]
 void MainWindow::readData()
 {
+    //Read the buffer in serial port
     QByteArray data = serial->readAll();
 
-    static int i=0;
+    /*
+     * The size of a data packet in XV11 is 22.Since the data read from
+     * serial port buffer vary in length so we need a pointer to record
+     * the current point,which is why static 'i' and buffer is used here.
+     * */
+    static unsigned int i=0;
     static unsigned int tempBuffer[22];
 
+    /*
+     * The fomart of a packet:
+     * <start> <index> <speed_L> <speed_H> [Data 0] [Data 1] [Data 2] [Data 3] <checksum_L> <checksum_H>
+     * where:
+     * start = 0xFA
+     * index = [0xA0,0xF9](means packet 0 to 89 with 4 data in one packet)
+     * speed = little endian
+     * [Data x] = 4 bytes long data,each means:
+     *   byte:  |    0    |        1        |     2    |    3
+     *   bit :  |  7 - 0  |   7     6   5-0 |   7 - 0  |  7 - 0
+     *          |   dis   |invalid,s.w.,dis |  s.s LSB |  s.s MSB
+     *   s.w: signal warning
+     *   s.s: signal strength
+     * */
     int k=0;
     for(k=0;k<data.size();k++)
     {
@@ -203,10 +220,15 @@ void MainWindow::readData()
 
                 if(result)
                 {
-                    //what does the result mean?
+                    //Todo :what does the result mean?
                 }
 
-                //Convert speed
+                /*
+                 * Convert the speed.The lowest bits are decimal,thus divide by 64.
+                 * Since there are 4 points in one packet so we just simply set them
+                 * to the same speed.
+                 *
+                 * */
                 temp1=tempBuffer[2];
                 temp2=tempBuffer[3];
                 temp1=(temp2<<8)|temp1;
@@ -223,7 +245,7 @@ void MainWindow::readData()
                     temp1=tempBuffer[j*4];
                     temp2=tempBuffer[j*4+1];
 
-                    //Convert range data
+                    //Convert range data,only 14 bits valid
                     distance=(temp1|(temp2<<8));
                     distance=distance&0x3FFF;
                     LidarBuffer[index+j].distance=distance;//14 bits
@@ -247,13 +269,17 @@ void MainWindow::readData()
 
                     LidarBuffer[index+j].strength=temp1|(temp2<<8);
                 }
-                //Packet interpretation success,let test it
 
+                /*
+                 * Packet interpretation success,let's test it
+                 * Format the data:
+                 * 0 - 360   : speed /rpm | point1  point2  point3  point4
+                 * If the packet is broken then set the points to 'x'
+                 * */
                 QByteArray test;
                 test.append(QString::number(index));
                 test.append("\t:");
                 test.append(QString::number(LidarBuffer[index].speed));
-                test.append("\t");
                 int m;
                 for(m=0;m<4;m++)
                 {
@@ -266,7 +292,10 @@ void MainWindow::readData()
                 test.append("\n");
                 console->putData(test);
 
-                //int m;
+                /*
+                 * Now draw the points using range and angle data
+                 *
+                 * */
                 for(m=0;m<4;m++)
                 {
                     QPoint p;
@@ -278,6 +307,11 @@ void MainWindow::readData()
                     }
                     else
                     {
+                        /*
+                         * For some reason my LIDAR has lots of bad points,which are some points
+                         * gathering around closely to the center.So this option filter out these
+                         * bad points because the LIDAR can't not detect anything within 15 cm.
+                         * */
                         if(showBadPoints)
                         {
                             p.setX(centerX+qCos((index+m)/360.0*2*M_PI)*LidarBuffer[index+m].distance/lidarRange);
