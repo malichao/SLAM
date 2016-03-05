@@ -41,15 +41,18 @@
 #include "renderarea.h"
 
 #include <QPainter>
+#include <QPen>
 
-
-RenderArea::RenderArea(QWidget *parent)
+RenderArea::RenderArea(int X, int Y, QWidget *parent)
     : QWidget(parent)
 {
     shape = Polygon;
     antialiased = false;
     transformed = false;
-    pen.setWidth(4);
+    pen.setWidth(6);
+    pen.setCapStyle(Qt::RoundCap);
+    centerX=X;
+    centerY=Y;
     setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
 }
@@ -101,6 +104,8 @@ void RenderArea::paintEvent(QPaintEvent *)
 {
 
     QPainter painter(this);
+    pen.setColor(Qt::black);
+    pen.setWidth(6);
     painter.setPen(pen);
     painter.setBrush(brush);
     if (antialiased)
@@ -108,10 +113,16 @@ void RenderArea::paintEvent(QPaintEvent *)
 
     painter.drawPoints(points, 360);
 
+    pen.setColor(Qt::red);
+    pen.setWidth(15);
+    painter.setPen(pen);
+    painter.drawPoint(centerX,centerY);
+    /*
     painter.setRenderHint(QPainter::Antialiasing, false);
     painter.setPen(palette().dark().color());
     painter.setBrush(Qt::NoBrush);
     painter.drawRect(QRect(0, 0, width() - 1, height() - 1));
+    */
 }
 
 

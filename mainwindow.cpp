@@ -49,11 +49,28 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 //! [0]
     ui->setupUi(this);
-    renderArea = new RenderArea;
-    setCentralWidget(renderArea);
+    renderArea = new RenderArea(centerX,centerY);
+    //setCentralWidget(renderArea);
+    //addDockWidget(renderArea);
     console = new Console;
     console->setEnabled(false);
+    //addDockWidget(console);
     //setCentralWidget(console);
+    QHBoxLayout *mainLayout = new QHBoxLayout(this);
+    mainLayout->addWidget(renderArea);
+    mainLayout->addWidget(console);
+
+    QSizePolicy spLeft(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    spLeft.setHorizontalStretch(5);
+    renderArea->setSizePolicy(spLeft);
+    QSizePolicy spRight(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    spRight.setHorizontalStretch(2);
+    console->setSizePolicy(spRight);
+
+    QWidget *central = new QWidget(this); // a central widget
+    central->setLayout(mainLayout);
+    setCentralWidget(central); // you were missing this
+
 //! [1]
     serial = new QSerialPort(this);
 //! [1]
@@ -93,9 +110,10 @@ void MainWindow::openSerialPort()
     serial->setParity(p.parity);
     serial->setStopBits(p.stopBits);
     serial->setFlowControl(p.flowControl);
+    lidarRange=(float)p.lidarRange;
+    showBadPoints=p.showBadPoints;
     if (serial->open(QIODevice::ReadWrite)) {
             console->setEnabled(true);
-            console->setLocalEchoEnabled(p.localEchoEnabled);
             ui->actionConnect->setEnabled(false);
             ui->actionDisconnect->setEnabled(true);
             ui->actionConfigure->setEnabled(false);
@@ -246,23 +264,31 @@ void MainWindow::readData()
                         test.append("x");
                 }
                 test.append("\n");
-                //console->putData(test);
+                console->putData(test);
 
                 //int m;
                 for(m=0;m<4;m++)
                 {
                     QPoint p;
+
                     if(LidarBuffer[index+m].valid)
                     {
-                        p.setX(650+qCos((index+m)/360.0*2*M_PI)*LidarBuffer[index+m].distance/6.0);
-                        p.setY(650+qSin((index+m)/360.0*2*M_PI)*LidarBuffer[index+m].distance/6.0);
+                        p.setX(centerX+qCos((index+m)/360.0*2*M_PI)*LidarBuffer[index+m].distance/lidarRange);
+                        p.setY(centerX+qSin((index+m)/360.0*2*M_PI)*LidarBuffer[index+m].distance/lidarRange);
                     }
                     else
                     {
-                        p.setX(650);
-                        p.setY(650);
-                        p.setX(650+qCos((index+m)/360.0*2*M_PI)*LidarBuffer[index+m].distance/6.0);
-                        p.setY(650+qSin((index+m)/360.0*2*M_PI)*LidarBuffer[index+m].distance/6.0);
+                        if(showBadPoints)
+                        {
+                            p.setX(centerX+qCos((index+m)/360.0*2*M_PI)*LidarBuffer[index+m].distance/lidarRange);
+                            p.setY(centerX+qSin((index+m)/360.0*2*M_PI)*LidarBuffer[index+m].distance/lidarRange);
+                        }
+                        else
+                        {
+                            p.setX(centerX);
+                            p.setY(centerX);
+                        }
+
                     }
                     points[index+m]=p;
                 }

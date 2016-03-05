@@ -49,8 +49,9 @@ class MainWindow;
 
 QT_END_NAMESPACE
 
-struct point
+class laserPoint
 {
+public:
     int distance;
     double speed;
     bool valid;
@@ -71,6 +72,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+
 private slots:
     void openSerialPort();
     void closeSerialPort();
@@ -90,9 +92,13 @@ private:
     QSerialPort *serial;
     RenderArea *renderArea;
 
-    struct point LidarBuffer[360];
+    struct laserPoint LidarBuffer[360];
     QPoint points[360];
+    float lidarRange;
+    bool showBadPoints;
 
+    const int centerX=650;
+    const int centerY=650;
 };
 
 #endif // MAINWINDOW_H

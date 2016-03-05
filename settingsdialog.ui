@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>281</width>
-    <height>262</height>
+    <width>397</width>
+    <height>390</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -154,16 +154,48 @@
    <item row="1" column="0" colspan="2">
     <widget class="QGroupBox" name="additionalOptionsGroupBox">
      <property name="title">
-      <string>Additional options</string>
+      <string>LIDAR Options</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QCheckBox" name="localEchoCheckBox">
+       <widget class="QLabel" name="label">
+        <property name="maximumSize">
+         <size>
+          <width>500</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="text">
-         <string>Local echo</string>
+         <string>LIDAR Range (1 - 10) m:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="LidarSpinBox">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>3</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="showBadPointsCheckBox">
+        <property name="text">
+         <string>Show bad points</string>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>

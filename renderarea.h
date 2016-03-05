@@ -55,7 +55,7 @@ public:
     enum Shape { Line, Points, Polyline, Polygon, Rect, RoundedRect, Ellipse, Arc,
                  Chord, Pie, Path, Text, Pixmap };
 
-    RenderArea(QWidget *parent = 0);
+    RenderArea( int X, int Y,QWidget *parent = 0);
 
     QSize minimumSizeHint() const Q_DECL_OVERRIDE;
     QSize sizeHint() const Q_DECL_OVERRIDE;
@@ -66,6 +66,7 @@ public slots:
     void setBrush(const QBrush &brush);
     void setAntialiased(bool antialiased);
     void setPoint(QPoint *p);
+
 
 protected:
     void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
@@ -78,6 +79,8 @@ private:
     bool transformed;
     QPixmap pixmap;
     QPoint points[360];
+    int centerX;
+    int centerY;
 };
 //! [0]
 

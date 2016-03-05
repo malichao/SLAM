@@ -106,11 +106,12 @@ void SettingsDialog::checkCustomBaudRatePolicy(int idx)
 
 void SettingsDialog::fillPortsParameters()
 {
+    ui->baudRateBox->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
     ui->baudRateBox->addItem(QStringLiteral("9600"), QSerialPort::Baud9600);
     ui->baudRateBox->addItem(QStringLiteral("19200"), QSerialPort::Baud19200);
     ui->baudRateBox->addItem(QStringLiteral("38400"), QSerialPort::Baud38400);
-    ui->baudRateBox->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
     ui->baudRateBox->addItem(QStringLiteral("Custom"));
+
 
     ui->dataBitsBox->addItem(QStringLiteral("5"), QSerialPort::Data5);
     ui->dataBitsBox->addItem(QStringLiteral("6"), QSerialPort::Data6);
@@ -187,5 +188,12 @@ void SettingsDialog::updateSettings()
                 ui->flowControlBox->itemData(ui->flowControlBox->currentIndex()).toInt());
     currentSettings.stringFlowControl = ui->flowControlBox->currentText();
 
-    currentSettings.localEchoEnabled = ui->localEchoCheckBox->isChecked();
+    currentSettings.lidarRange=ui->LidarSpinBox->value();
+    currentSettings.showBadPoints=ui->showBadPointsCheckBox->isChecked();
+}
+
+
+void SettingsDialog::on_LIDAR_Range_valueChanged(int value)
+{
+
 }

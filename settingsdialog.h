@@ -67,7 +67,8 @@ public:
         QString stringStopBits;
         QSerialPort::FlowControl flowControl;
         QString stringFlowControl;
-        bool localEchoEnabled;
+        int lidarRange;
+        bool showBadPoints;
     };
 
     explicit SettingsDialog(QWidget *parent = 0);
@@ -79,6 +80,8 @@ private slots:
     void showPortInfo(int idx);
     void apply();
     void checkCustomBaudRatePolicy(int idx);
+
+    void on_LIDAR_Range_valueChanged(int value);
 
 private:
     void fillPortsParameters();
