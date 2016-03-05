@@ -140,10 +140,10 @@ void MainWindow::closeSerialPort()
 
 void MainWindow::about()
 {
-    QMessageBox::about(this, tr("About Simple Terminal"),
-                       tr("The <b>Simple Terminal</b> example demonstrates how to "
-                          "use the Qt Serial Port module in modern GUI applications "
-                          "using Qt, with a menu bar, toolbars, and a status bar."));
+    QMessageBox::about(this, tr("About XV11 LIDAR Visualizer"),
+                       tr("This software is created to debugging the XV11 LIDAR module.\n"
+                          "The software is modified based on Qt sample project \"Simple Terminal\".\n"
+                          "\t\tLichao Ma 2016"));
 }
 
 //! [6]
