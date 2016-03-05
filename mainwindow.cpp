@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mainLayout->addWidget(renderArea);
     mainLayout->addWidget(console);
 
+    //Set the ratio of drawing and console area
     QSizePolicy spLeft(QSizePolicy::Preferred, QSizePolicy::Preferred);
     spLeft.setHorizontalStretch(5);
     renderArea->setSizePolicy(spLeft);
@@ -165,6 +166,8 @@ void MainWindow::readData()
      * */
     static unsigned int i=0;
     static unsigned int tempBuffer[22];
+    int correctData=0;
+    static int packetReceived=0;
 
     /*
      * The fomart of a packet:
@@ -187,6 +190,14 @@ void MainWindow::readData()
         {
             if(i==0)//Receive a whole packet,process it
             {
+                if(++packetReceived==89)
+                {
+                    //Todo: The number is hopping,could be wrong
+                    packetReceived=0;
+                    ui->statusBar->showMessage("Valid packet rate: "+QString::number(correctData)+"/90");
+                    correctData=0;
+                }
+
                 unsigned int temp1,temp2;
                 unsigned int distance;
                 int index=tempBuffer[1]-0xA0;
@@ -198,6 +209,8 @@ void MainWindow::readData()
                     continue;
                 }
                 index*=4;
+
+
 
                 //Verify checksum,if error,no need to do the rest
                 int tempCheck[10];
@@ -239,7 +252,7 @@ void MainWindow::readData()
 
                 //Interpret 4 point data one by one,each point consists 4 bytes
                 int j=0;
-                for(j=1;j<=4;j++)//starts from 4,8,12,16
+                for(j=1;j<=4;j++)//starts from byte 4,8,12,16
                 {
                     //Interpret byte 0 and byte 1,which holds range information
                     temp1=tempBuffer[j*4];
@@ -279,23 +292,24 @@ void MainWindow::readData()
                 QByteArray test;
                 test.append(QString::number(index));
                 test.append("\t:");
-                test.append(QString::number(LidarBuffer[index].speed));
+                test.append(QString::number((int)LidarBuffer[index].speed));
                 int m;
                 for(m=0;m<4;m++)
                 {
                     test.append("\t");
                     if(LidarBuffer[index].valid)
+                    {
                         test.append(QString::number(LidarBuffer[index+m].distance));
+                        correctData+=1;//count the number of correct data
+                    }
                     else
                         test.append("x");
                 }
                 test.append("\n");
                 console->putData(test);
 
-                /*
-                 * Now draw the points using range and angle data
-                 *
-                 * */
+
+                //Now draw the points using range and angle data
                 for(m=0;m<4;m++)
                 {
                     QPoint p;
