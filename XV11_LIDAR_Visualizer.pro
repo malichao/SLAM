@@ -4,7 +4,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     include($$QTSERIALPORT_PROJECT_ROOT/src/serialport/qt4support/serialport.prf)
 }
 
-TARGET = terminal
+TARGET = XV11_LIDAR_Visualizer
 TEMPLATE = app
 
 SOURCES += \
