@@ -61,6 +61,33 @@ void update(Car &car,const float force){
 	car.distance+=car.velocity*time;
 }
 
+void constrain(float &val,const float min,const float max){
+	if(val<min)
+		val=min;
+	if(val>max)
+		val=max;
+}
+void PID(Car &car,float target){
+	float error,dError;
+	static float lastError=0;
+	static float integral=0;
+	float kP=1;
+	float kI=0;
+	float kD=0;
+
+	error=target-car.distance;
+	dError=error-lastError;
+	integral+=error;
+	constrain(integral,-100,100);
+	lastError=error;
+
+	float output;
+	output=kP*error+kI*integral+kD*dError;
+	constrain(output,-20,20);
+	update(car,output);
+	cout<<output<<endl;
+}
+
 int main(){
 	Car simpleCar={1,0.1,0.01,0,0,Still};
 	float force=10;
@@ -70,20 +97,14 @@ int main(){
 	int simulationTime=100;
 	for(int i=0;i<simulationTime;i++){
 		//cout<<update(simpleCar,force)<<endl;
-		update(simpleCar,force);
-		speed.push_back(simpleCar.velocity);
-		distance.push_back(simpleCar.distance);
-	}
-
-	for(int i=0;i<simulationTime;i++){
-		//cout<<update(simpleCar,force)<<endl;
-		update(simpleCar,-5);
+		PID(simpleCar,100);
+		cout<<i<<"\t";
 		speed.push_back(simpleCar.velocity);
 		distance.push_back(simpleCar.distance);
 	}
 
 	ofstream file("result.csv");
-	for(int i=0;i<simulationTime*2;i++)
+	for(int i=0;i<simulationTime;i++)
 		file<<speed[i]<<","<<distance[i]<<endl;
 	file.close();
 }
