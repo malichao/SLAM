@@ -2,11 +2,12 @@
 #include <cstring>
 #include <queue>
 #include <iostream>
+#include <cmath>
 using namespace std;
 struct Point {
    unsigned int x;
    unsigned int y;
-   Point(int i,int j):x(i),y(j){};
+   Point(unsigned int x,unsigned int y):x(x),y(y){};
    bool operator== (const Point rhs){
       return (x==rhs.x&&y==rhs.y);
    }
@@ -14,15 +15,26 @@ struct Point {
             return (x!=rhs.x||y!=rhs.y);
          }
 };
+struct AStarPoint{
+	Point point;
+	//f=h+g
+	int f;
+	int h;
+	int g;
+	AStarPoint(Point p,int h,int g):
+		point(p),f(h+g),h(h),g(g){};
+};
 class Search {
 public:
    const int Wall =0;	//positive value means the cost of each path
    Search():start(0,0),target(0,0),steps(0){};
    bool bfs(const vector<vector<int> > &map);
    bool bfs(const vector<vector<int> > &map,const Point &start,const Point &target);
+   bool aStar(const vector<vector<int> > &map);
+   bool aStar(const vector<vector<int> > &map,const Point &start,const Point &target);
    void setStart(const Point &s){start.x=s.x; start.y=s.y;}
    void setTarget(const Point &s){target.x=s.x; target.y=s.y;}
-   int getMinDistance(){return route.size()-1;}
+   int 	getMinDistance(){return route.size()-1;}
    void printRoute();
    void printRouteOnMap(const vector<vector<int> > &m);
 private:
@@ -33,6 +45,7 @@ private:
    vector<vector<Point> > direction;
    vector<Point> route;
    bool isLegal(const vector<vector<int> > &map,Point p);
+   unsigned int abs(Point &a,Point &b);
 };
 
 void Search::printRoute() {
@@ -105,11 +118,12 @@ bool Search::isLegal(const vector<vector<int> > &map,Point p){
 }
 
 bool Search::bfs(const vector<vector<int> > &map){
+	direction.clear();
    for(size_t i=0;i<map.size();i++){				//Init the direction map
       vector<Point> zero(map[i].size(),Point(0,0));
       direction.push_back(zero);
    }
-
+   checked.clear();
    for(size_t i=0;i<map.size();i++){				//Init the checked set
       vector<bool> temp(map[i].size(),false);
       checked.push_back(temp);
@@ -161,6 +175,100 @@ bool Search::bfs(const vector<vector<int> > &map){
    return false;
 }
 
+unsigned int Search::abs(Point &a,Point &b){
+	return std::abs(a.x-b.x)+std::abs(a.y-b.y);
+}
+
+struct lowestF{
+	bool operator()(const AStarPoint &lhs,const AStarPoint &rhs) const{
+		return lhs.f>rhs.f;
+	}
+};
+
+bool Search::aStar(const vector<vector<int> > &map,const Point &start,const Point &target) {
+	setTarget(target);
+	setStart(start);
+	return aStar(map);
+}
+bool Search::aStar(const vector<vector<int> > &map) {
+	direction.clear();
+	for (size_t i = 0; i < map.size(); i++) {			//Init the direction map
+		vector<Point> zero(map[i].size(), Point(0, 0));
+		direction.push_back(zero);
+	}
+	checked.clear();
+	for (size_t i = 0; i < map.size(); i++) {			//Init the checked set
+		vector<bool> temp(map[i].size(), false);
+		checked.push_back(temp);
+	}
+
+	if (!isLegal(map, target) || !isLegal(map, start))
+		return false;
+
+	priority_queue<AStarPoint, vector<AStarPoint>, lowestF> pQue;
+
+	pQue.push(AStarPoint(target, map[target.x][target.y], abs(target, start)));
+	checked[target.x][target.y] = true;
+	bool success = false;
+	steps = 1;			//Reset the steps to count the search effort
+	route.clear();	//Clear the previous route
+	while (!pQue.empty()) {
+		AStarPoint curPos = pQue.top();
+		Point p = curPos.point;
+		pQue.pop();
+		checked[p.x][p.y] = true;
+		if (p == start) {
+			success = true;
+			break;
+		}
+
+		Point tempP(p.x,p.y);
+		tempP.x = p.x - 1; tempP.y = p.y;
+		unsigned int g=curPos.g;
+		if (isLegal(map, tempP)) { //move up
+			pQue.push(	AStarPoint(	tempP,
+								abs(tempP, target),
+								map[tempP.x][tempP.y]+g)
+					);
+			direction[tempP.x][tempP.y] = p;
+		}
+		tempP.x = p.x + 1; tempP.y = p.y;
+		if (isLegal(map, tempP)) { //move up
+			pQue.push(	AStarPoint(	tempP,
+								abs(tempP, target),
+								map[tempP.x][tempP.y]+g)
+					);
+			direction[tempP.x][tempP.y] = p;
+		}
+		tempP.x = p.x; tempP.y = p.y-1;
+		if (isLegal(map, tempP)) { //move up
+			pQue.push(	AStarPoint(	tempP,
+								abs(tempP, target),
+								map[tempP.x][tempP.y]+g)
+					);
+			direction[tempP.x][tempP.y] = p;
+		}
+		tempP.x = p.x; tempP.y = p.y+1;
+		if (isLegal(map, tempP)) { //move up
+			pQue.push(	AStarPoint(	tempP,
+								abs(tempP, target),
+								map[tempP.x][tempP.y]+g)
+					);
+			direction[tempP.x][tempP.y] = p;
+		}
+	}
+	if (success) {
+		Point curPos = start;
+		do {
+			route.push_back(curPos);
+			curPos = direction[curPos.x][curPos.y];
+		} while (curPos != target);
+		route.push_back(target);
+		return true;
+	}
+	return false;
+}
+
 const int MapSize = 5;
 /*
  * About the map:
@@ -178,11 +286,11 @@ const int MapSize = 5;
  *  x
  */
 vector<vector<int> > map = {
-	      {1, 0, 1, 1, 1},
-	      {1, 0, 1, 0, 1},
-	      {1, 1, 1, 0, 1},
-	      {1, 0, 0, 0, 1},
-	      {1, 1, 1, 1, 1} };
+{1, 0, 1, 1, 1},
+{1, 1, 1, 0, 1},
+{1, 1, 0, 0, 1},
+{1, 1, 2, 2, 1},
+{1, 0, 6, 5, 1} };
 /*
  * Test result:
    S 1 > > v
@@ -192,9 +300,17 @@ vector<vector<int> > map = {
    0 0 0 1 T
  */
 int main(void) {
-   Point start(0,1),target(0,1);
+   Point start(0,0),target(4,4);
    Search b;
+
    if(b.bfs(map,start,target)){
+	 b.printRouteOnMap(map);
+  }
+  else{
+	 cout<<"Search failed.\n";
+  }
+
+   if(b.aStar(map,start,target)){
       b.printRouteOnMap(map);
    }
    else{
