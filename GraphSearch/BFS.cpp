@@ -18,9 +18,9 @@ struct Point {
 struct AStarPoint{
 	Point point;
 	//f=h+g
-	int f;
-	int h;
-	int g;
+	int f;	//f is the final evaluation of a grid
+	int h;	//h is the heuristic value of a grid
+	int g;	//g is the cost of a grid given by the map
 	AStarPoint(Point p,int h,int g):
 		point(p),f(h+g),h(h),g(g){};
 };
@@ -28,15 +28,15 @@ class Search {
 public:
    const int Wall =0;	//positive value means the cost of each path
    Search():start(0,0),target(0,0),steps(0){};
-   bool bfs(const vector<vector<int> > &map);
-   bool bfs(const vector<vector<int> > &map,const Point &start,const Point &target);
-   bool aStar(const vector<vector<int> > &map);
-   bool aStar(const vector<vector<int> > &map,const Point &start,const Point &target);
+   bool bfs(const vector<vector<unsigned int> > &map);
+   bool bfs(const vector<vector<unsigned int> > &map,const Point &start,const Point &target);
+   bool aStar(const vector<vector<unsigned int> > &map);
+   bool aStar(const vector<vector<unsigned int> > &map,const Point &start,const Point &target);
    void setStart(const Point &s){start.x=s.x; start.y=s.y;}
    void setTarget(const Point &s){target.x=s.x; target.y=s.y;}
    int 	getMinDistance(){return route.size()-1;}
    void printRoute();
-   void printRouteOnMap(const vector<vector<int> > &m);
+   void printRouteOnMap(const vector<vector<unsigned int> > &m);
 private:
    Point start;
    Point target;
@@ -44,7 +44,7 @@ private:
    vector<vector<bool> > checked;
    vector<vector<Point> > direction;
    vector<Point> route;
-   bool isLegal(const vector<vector<int> > &map,Point p);
+   bool isLegal(const vector<vector<unsigned int> > &map,Point p);
    unsigned int abs(Point &a,Point &b);
 };
 
@@ -60,11 +60,13 @@ void Search::printRoute() {
 	}
 }
 
-void Search::printRouteOnMap(const vector<vector<int> > &m) {
+void Search::printRouteOnMap(const vector<vector<unsigned int> > &m) {
 	if (route.size() == 0) {
 		cout << "No route.\n";
 		return;
 	}
+	//the original map is unsigned int type,to print route on the map
+	//we need to convet it to char
 	vector<vector<char> > map;
 	for (size_t i = 0; i < m.size(); i++) {
 		vector<char> row(m[i].size());
@@ -78,17 +80,17 @@ void Search::printRouteOnMap(const vector<vector<int> > &m) {
 		int dX = route[i + 1].x - route[i].x;
 		int dY = route[i + 1].y - route[i].y;
 		if (dX == 1)
-			map[route[i].x][route[i].y] = 'v';
+			map[route[i].x][route[i].y] = 'v';	//Down
 		else if (dX == -1)
-			map[route[i].x][route[i].y] = '^';
+			map[route[i].x][route[i].y] = '^';	//Up
 		else if (dY == 1)
-			map[route[i].x][route[i].y] = '>';
+			map[route[i].x][route[i].y] = '>';	//Right
 		else if (dX == -1)
-			map[route[i].x][route[i].y] = '<';
+			map[route[i].x][route[i].y] = '<';	//Left
 	}
 
-	map[route[0].x][route[0].y] = 'S';
-	map[route[route.size() - 1].x][route[route.size() - 1].y] = 'T';
+	map[route[0].x][route[0].y] = 'S';	//Mark the start point
+	map[route[route.size() - 1].x][route[route.size() - 1].y] = 'T';	//And the target point
 
 	cout << "Search effort: " << steps;
 	cout << "\nShortest path:" << getMinDistance() << endl;
@@ -100,24 +102,32 @@ void Search::printRouteOnMap(const vector<vector<int> > &m) {
 	}
 }
 
-bool Search::bfs(const vector<vector<int> > &map,const Point &start,const Point &target){
-   setTarget(target);
-   setStart(start);
-   return this->bfs(map);
-}
-
-bool Search::isLegal(const vector<vector<int> > &map,Point p){
+bool Search::isLegal(const vector<vector<unsigned int> > &map,Point p){
 	steps++;
 	if(p.x>=map.size()||p.y>=map[0].size())		//x and y are unsigned int
 	  return false;
 	if(checked[p.x][p.y])   	//Current position has been searched
 	  return false;
-	if(map[p.x][p.y]==Wall)
+	if(map[p.x][p.y]==Wall)		//Don't hit the wall
 	  return false;
 	return true;
 }
 
-bool Search::bfs(const vector<vector<int> > &map){
+bool Search::bfs(const vector<vector<unsigned int> > &map,const Point &start,const Point &target){
+   setTarget(target);
+   setStart(start);
+   return bfs(map);
+}
+
+/*
+ * Basic idea:
+ * -Search from target towards start grid
+ * -Check every surrounding grid and put available ones in the queue
+ * -Set these appended grid pointing to its previous grid
+ * -Read grids from the queue and check if the start grid is reached
+ * -When searching is done,iterate the direction vector to generate the route
+ */
+bool Search::bfs(const vector<vector<unsigned int> > &map){
 	direction.clear();
    for(size_t i=0;i<map.size();i++){				//Init the direction map
       vector<Point> zero(map[i].size(),Point(0,0));
@@ -132,37 +142,41 @@ bool Search::bfs(const vector<vector<int> > &map){
    if(!isLegal(map,target)||!isLegal(map,start))
       return false;
 
-   queue<Point> q;
-   q.push(target);
+   queue<Point> que;
+   que.push(target);
    checked[target.x][target.y]=true;
    bool success=false;
    steps=1;			//Reset the steps to count the search effort
    route.clear();	//Clear the previous route
-   while(!q.empty()){
-      Point curPos=q.front();
-      q.pop();
+   while(!que.empty()){
+      Point curPos=que.front();
+      que.pop();
       checked[curPos.x][curPos.y]=true;
       if(curPos==start){
          success=true;
          break;
       }
+
+      //Append available surrounding grid to the queue
       if(isLegal(map,Point(curPos.x-1,curPos.y))){ //move up
-         q.push(Point(curPos.x-1,curPos.y));
+    	 que.push(Point(curPos.x-1,curPos.y));
          direction[curPos.x-1][curPos.y]=curPos;
       }
       if(isLegal(map,Point(curPos.x+1,curPos.y))){ //move down
-         q.push(Point(curPos.x+1,curPos.y));
+    	 que.push(Point(curPos.x+1,curPos.y));
          direction[curPos.x+1][curPos.y]=curPos;
       }
       if(isLegal(map,Point(curPos.x,curPos.y-1))){ //move left
-         q.push(Point(curPos.x,curPos.y-1));
+    	 que.push(Point(curPos.x,curPos.y-1));
          direction[curPos.x][curPos.y-1]=curPos;
       }
       if(isLegal(map,Point(curPos.x,curPos.y+1))){ //move right
-         q.push(Point(curPos.x,curPos.y+1));
+    	 que.push(Point(curPos.x,curPos.y+1));
          direction[curPos.x][curPos.y+1]=curPos;
       }
    }
+
+   //Searching is done,if target is found then save the route
    if(success){
       Point curPos=start;
       do{
@@ -181,16 +195,26 @@ unsigned int Search::abs(Point &a,Point &b){
 
 struct lowestF{
 	bool operator()(const AStarPoint &lhs,const AStarPoint &rhs) const{
-		return lhs.f>rhs.f;
+		return lhs.f>rhs.f;		//minimal priority queue
 	}
 };
 
-bool Search::aStar(const vector<vector<int> > &map,const Point &start,const Point &target) {
+bool Search::aStar(const vector<vector<unsigned int> > &map,const Point &start,const Point &target) {
 	setTarget(target);
 	setStart(start);
 	return aStar(map);
 }
-bool Search::aStar(const vector<vector<int> > &map) {
+
+/*
+ * Basic idea:
+ * -Search from target towards start grid
+ * -Check every surrounding grid,calculate their values and put them in the
+ *  minimal priority queue
+ * -Set these appended grid pointing to its previous grid
+ * -Get the minimal cost grid from the priority queue and iterate
+ * -When searching is done,iterate the direction vector to generate the route
+ */
+bool Search::aStar(const vector<vector<unsigned int> > &map) {
 	direction.clear();
 	for (size_t i = 0; i < map.size(); i++) {			//Init the direction map
 		vector<Point> zero(map[i].size(), Point(0, 0));
@@ -205,13 +229,13 @@ bool Search::aStar(const vector<vector<int> > &map) {
 	if (!isLegal(map, target) || !isLegal(map, start))
 		return false;
 
+	//Similar to BFS,but we use minimal priority queue instead
 	priority_queue<AStarPoint, vector<AStarPoint>, lowestF> pQue;
-
 	pQue.push(AStarPoint(target, map[target.x][target.y], abs(target, start)));
 	checked[target.x][target.y] = true;
 	bool success = false;
 	steps = 1;			//Reset the steps to count the search effort
-	route.clear();	//Clear the previous route
+	route.clear();		//Clear the previous route
 	while (!pQue.empty()) {
 		AStarPoint curPos = pQue.top();
 		Point p = curPos.point;
@@ -225,35 +249,33 @@ bool Search::aStar(const vector<vector<int> > &map) {
 		Point tempP(p.x,p.y);
 		tempP.x = p.x - 1; tempP.y = p.y;
 		unsigned int g=curPos.g;
-		if (isLegal(map, tempP)) { //move up
-			pQue.push(	AStarPoint(	tempP,
-								abs(tempP, target),
-								map[tempP.x][tempP.y]+g)
-					);
+
+		//Append available surrounding grid to the pQue
+		if (isLegal(map, tempP)) { 							//Move up
+			pQue.push(	AStarPoint(	tempP,					//Point(x,y)
+								abs(tempP, target),			//heuristic value
+								map[tempP.x][tempP.y]+g));	//grid cost
 			direction[tempP.x][tempP.y] = p;
 		}
 		tempP.x = p.x + 1; tempP.y = p.y;
-		if (isLegal(map, tempP)) { //move up
+		if (isLegal(map, tempP)) { 							//Move down
 			pQue.push(	AStarPoint(	tempP,
 								abs(tempP, target),
-								map[tempP.x][tempP.y]+g)
-					);
+								map[tempP.x][tempP.y]+g));
 			direction[tempP.x][tempP.y] = p;
 		}
 		tempP.x = p.x; tempP.y = p.y-1;
-		if (isLegal(map, tempP)) { //move up
+		if (isLegal(map, tempP)) { 							//Move left
 			pQue.push(	AStarPoint(	tempP,
 								abs(tempP, target),
-								map[tempP.x][tempP.y]+g)
-					);
+								map[tempP.x][tempP.y]+g));
 			direction[tempP.x][tempP.y] = p;
 		}
 		tempP.x = p.x; tempP.y = p.y+1;
-		if (isLegal(map, tempP)) { //move up
+		if (isLegal(map, tempP)) { 							//Move right
 			pQue.push(	AStarPoint(	tempP,
 								abs(tempP, target),
-								map[tempP.x][tempP.y]+g)
-					);
+								map[tempP.x][tempP.y]+g));
 			direction[tempP.x][tempP.y] = p;
 		}
 	}
@@ -285,7 +307,7 @@ const int MapSize = 5;
  *  v
  *  x
  */
-vector<vector<int> > map = {
+vector<vector<unsigned int> > map = {
 {1, 0, 1, 1, 1},
 {1, 1, 1, 0, 1},
 {1, 1, 0, 0, 1},
