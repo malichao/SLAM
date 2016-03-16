@@ -4,8 +4,8 @@
 #include <iostream>
 using namespace std;
 struct Point {
-   int x;
-   int y;
+   unsigned int x;
+   unsigned int y;
    Point(int i,int j):x(i),y(j){};
    bool operator== (const Point rhs){
       return (x==rhs.x&&y==rhs.y);
@@ -42,15 +42,15 @@ void BFS::printRoute(){
 
 void BFS::printRouteOnMap(const vector<vector<int> > &m){
    vector<vector<char> > map;
-   for(int i=0;i<m.size();i++){
+   for(size_t i=0;i<m.size();i++){
       vector<char> row(m[i].size());
-      for(int j=0;j<m[i].size();j++){
+      for(size_t j=0;j<m[i].size();j++){
          row[j]=m[i][j]+'0';
       }
       map.push_back(row);
    }
 
-   for(int i=1;i<route.size()-1;i++){
+   for(size_t i=1;i<route.size()-1;i++){
       int dX=route[i+1].x-route[i].x;
       int dY=route[i+1].y-route[i].y;
       if(dX==1)
@@ -66,8 +66,8 @@ void BFS::printRouteOnMap(const vector<vector<int> > &m){
    map[route[0].x][route[0].y]='S';
    map[route[route.size()-1].x][route[route.size()-1].y]='T';
 
-   for(int i=0;i<map.size();i++){
-      for(int j=0;j<map[i].size();j++){
+   for(size_t i=0;i<map.size();i++){
+      for(size_t j=0;j<map[i].size();j++){
          cout<<map[i][j]<<" ";
       }
       cout<<endl;
@@ -93,12 +93,12 @@ bool BFS::isLegal(const vector<vector<int> > &map,Point p){
 bool BFS::bfs(const vector<vector<int> > &map){
    queue<Point> q;
 
-   for(int i=0;i<map.size();i++){
+   for(size_t i=0;i<map.size();i++){
       vector<Point> zero(map[i].size(),Point(0,0));
       direction.push_back(zero);
    }
 
-   for(int i=0;i<map.size();i++){
+   for(size_t i=0;i<map.size();i++){
       vector<bool> temp(map[i].size(),false);
       checked.push_back(temp);
    }
