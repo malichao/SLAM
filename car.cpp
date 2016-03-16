@@ -2,6 +2,8 @@
 #include <vector>
 #include <fstream>
 #include <cmath>
+#include <cstdlib>
+#include <string>
 
 using namespace std;
 enum Direction{Backward=-1,Still=0,Forward=1};
@@ -67,23 +69,25 @@ void constrain(float &val,const float min,const float max){
 	if(val>max)
 		val=max;
 }
+
+float kP=1;
+float kI=0;
+float dIt=0.1;
+float kD=0;
 void PID(Car &car,float target){
 	float error,dError;
 	static float lastError=0;
 	static float integral=0;
-	float kP=1;
-	float kI=0;
-	float kD=0;
 
 	error=target-car.distance;
 	dError=error-lastError;
-	integral+=error;
+	integral+=error*dIt;
 	constrain(integral,-100,100);
 	lastError=error;
 
 	float output;
 	output=kP*error+kI*integral+kD*dError;
-	constrain(output,-20,20);
+	constrain(output,-100,100);
 	update(car,output);
 	cout<<output<<endl;
 }
@@ -94,7 +98,12 @@ int main(){
 	vector<float> speed;
 	vector<float> distance;
 
-	int simulationTime=100;
+	cout<<"Input kP kI kD and file number\n";
+	string number;
+	cin>>kP>>kI>>kD>>number;
+	cout<<"result:\n";
+
+	int simulationTime=200;
 	for(int i=0;i<simulationTime;i++){
 		//cout<<update(simpleCar,force)<<endl;
 		PID(simpleCar,100);
@@ -103,8 +112,9 @@ int main(){
 		distance.push_back(simpleCar.distance);
 	}
 
-	ofstream file("result.csv");
+	ofstream file("result"+number+".csv");
 	for(int i=0;i<simulationTime;i++)
 		file<<speed[i]<<","<<distance[i]<<endl;
 	file.close();
+	system("pause");
 }
