@@ -14,10 +14,10 @@ struct Point {
             return (x!=rhs.x||y!=rhs.y);
          }
 };
-class BFS {
+class Search {
 public:
    const int Wall =0;	//positive value means the cost of each path
-   BFS():start(0,0),target(0,0){};
+   Search():start(0,0),target(0,0),steps(0){};
    bool bfs(const vector<vector<int> > &map);
    bool bfs(const vector<vector<int> > &map,const Point &start,const Point &target);
    void setStart(const Point &s){start.x=s.x; start.y=s.y;}
@@ -28,87 +28,102 @@ public:
 private:
    Point start;
    Point target;
+   unsigned int steps;
    vector<vector<bool> > checked;
    vector<vector<Point> > direction;
    vector<Point> route;
    bool isLegal(const vector<vector<int> > &map,Point p);
 };
 
-void BFS::printRoute(){
-   for(auto r :route){
-      cout<<"("<<r.x<<","<<r.y<<")"<<endl;
-   }
+void Search::printRoute() {
+	if (route.size() == 0) {
+		cout << "No route.\n";
+		return;
+	}
+	cout << "Search effort: " << steps;
+	cout << "\nShortest path:" << getMinDistance() << endl;
+	for (auto r : route) {
+		cout << "(" << r.x << "," << r.y << ")" << endl;
+	}
 }
 
-void BFS::printRouteOnMap(const vector<vector<int> > &m){
-   vector<vector<char> > map;
-   for(size_t i=0;i<m.size();i++){
-      vector<char> row(m[i].size());
-      for(size_t j=0;j<m[i].size();j++){
-         row[j]=m[i][j]+'0';
-      }
-      map.push_back(row);
-   }
+void Search::printRouteOnMap(const vector<vector<int> > &m) {
+	if (route.size() == 0) {
+		cout << "No route.\n";
+		return;
+	}
+	vector<vector<char> > map;
+	for (size_t i = 0; i < m.size(); i++) {
+		vector<char> row(m[i].size());
+		for (size_t j = 0; j < m[i].size(); j++) {
+			row[j] = m[i][j] + '0';
+		}
+		map.push_back(row);
+	}
 
-   for(size_t i=1;i<route.size()-1;i++){
-      int dX=route[i+1].x-route[i].x;
-      int dY=route[i+1].y-route[i].y;
-      if(dX==1)
-         map[route[i].x][route[i].y]='v';
-      else if(dX==-1)
-         map[route[i].x][route[i].y]='^';
-      else if(dY==1)
-         map[route[i].x][route[i].y]='>';
-      else if(dX==-1)
-         map[route[i].x][route[i].y]='<';
-   }
+	for (size_t i = 1; i + 1 < route.size(); i++) {
+		int dX = route[i + 1].x - route[i].x;
+		int dY = route[i + 1].y - route[i].y;
+		if (dX == 1)
+			map[route[i].x][route[i].y] = 'v';
+		else if (dX == -1)
+			map[route[i].x][route[i].y] = '^';
+		else if (dY == 1)
+			map[route[i].x][route[i].y] = '>';
+		else if (dX == -1)
+			map[route[i].x][route[i].y] = '<';
+	}
 
-   map[route[0].x][route[0].y]='S';
-   map[route[route.size()-1].x][route[route.size()-1].y]='T';
+	map[route[0].x][route[0].y] = 'S';
+	map[route[route.size() - 1].x][route[route.size() - 1].y] = 'T';
 
-   for(size_t i=0;i<map.size();i++){
-      for(size_t j=0;j<map[i].size();j++){
-         cout<<map[i][j]<<" ";
-      }
-      cout<<endl;
-   }
+	cout << "Search effort: " << steps;
+	cout << "\nShortest path:" << getMinDistance() << endl;
+	for (size_t i = 0; i < map.size(); i++) {
+		for (size_t j = 0; j < map[i].size(); j++) {
+			cout << map[i][j] << " ";
+		}
+		cout << endl;
+	}
 }
 
-bool BFS::bfs(const vector<vector<int> > &map,const Point &start,const Point &target){
+bool Search::bfs(const vector<vector<int> > &map,const Point &start,const Point &target){
    setTarget(target);
    setStart(start);
    return this->bfs(map);
 }
 
-bool BFS::isLegal(const vector<vector<int> > &map,Point p){
-   if(p.x<0||p.y<0||p.x>=map.size()||p.y>=map[0].size())
-      return false;
-   if(checked[p.x][p.y])   	//Current position has been searched
-      return false;
-   if(map[p.x][p.y]==Wall)
-      return false;
-   return true;
+bool Search::isLegal(const vector<vector<int> > &map,Point p){
+	steps++;
+	if(p.x>=map.size()||p.y>=map[0].size())		//x and y are unsigned int
+	  return false;
+	if(checked[p.x][p.y])   	//Current position has been searched
+	  return false;
+	if(map[p.x][p.y]==Wall)
+	  return false;
+	return true;
 }
 
-bool BFS::bfs(const vector<vector<int> > &map){
-   queue<Point> q;
-
-   for(size_t i=0;i<map.size();i++){
+bool Search::bfs(const vector<vector<int> > &map){
+   for(size_t i=0;i<map.size();i++){				//Init the direction map
       vector<Point> zero(map[i].size(),Point(0,0));
       direction.push_back(zero);
    }
 
-   for(size_t i=0;i<map.size();i++){
+   for(size_t i=0;i<map.size();i++){				//Init the checked set
       vector<bool> temp(map[i].size(),false);
       checked.push_back(temp);
    }
 
    if(!isLegal(map,target)||!isLegal(map,start))
-      return true;
+      return false;
 
+   queue<Point> q;
    q.push(target);
    checked[target.x][target.y]=true;
    bool success=false;
+   steps=1;			//Reset the steps to count the search effort
+   route.clear();	//Clear the previous route
    while(!q.empty()){
       Point curPos=q.front();
       q.pop();
@@ -150,7 +165,7 @@ const int MapSize = 5;
 /*
  * About the map:
  *  0 means the wall,positive values means the cost each grid.Although
- *  in BFS these values are used but to make a comparison between different
+ *  in Search these values are used but to make a comparison between different
  *  algorithms,such as A*,Dijkstra shortest path,we need a map that works
  *  for all these algorithms.
  *
@@ -167,7 +182,7 @@ vector<vector<int> > map = {
 	      {1, 0, 1, 0, 1},
 	      {1, 1, 1, 0, 1},
 	      {1, 0, 0, 0, 1},
-	      {1, 1, 1, 0, 1} };
+	      {1, 1, 1, 1, 1} };
 /*
  * Test result:
    S 1 > > v
@@ -177,13 +192,13 @@ vector<vector<int> > map = {
    0 0 0 1 T
  */
 int main(void) {
-   Point start(0,0),target(4,4);
-   BFS b;
+   Point start(0,1),target(0,1);
+   Search b;
    if(b.bfs(map,start,target)){
       b.printRouteOnMap(map);
    }
    else{
-      cout<<"BFS failed.\n";
+      cout<<"Search failed.\n";
    }
    return 0;
 }
