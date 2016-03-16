@@ -16,8 +16,7 @@ struct Point {
 };
 class BFS {
 public:
-   const int Wall =1;
-   const int Floor =0;
+   const int Wall =0;	//positive value means the cost of each path
    BFS():start(0,0),target(0,0){};
    bool bfs(const vector<vector<int> > &map);
    bool bfs(const vector<vector<int> > &map,const Point &start,const Point &target);
@@ -84,13 +83,11 @@ bool BFS::bfs(const vector<vector<int> > &map,const Point &start,const Point &ta
 bool BFS::isLegal(const vector<vector<int> > &map,Point p){
    if(p.x<0||p.y<0||p.x>=map.size()||p.y>=map[0].size())
       return false;
-   if(checked[p.x][p.y])   //Current position has been searched
+   if(checked[p.x][p.y])   	//Current position has been searched
       return false;
    if(map[p.x][p.y]==Wall)
       return false;
-   if(map[p.x][p.y]==Floor)
-      return true;
-   return false;        //Any other thing undefined is false
+   return true;
 }
 
 bool BFS::bfs(const vector<vector<int> > &map){
@@ -151,20 +148,26 @@ bool BFS::bfs(const vector<vector<int> > &map){
 
 const int MapSize = 5;
 /*
+ * About the map:
+ *  0 means the wall,positive values means the cost each grid.Although
+ *  in BFS these values are used but to make a comparison between different
+ *  algorithms,such as A*,Dijkstra shortest path,we need a map that works
+ *  for all these algorithms.
+ *
+ *  Notice about the map coordinate:
  *  map[x][y]:
  *  0-------> y
- *  |
  *  |
  *  |
  *  v
  *  x
  */
 vector<vector<int> > map = {
-      {0, 1, 0, 0, 0},
-      {0, 1, 0, 1, 0},
-      {0, 0, 0, 1, 0},
-      {0, 1, 1, 1, 0},
-      {0, 0, 0, 1, 0} };
+	      {1, 0, 1, 1, 1},
+	      {1, 0, 1, 0, 1},
+	      {1, 1, 1, 0, 1},
+	      {1, 0, 0, 0, 1},
+	      {1, 1, 1, 0, 1} };
 /*
  * Test result:
    S 1 > > v
