@@ -29,6 +29,7 @@ struct AStarPoint{
 class Search {
 public:
    const unsigned int Wall =0;	//positive value means the cost of each path
+   const unsigned int CostMax= 100;//Don't use UINT_MAX
    Search():start(0,0),target(0,0),steps(0){};
    bool bfs(const vector<vector<unsigned int> > &map);
    bool bfs(const vector<vector<unsigned int> > &map,const Point &start,const Point &target);
@@ -303,7 +304,7 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 							 const Point &point) {
 	if(point==target)
 		return 0;
-	unsigned int min = 100;		//Don't use UINT_MAX because it will overflow later on
+	unsigned int min = CostMax;		//Don't use UINT_MAX because it will overflow later on
 	Point p(point);
 	p.x=point.x-1;p.y=point.y;
 	if ((p.x < map.size() && p.y < map[0].size())&& checked[p.x][p.y] //Bounding check first
@@ -350,7 +351,8 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
 	if (!isLegal(map, target) || !isLegal(map, start))
 		return false;
 
-	vector<vector<unsigned int> > costMap(map);
+	vector<vector<unsigned int> > costMap(map.size(),
+									vector<unsigned int> (map[0].size(),CostMax));
 
 	queue<Point> que;
 	que.push(target);
