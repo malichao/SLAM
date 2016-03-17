@@ -56,7 +56,6 @@ struct Movement{
 class Search {
 public:
    const unsigned int Wall =0;			//positive value means the cost of each path
-   const char WallSymbol = '.';
    const unsigned int CostMax= 100;		//Don't use UINT_MAX,watch out for OVERFLOW
    Search():Start(0,0),Target(0,0),EffortCount(0){};
 
@@ -147,7 +146,7 @@ void Search::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 	for (size_t i = 0; i < map.size(); i++) {
 		vector<char> row(map[i].size());
 		for (size_t j = 0; j < map[i].size(); j++) {
-			row[j] = map[i][j]==0 ? WallSymbol: map[i][j] + '0';
+			row[j] = map[i][j]==0 ? '#': map[i][j] + '0';
 		}
 		charMap.push_back(row);
 	}
@@ -187,7 +186,7 @@ void Search::printDirectionOnMap(const vector<vector<unsigned int> > &map) {
 	for (size_t i = 0; i < map.size(); i++) {
 		vector<char> row(map[i].size());
 		for (size_t j = 0; j < map[i].size(); j++) {
-			row[j] = map[i][j]==0 ? WallSymbol: map[i][j] + '0';
+			row[j] = map[i][j]==0 ? '#': map[i][j] + '0';
 		}
 		charMap.push_back(row);
 	}
