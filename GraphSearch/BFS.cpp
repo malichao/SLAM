@@ -8,14 +8,17 @@ using namespace std;
 struct Point {
    unsigned int x;
    unsigned int y;
-   unsigned int direction;
-   Point(unsigned int x,unsigned int y):x(x),y(y){};
-   Point(const Point &p):x(p.x),y(p.y){};
-   bool operator== (const Point rhs) const{
-      return (x==rhs.x&&y==rhs.y);
+   unsigned int direction;	//0:Forward	1:Left turn	2:Right turn
+
+   Point(unsigned int x,unsigned int y):x(x),y(y),direction(0){};
+   Point(unsigned int x,unsigned int y,unsigned int dir):x(x),y(y),direction(dir){};
+   Point(const Point &p):x(p.x),y(p.y),direction(p.direction){};
+
+   bool operator== (const Point &rhs) const{
+      return (x==rhs.x&&y==rhs.y&&direction==rhs.direction);
    }
-   bool operator!= (const Point rhs){
-            return (x!=rhs.x||y!=rhs.y);
+   bool operator!= (const Point &rhs){
+            return (x!=rhs.x||y!=rhs.y||direction!=rhs.direction);
          }
 };
 struct AStarPoint{
@@ -105,17 +108,15 @@ void Search::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 		charMap.push_back(row);
 	}
 
+	char dirSymbol[3][3]={
+			{' ','^',' '},
+			{'<',' ','>'},
+			{' ','V',' '},};
+
 	for (size_t i = 1; i + 1 < Route.size(); i++) {
 		int dX = Route[i + 1].x - Route[i].x;
 		int dY = Route[i + 1].y - Route[i].y;
-		if (dX == 1)
-			charMap[Route[i].x][Route[i].y] = 'v';	//Down
-		else if (dX == -1)
-			charMap[Route[i].x][Route[i].y] = '^';	//Up
-		else if (dY == 1)
-			charMap[Route[i].x][Route[i].y] = '>';	//Right
-		else if (dX == -1)
-			charMap[Route[i].x][Route[i].y] = '<';	//Left
+		charMap[Route[i].x][Route[i].y]=dirSymbol[1+dX][1+dY];
 	}
 
 	charMap[Route[0].x][Route[0].y] = 'S';	//Mark the start point
@@ -147,18 +148,13 @@ void Search::printDirectionOnMap(const vector<vector<unsigned int> > &map) {
 		charMap.push_back(row);
 	}
 
+	char dirSymbol[5]={'^','V','<','>',' '};
 	for (size_t i = 0; i < charMap.size(); i++)
 		for (size_t j = 0; j < charMap[i].size(); j++) {
 			if (Checked[i][j]) {
 				size_t dir;
 				minCost(map, Point(i, j), dir);
-				switch (dir) {
-				case 0:	charMap[i][j] = '^';break;
-				case 1:	charMap[i][j] = 'v';break;
-				case 2:	charMap[i][j] = '<';break;
-				case 3:	charMap[i][j] = '>';break;
-				default:break;
-				}
+				charMap[i][j] =dirSymbol[dir];
 			}
 		}
 
@@ -440,7 +436,7 @@ vector<vector<unsigned int> > map = {
 		{1, 0, 1, 1, 1},
 		{1, 1, 1, 0, 1},
 		{1, 1, 0, 0, 1},
-		{1, 1, 2, 2, 1},
+		{1, 1, 2, 3, 1},
 		{1, 0, 6, 5, 1},};
 /*
  * Test result:
