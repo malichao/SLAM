@@ -30,6 +30,12 @@ struct AStarPoint{
 	AStarPoint(Point p,int h,int g):
 		point(p),f(h+g),h(h),g(g){};
 };
+struct DPPoint{
+	Point point;
+	int cost;
+	DPPoint(const Point &p,unsigned int cost):
+		point(p),cost(cost){};
+};
 struct Movement{
 	const unsigned int Up=0;
 	const unsigned int Down=1;
@@ -50,6 +56,7 @@ struct Movement{
 class Search {
 public:
    const unsigned int Wall =0;			//positive value means the cost of each path
+   const char WallSymbol = '.';
    const unsigned int CostMax= 100;		//Don't use UINT_MAX,watch out for OVERFLOW
    Search():Start(0,0),Target(0,0),EffortCount(0){};
 
@@ -140,7 +147,7 @@ void Search::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 	for (size_t i = 0; i < map.size(); i++) {
 		vector<char> row(map[i].size());
 		for (size_t j = 0; j < map[i].size(); j++) {
-			row[j] = map[i][j] + '0';
+			row[j] = map[i][j]==0 ? WallSymbol: map[i][j] + '0';
 		}
 		charMap.push_back(row);
 	}
@@ -180,7 +187,7 @@ void Search::printDirectionOnMap(const vector<vector<unsigned int> > &map) {
 	for (size_t i = 0; i < map.size(); i++) {
 		vector<char> row(map[i].size());
 		for (size_t j = 0; j < map[i].size(); j++) {
-			row[j] = map[i][j] + '0';
+			row[j] = map[i][j]==0 ? WallSymbol: map[i][j] + '0';
 		}
 		charMap.push_back(row);
 	}
@@ -298,7 +305,7 @@ unsigned int Search::abs(Point &a,Point &b){
 	return std::abs(a.x-b.x)+std::abs(a.y-b.y);
 }
 
-//Comparison object to be used to order the heap
+//Comparison object to be used to order the heap in A* search
 struct lowestF{
 	bool operator()(const AStarPoint &lhs,const AStarPoint &rhs) const{
 		return lhs.f>rhs.f;		//minimal priority queue
@@ -414,6 +421,13 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 	return min;
 }
 
+//Comparison object to be used to order the heap in dpSearch
+struct lessCost{
+	bool operator()(const DPPoint &lhs,const DPPoint &rhs) const{
+		return lhs.cost>rhs.cost;		//minimal priority queue
+	}
+};
+
 bool Search::dpSearch(const vector<vector<unsigned int> > &map,
 					  const Point &start,const Point &target) {
 	setTarget(target);
@@ -436,38 +450,37 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
 	if (!isLegal(map, Target) || !isLegal(map, Start))
 		return false;
 
+	priority_queue<DPPoint, vector<DPPoint>, lessCost> pQue;
+	pQue.push(DPPoint(Target,0));
+	Movement move;
 	CostMap.clear();
 	CostMap=vector<vector<unsigned int> >
 				(map.size(),vector<unsigned int> (map[0].size(),CostMax));
-
-	queue<Point> que;
-	que.push(Target);
 	Checked[Target.x][Target.y] = true;
 	CostMap[Target.x][Target.y]	=0;
-	Movement move;
-
 	EffortCount = 1;			//Reset the EffortCount to count the search effort
 	Route.clear();	//Clear the previous route
-	while (!que.empty()) {
-		Point curPos = que.front();
-		que.pop();
-		Checked[curPos.x][curPos.y] = true;
+	while (!pQue.empty()) {
+		DPPoint curPos = pQue.top();
+		Point p = curPos.point;
+		pQue.pop();
+		Checked[p.x][p.y] = true;
 
 		//CostMap[curPos.x][curPos.y]=minCost(map,costMap,curPos,minDir)+map[curPos.x][curPos.y];
-		unsigned int min=minCost(map,curPos,move);
-		min+=map[curPos.x][curPos.y];
-		CostMap[curPos.x][curPos.y]	=min;
+		unsigned int min=minCost(map,p,move);
+		min+=map[p.x][p.y];
+		CostMap[p.x][p.y]	=min;
 
 		if(move.direction!=move.NoneDirection)
-			Gradient[curPos.x][curPos.y] = Point(	curPos.x+Move[move.direction][0],
-													curPos.y+Move[move.direction][1]);
+			Gradient[p.x][p.y] = Point(	p.x+Move[move.direction][0],
+										p.y+Move[move.direction][1]);
 
 		//Append available surrounding grid to the queue
 		for(size_t k=0;k<4;k++){		//Iterate Up,Down,Left,Right 4 direction
-			Point p(curPos.x+Move[k][0],curPos.y+Move[k][1]);
+			Point tempP(p.x+Move[k][0],p.y+Move[k][1]);
 
-			if (isLegal(map,p))  //move up
-				que.push(p);
+			if (isLegal(map,tempP))  //move up
+				pQue.push(DPPoint(	tempP,CostMap[tempP.x][tempP.y]));
 		}
 	}
 
