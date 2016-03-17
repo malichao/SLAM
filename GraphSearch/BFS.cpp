@@ -54,6 +54,12 @@ private:
    unsigned int minCost(const vector<vector<unsigned int> > &map,
    						const vector<vector<unsigned int> > &costMap,
    						const Point &p);
+   int move[4][2]={
+		   {-1,0},	// x-1,y
+		   { 1,0},	// x+1,y
+		   {0,-1},	// x,y-1
+		   {0, 1}	// x,y+1
+   };
 };
 
 void Search::printRoute() {
@@ -166,21 +172,12 @@ bool Search::bfs(const vector<vector<unsigned int> > &map){
       }
 
       //Append available surrounding grid to the queue
-      if(isLegal(map,Point(curPos.x-1,curPos.y))){ //move up
-    	 que.push(Point(curPos.x-1,curPos.y));
-         direction[curPos.x-1][curPos.y]=curPos;
-      }
-      if(isLegal(map,Point(curPos.x+1,curPos.y))){ //move down
-    	 que.push(Point(curPos.x+1,curPos.y));
-         direction[curPos.x+1][curPos.y]=curPos;
-      }
-      if(isLegal(map,Point(curPos.x,curPos.y-1))){ //move left
-    	 que.push(Point(curPos.x,curPos.y-1));
-         direction[curPos.x][curPos.y-1]=curPos;
-      }
-      if(isLegal(map,Point(curPos.x,curPos.y+1))){ //move right
-    	 que.push(Point(curPos.x,curPos.y+1));
-         direction[curPos.x][curPos.y+1]=curPos;
+      for(size_t k=0;k<4;k++){	//Iterate Up,Down,Left,Right 4 direction
+    	  Point p(curPos.x+move[k][0],curPos.y+move[k][1]);
+    	  if(isLegal(map,p)){
+			 que.push(p);
+			 direction[p.x][p.y]=curPos;
+    	  }
       }
    }
 
@@ -253,38 +250,17 @@ bool Search::aStar(const vector<vector<unsigned int> > &map) {
 			success = true;
 			break;
 		}
-
-		Point tempP(p.x,p.y);
-		tempP.x = p.x - 1; tempP.y = p.y;
 		unsigned int g=curPos.g;
 
 		//Append available surrounding grid to the pQue
-		if (isLegal(map, tempP)) { 							//Move up
-			pQue.push(	AStarPoint(	tempP,					//Point(x,y)
-								abs(tempP, target),			//heuristic value
-								map[tempP.x][tempP.y]+g));	//grid cost
-			direction[tempP.x][tempP.y] = p;
-		}
-		tempP.x = p.x + 1; tempP.y = p.y;
-		if (isLegal(map, tempP)) { 							//Move down
-			pQue.push(	AStarPoint(	tempP,
-								abs(tempP, target),
-								map[tempP.x][tempP.y]+g));
-			direction[tempP.x][tempP.y] = p;
-		}
-		tempP.x = p.x; tempP.y = p.y-1;
-		if (isLegal(map, tempP)) { 							//Move left
-			pQue.push(	AStarPoint(	tempP,
-								abs(tempP, target),
-								map[tempP.x][tempP.y]+g));
-			direction[tempP.x][tempP.y] = p;
-		}
-		tempP.x = p.x; tempP.y = p.y+1;
-		if (isLegal(map, tempP)) { 							//Move right
-			pQue.push(	AStarPoint(	tempP,
-								abs(tempP, target),
-								map[tempP.x][tempP.y]+g));
-			direction[tempP.x][tempP.y] = p;
+		for(size_t k=0;k<4;k++){	//Iterate Up,Down,Left,Right 4 direction
+		  Point tempP(p.x+move[k][0],p.y+move[k][1]);
+		  if(isLegal(map,tempP)){
+			  pQue.push(AStarPoint(	tempP,						//Point(x,y)
+			  						abs(tempP, target),			//heuristic value
+			  						map[tempP.x][tempP.y]+g));	//grid cost
+			  direction[tempP.x][tempP.y] = p;
+		  }
 		}
 	}
 	if (success) {
@@ -306,26 +282,12 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 		return 0;
 	unsigned int min = CostMax;		//Don't use UINT_MAX because it will overflow later on
 	Point p(point);
-	p.x=point.x-1;p.y=point.y;
-	if ((p.x < map.size() && p.y < map[0].size())&& checked[p.x][p.y] //Bounding check first
-			&& map[p.x][p.y] != Wall)
-		min = costMap[p.x][p.y] < min ? costMap[p.x][p.y] : min;
-
-	p.x=point.x+1;p.y=point.y;
-	if ((p.x < map.size() && p.y < map[0].size())&& checked[p.x][p.y]
-			&& map[p.x][p.y] != Wall)
-		min = costMap[p.x][p.y] < min ? costMap[p.x][p.y] : min;
-
-	p.x=point.x;p.y=point.y-1;
-	if ((p.x < map.size() && p.y < map[0].size())&& checked[p.x][p.y]
-			&& map[p.x][p.y] != Wall)
-		min = costMap[p.x][p.y] < min ? costMap[p.x][p.y] : min;
-
-	p.x=point.x;p.y=point.y+1;
-	if ((p.x < map.size() && p.y < map[0].size())&& checked[p.x][p.y]
-			&& map[p.x][p.y] != Wall)
-		min = costMap[p.x][p.y] < min ? costMap[p.x][p.y] : min;
-
+	for(size_t k=0;k<4;k++){		//Iterate Up,Down,Left,Right 4 direction
+		Point p(point.x+move[k][0],point.y+move[k][1]);
+		if ((p.x < map.size() && p.y < map[0].size())&& checked[p.x][p.y] //Bounding check first
+					&& map[p.x][p.y] != Wall)
+			min = costMap[p.x][p.y] < min ? costMap[p.x][p.y] : min;
+	}
 	return min;
 }
 
@@ -371,32 +333,25 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
 		//costMap[curPos.x][curPos.y]	=minCost(map,costMap,curPos)+map[curPos.x][curPos.y];
 
 		//Append available surrounding grid to the queue
-		if (isLegal(map, Point(curPos.x - 1, curPos.y))) { //move up
-			que.push(Point(curPos.x - 1, curPos.y));
+		for(size_t k=0;k<4;k++){		//Iterate Up,Down,Left,Right 4 direction
+			Point p(curPos.x+move[k][0],curPos.y+move[k][1]);
 
-		}
-		if (isLegal(map, Point(curPos.x + 1, curPos.y))) { //move down
-			que.push(Point(curPos.x + 1, curPos.y));
-
-		}
-		if (isLegal(map, Point(curPos.x, curPos.y - 1))) { //move left
-			que.push(Point(curPos.x, curPos.y - 1));
-
-		}
-		if (isLegal(map, Point(curPos.x, curPos.y + 1))) { //move right
-			que.push(Point(curPos.x, curPos.y + 1));
-
+			if (isLegal(map,p))  //move up
+				que.push(p);
 		}
 	}
 
-	//Searching is done,if target is found then save the route
-	for(size_t i=0;i<costMap.size();i++){
-		for(size_t j=0;j<costMap[i].size();j++){
+		for(size_t i=0;i<costMap.size();i++){	//Test output the costMap
+			for(size_t j=0;j<costMap[i].size();j++){
 			cout<<costMap[i][j]<<"\t";
+			}
+			cout<<endl;
 		}
-		cout<<endl;
-	}
 
+	for(size_t i=0;i<map.size();i++)
+		for(size_t j=0;j<map[i].size();j++){
+
+		}
 	return false;
 }
 
