@@ -576,7 +576,7 @@ vector<vector<unsigned int> > map = {
 		{1, 0, 1, 1, 1},
 		{1, 1, 1, 0, 1},
 		{1, 1, 0, 0, 1},
-		{1, 1, 2, 4, 1},
+		{1, 1, 2, 3, 1},
 		{1, 0, 6, 5, 1},};
 //Define the cost for each action,left turn is expensive in real life
 //[0]:Forward	[1]:Left turn	[2]:Right turn
