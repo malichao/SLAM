@@ -3,12 +3,14 @@
 #include <queue>
 #include <iostream>
 #include <cmath>
+#include <climits>
 using namespace std;
 struct Point {
    unsigned int x;
    unsigned int y;
    Point(unsigned int x,unsigned int y):x(x),y(y){};
-   bool operator== (const Point rhs){
+   Point(const Point &p):x(p.x),y(p.y){};
+   bool operator== (const Point rhs) const{
       return (x==rhs.x&&y==rhs.y);
    }
    bool operator!= (const Point rhs){
@@ -26,12 +28,14 @@ struct AStarPoint{
 };
 class Search {
 public:
-   const int Wall =0;	//positive value means the cost of each path
+   const unsigned int Wall =0;	//positive value means the cost of each path
    Search():start(0,0),target(0,0),steps(0){};
    bool bfs(const vector<vector<unsigned int> > &map);
    bool bfs(const vector<vector<unsigned int> > &map,const Point &start,const Point &target);
    bool aStar(const vector<vector<unsigned int> > &map);
    bool aStar(const vector<vector<unsigned int> > &map,const Point &start,const Point &target);
+   bool dpSearch(const vector<vector<unsigned int> > &map);
+   bool dpSearch(const vector<vector<unsigned int> > &map,const Point &start,const Point &target);
    void setStart(const Point &s){start.x=s.x; start.y=s.y;}
    void setTarget(const Point &s){target.x=s.x; target.y=s.y;}
    int 	getMinDistance(){return route.size()-1;}
@@ -46,6 +50,9 @@ private:
    vector<Point> route;
    bool isLegal(const vector<vector<unsigned int> > &map,Point p);
    unsigned int abs(Point &a,Point &b);
+   unsigned int minCost(const vector<vector<unsigned int> > &map,
+   						const vector<vector<unsigned int> > &costMap,
+   						const Point &p);
 };
 
 void Search::printRoute() {
@@ -66,7 +73,7 @@ void Search::printRouteOnMap(const vector<vector<unsigned int> > &m) {
 		return;
 	}
 	//the original map is unsigned int type,to print route on the map
-	//we need to convet it to char
+	//we need to convert it to char
 	vector<vector<char> > map;
 	for (size_t i = 0; i < m.size(); i++) {
 		vector<char> row(m[i].size());
@@ -291,7 +298,106 @@ bool Search::aStar(const vector<vector<unsigned int> > &map) {
 	return false;
 }
 
-const int MapSize = 5;
+unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
+							 const vector<vector<unsigned int> > &costMap,
+							 const Point &point) {
+	if(point==target)
+		return 0;
+	unsigned int min = 100;		//Don't use UINT_MAX because it will overflow later on
+	Point p(point);
+	p.x=point.x-1;p.y=point.y;
+	if ((p.x < map.size() && p.y < map[0].size())&& checked[p.x][p.y] //Bounding check first
+			&& map[p.x][p.y] != Wall)
+		min = costMap[p.x][p.y] < min ? costMap[p.x][p.y] : min;
+
+	p.x=point.x+1;p.y=point.y;
+	if ((p.x < map.size() && p.y < map[0].size())&& checked[p.x][p.y]
+			&& map[p.x][p.y] != Wall)
+		min = costMap[p.x][p.y] < min ? costMap[p.x][p.y] : min;
+
+	p.x=point.x;p.y=point.y-1;
+	if ((p.x < map.size() && p.y < map[0].size())&& checked[p.x][p.y]
+			&& map[p.x][p.y] != Wall)
+		min = costMap[p.x][p.y] < min ? costMap[p.x][p.y] : min;
+
+	p.x=point.x;p.y=point.y+1;
+	if ((p.x < map.size() && p.y < map[0].size())&& checked[p.x][p.y]
+			&& map[p.x][p.y] != Wall)
+		min = costMap[p.x][p.y] < min ? costMap[p.x][p.y] : min;
+
+	return min;
+}
+
+bool Search::dpSearch(const vector<vector<unsigned int> > &map,
+					  const Point &start,const Point &target) {
+	setTarget(target);
+	setStart(start);
+	return dpSearch(map);
+}
+
+bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
+	direction.clear();
+	for (size_t i = 0; i < map.size(); i++) {			//Init the direction map
+		vector<Point> zero(map[i].size(), Point(0, 0));
+		direction.push_back(zero);
+	}
+	checked.clear();
+	for (size_t i = 0; i < map.size(); i++) {			//Init the checked set
+		vector<bool> temp(map[i].size(), false);
+		checked.push_back(temp);
+	}
+
+	if (!isLegal(map, target) || !isLegal(map, start))
+		return false;
+
+	vector<vector<unsigned int> > costMap(map);
+
+	queue<Point> que;
+	que.push(target);
+	checked[target.x][target.y] = true;
+	costMap[target.x][target.y]	=0;
+
+	steps = 1;			//Reset the steps to count the search effort
+	route.clear();	//Clear the previous route
+	while (!que.empty()) {
+		Point curPos = que.front();
+		que.pop();
+		checked[curPos.x][curPos.y] = true;
+		unsigned int min=minCost(map,costMap,curPos);
+		min+=map[curPos.x][curPos.y];
+		costMap[curPos.x][curPos.y]	=min;
+		//costMap[curPos.x][curPos.y]	=minCost(map,costMap,curPos)+map[curPos.x][curPos.y];
+
+		//Append available surrounding grid to the queue
+		if (isLegal(map, Point(curPos.x - 1, curPos.y))) { //move up
+			que.push(Point(curPos.x - 1, curPos.y));
+
+		}
+		if (isLegal(map, Point(curPos.x + 1, curPos.y))) { //move down
+			que.push(Point(curPos.x + 1, curPos.y));
+
+		}
+		if (isLegal(map, Point(curPos.x, curPos.y - 1))) { //move left
+			que.push(Point(curPos.x, curPos.y - 1));
+
+		}
+		if (isLegal(map, Point(curPos.x, curPos.y + 1))) { //move right
+			que.push(Point(curPos.x, curPos.y + 1));
+
+		}
+	}
+
+	//Searching is done,if target is found then save the route
+	for(size_t i=0;i<costMap.size();i++){
+		for(size_t j=0;j<costMap[i].size();j++){
+			cout<<costMap[i][j]<<"\t";
+		}
+		cout<<endl;
+	}
+
+	return false;
+}
+
 /*
  * About the map:
  *  0 means the wall,positive values means the cost each grid.Although
@@ -325,18 +431,19 @@ int main(void) {
    Point start(0,0),target(4,4);
    Search b;
 
-   if(b.bfs(map,start,target)){
-	 b.printRouteOnMap(map);
-  }
-  else{
-	 cout<<"Search failed.\n";
-  }
+   /*
+	if (b.bfs(map, start, target)) {
+		b.printRouteOnMap(map);
+	} else {
+		cout << "Search failed.\n";
+	}
 
-   if(b.aStar(map,start,target)){
-      b.printRouteOnMap(map);
-   }
-   else{
-      cout<<"Search failed.\n";
-   }
+	if (b.aStar(map, start, target)) {
+		b.printRouteOnMap(map);
+	} else {
+		cout << "Search failed.\n";
+	}
+	*/
+   b.dpSearch(map,start,target);
    return 0;
 }
