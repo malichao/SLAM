@@ -42,6 +42,7 @@ public:
    int 	getMinDistance(){return route.size()-1;}
    void printRoute();
    void printRouteOnMap(const vector<vector<unsigned int> > &m);
+   void printDirectionOnMap(const vector<vector<unsigned int> > &m);
 private:
    Point start;
    Point target;
@@ -49,18 +50,21 @@ private:
    vector<vector<bool> > checked;
    vector<vector<Point> > direction;
    vector<Point> route;
+   vector<vector<unsigned int> > costMap;
    bool isLegal(const vector<vector<unsigned int> > &map,Point p);
    unsigned int abs(Point &a,Point &b);
    unsigned int minCost(const vector<vector<unsigned int> > &map,
    						const vector<vector<unsigned int> > &costMap,
    						const Point &p,
 						unsigned int &dir);
+   void generateRoute();
    int move[4][2]={
 		   {-1,0},	// x-1,y
 		   { 1,0},	// x+1,y
 		   {0,-1},	// x,y-1
 		   {0, 1}	// x,y+1
    };
+   const unsigned int NoneDirection=4;
 };
 
 void Search::printRoute() {
@@ -115,6 +119,62 @@ void Search::printRouteOnMap(const vector<vector<unsigned int> > &m) {
 		}
 		cout << endl;
 	}
+}
+
+void Search::printDirectionOnMap(const vector<vector<unsigned int> > &m) {
+	if (costMap.size()==0) {
+		cout << "'costMap' data needed.\n";
+		return;
+	}
+	//the original map is unsigned int type,to print route on the map
+	//we need to convert it to char
+	vector<vector<char> > map;
+	for (size_t i = 0; i < m.size(); i++) {
+		vector<char> row(m[i].size());
+		for (size_t j = 0; j < m[i].size(); j++) {
+			row[j] = m[i][j] + '0';
+		}
+		map.push_back(row);
+	}
+
+	for (size_t i = 0; i < map.size(); i++)
+		for (size_t j = 0; j < map[i].size(); j++) {
+			if (checked[i][j]) {
+				size_t dir;
+				minCost(m, costMap, Point(i, j), dir);
+				switch (dir) {
+				case 0:	map[i][j] = '^';break;
+				case 1:	map[i][j] = 'v';break;
+				case 2:	map[i][j] = '<';break;
+				case 3:	map[i][j] = '>';break;
+				default:break;
+				}
+			}
+		}
+
+	map[start.x][start.y] = 'S';	//Mark the start point
+	map[target.x][target.y] = 'T';	//And the target point
+
+	cout << "Search effort: " << steps;
+	cout << "\nShortest path:" << getMinDistance() << endl;
+	for (size_t i = 0; i < map.size(); i++) {
+		for (size_t j = 0; j < map[i].size(); j++) {
+			cout << map[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
+
+//Generate a route using the direction info
+void Search::generateRoute(){
+	if(direction.size()==0)
+		return;
+    Point curPos=start;
+    do{
+       route.push_back(curPos);
+       curPos=direction[curPos.x][curPos.y];
+    }while(curPos!=target);
+    route.push_back(target);
 }
 
 bool Search::isLegal(const vector<vector<unsigned int> > &map,Point p){
@@ -184,12 +244,7 @@ bool Search::bfs(const vector<vector<unsigned int> > &map){
 
    //Searching is done,if target is found then save the route
    if(success){
-      Point curPos=start;
-      do{
-         route.push_back(curPos);
-         curPos=direction[curPos.x][curPos.y];
-      }while(curPos!=target);
-      route.push_back(target);
+      generateRoute();
       return true;
    }
    return false;
@@ -265,12 +320,7 @@ bool Search::aStar(const vector<vector<unsigned int> > &map) {
 		}
 	}
 	if (success) {
-		Point curPos = start;
-		do {
-			route.push_back(curPos);
-			curPos = direction[curPos.x][curPos.y];
-		} while (curPos != target);
-		route.push_back(target);
+		generateRoute();
 		return true;
 	}
 	return false;
@@ -280,7 +330,7 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 							 const vector<vector<unsigned int> > &costMap,
 							 const Point &point,
 							 unsigned int &dir) {
-	dir=4;	//0:Up	1:Down	2:left	3:Down	4:None
+	dir=NoneDirection;	//0:Up	1:Down	2:left	3:Down	4:None
 	if(point==target)
 		return 0;
 	unsigned int min = CostMax;		//Don't use UINT_MAX because it will overflow later on
@@ -316,8 +366,7 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
 	if (!isLegal(map, target) || !isLegal(map, start))
 		return false;
 
-	vector<vector<unsigned int> > costMap(map.size(),
-									vector<unsigned int> (map[0].size(),CostMax));
+	costMap=vector<vector<unsigned int> >(map.size(),vector<unsigned int> (map[0].size(),CostMax));
 
 	queue<Point> que;
 	que.push(target);
@@ -331,10 +380,15 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
 		Point curPos = que.front();
 		que.pop();
 		checked[curPos.x][curPos.y] = true;
+
+		//costMap[curPos.x][curPos.y]=minCost(map,costMap,curPos,minDir)+map[curPos.x][curPos.y];
 		unsigned int min=minCost(map,costMap,curPos,minDir);
 		min+=map[curPos.x][curPos.y];
 		costMap[curPos.x][curPos.y]	=min;
-		//costMap[curPos.x][curPos.y]	=minCost(map,costMap,curPos)+map[curPos.x][curPos.y];
+
+		if(minDir!=NoneDirection)
+			direction[curPos.x][curPos.y] = Point(	curPos.x+move[minDir][0],
+													curPos.y+move[minDir][1]);
 
 		//Append available surrounding grid to the queue
 		for(size_t k=0;k<4;k++){		//Iterate Up,Down,Left,Right 4 direction
@@ -352,13 +406,8 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
 	//		cout<<endl;
 	//	}
 
-	for(size_t i=0;i<map.size();i++)
-		for(size_t j=0;j<map[i].size();j++){
-			if(checked[i][j]){
-				//setDirection(i,j);
-			}
-		}
-	return false;
+	generateRoute();
+	return true;
 }
 
 /*
@@ -377,11 +426,11 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
  *  x
  */
 vector<vector<unsigned int> > map = {
-{1, 0, 1, 1, 1},
-{1, 1, 1, 0, 1},
-{1, 1, 0, 0, 1},
-{1, 1, 2, 2, 1},
-{1, 0, 6, 5, 1} };
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1},};
 /*
  * Test result:
    S 1 > > v
@@ -394,7 +443,7 @@ int main(void) {
    Point start(0,0),target(4,4);
    Search b;
 
-   /*
+
 	if (b.bfs(map, start, target)) {
 		b.printRouteOnMap(map);
 	} else {
@@ -406,7 +455,10 @@ int main(void) {
 	} else {
 		cout << "Search failed.\n";
 	}
-	*/
-   b.dpSearch(map,start,target);
+	if (b.dpSearch(map, start, target)) {
+		b.printDirectionOnMap(map);
+	} else {
+		cout << "Search failed.\n";
+	}
    return 0;
 }
