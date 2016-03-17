@@ -8,6 +8,7 @@ using namespace std;
 struct Point {
    unsigned int x;
    unsigned int y;
+   unsigned int direction;
    Point(unsigned int x,unsigned int y):x(x),y(y){};
    Point(const Point &p):x(p.x),y(p.y){};
    bool operator== (const Point rhs) const{
@@ -57,7 +58,7 @@ private:
    unsigned int EffortCount;
 
    vector<vector<bool> > Checked;
-   vector<vector<Point> > Direction;
+   vector<vector<Point> > Gradient;
    vector<Point> Route;
    vector<vector<unsigned int> > CostMap;
 
@@ -176,12 +177,12 @@ void Search::printDirectionOnMap(const vector<vector<unsigned int> > &map) {
 
 //Generate a route using the direction info
 void Search::generateRoute(){
-	if(Direction.size()==0)
+	if(Gradient.size()==0)
 		return;
     Point curPos=Start;
     do{
        Route.push_back(curPos);
-       curPos=Direction[curPos.x][curPos.y];
+       curPos=Gradient[curPos.x][curPos.y];
     }while(curPos!=Target);
     Route.push_back(Target);
 }
@@ -212,10 +213,10 @@ bool Search::bfs(const vector<vector<unsigned int> > &map,const Point &start,con
  * -When searching is done,iterate the direction vector to generate the route
  */
 bool Search::bfs(const vector<vector<unsigned int> > &map){
-	Direction.clear();
+	Gradient.clear();
    for(size_t i=0;i<map.size();i++){				//Init the direction map
       vector<Point> zero(map[i].size(),Point(0,0));
-      Direction.push_back(zero);
+      Gradient.push_back(zero);
    }
    Checked.clear();
    for(size_t i=0;i<map.size();i++){				//Init the checked set
@@ -246,7 +247,7 @@ bool Search::bfs(const vector<vector<unsigned int> > &map){
     	  Point p(curPos.x+Move[k][0],curPos.y+Move[k][1]);
     	  if(isLegal(map,p)){
 			 que.push(p);
-			 Direction[p.x][p.y]=curPos;
+			 Gradient[p.x][p.y]=curPos;
     	  }
       }
    }
@@ -286,10 +287,10 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,const Point &start,c
  * -When searching is done,iterate the direction vector to generate the route
  */
 bool Search::aStar(const vector<vector<unsigned int> > &map) {
-	Direction.clear();
+	Gradient.clear();
 	for (size_t i = 0; i < map.size(); i++) {			//Init the direction map
 		vector<Point> zero(map[i].size(), Point(0, 0));
-		Direction.push_back(zero);
+		Gradient.push_back(zero);
 	}
 	Checked.clear();
 	for (size_t i = 0; i < map.size(); i++) {			//Init the checked set
@@ -325,7 +326,7 @@ bool Search::aStar(const vector<vector<unsigned int> > &map) {
 			  pQue.push(AStarPoint(	tempP,						//Point(x,y)
 			  						abs(tempP, Target),			//heuristic value
 			  						map[tempP.x][tempP.y]+g));	//grid cost
-			  Direction[tempP.x][tempP.y] = p;
+			  Gradient[tempP.x][tempP.y] = p;
 		  }
 		}
 	}
@@ -361,10 +362,10 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map,
 }
 
 bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
-	Direction.clear();
+	Gradient.clear();
 	for (size_t i = 0; i < map.size(); i++) {			//Init the direction map
 		vector<Point> zero(map[i].size(), Point(0, 0));
-		Direction.push_back(zero);
+		Gradient.push_back(zero);
 	}
 	Checked.clear();
 	for (size_t i = 0; i < map.size(); i++) {			//Init the checked set
@@ -397,7 +398,7 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
 		CostMap[curPos.x][curPos.y]	=min;
 
 		if(minDir!=NoneDirection)
-			Direction[curPos.x][curPos.y] = Point(	curPos.x+Move[minDir][0],
+			Gradient[curPos.x][curPos.y] = Point(	curPos.x+Move[minDir][0],
 													curPos.y+Move[minDir][1]);
 
 		//Append available surrounding grid to the queue
