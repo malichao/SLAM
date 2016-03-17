@@ -27,6 +27,12 @@ struct Point {
 	   direction=rhs.direction;
    }
 
+   void set(unsigned int x,unsigned int y,unsigned int dir){
+	   this->x=x;
+	   this->y=y;
+	   this->direction=dir;
+   }
+
    bool operator== (const Point &rhs) const{
       return (x==rhs.x&&y==rhs.y&&direction==rhs.direction);
    }
@@ -400,8 +406,8 @@ bool Search::aStar(const vector<vector<unsigned int> > &map) {
 //Find the minimal cost of the four direction
 unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 							 const Point &point,
-							 Point &move) {
-	move.direction=move.NoDirection;	//0:Up	1:Down	2:Left	3:Right	4:None
+							 Point &nextMove) {
+	nextMove.direction=nextMove.NoDirection;	//0:Up	1:Down	2:Left	3:Right	4:None
 	if(point==Target)
 		return 0;
 	unsigned int min = CostMax;		//Don't use UINT_MAX otherwise it will overflow later on
@@ -412,7 +418,8 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 		//In the predicate,must check the bounding first
 		if ((p.x < map.size() && p.y < map[0].size())&& Checked[p.x][p.y]
 					&& map[p.x][p.y] != Wall)
-			min = CostMap[p.x][p.y] < min ? move.direction=k,CostMap[p.x][p.y] : min;
+			min = CostMap[p.x][p.y] < min ?
+						nextMove.set(p.x,p.y,k),CostMap[p.x][p.y] : min;
 	}
 	return min;
 }
@@ -555,27 +562,28 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map,
 
 	priority_queue<DPPoint, vector<DPPoint>, lessCost> pQue;
 	pQue.push(DPPoint(Target,0));
-	Point move;
+	Point nextMove;
 
 	EffortCount = 1;		//Reset the EffortCount to count the search effort
 	Route.clear();			//Clear the previous route
 	while (!pQue.empty()) {
-		Point curPos;// = pQue.top();
+		DPPoint curPos = pQue.top();
+		Point p=curPos.point;
 		pQue.pop();
-		Checked3D[curPos.direction][curPos.x][curPos.y] = true;
+		Checked3D[p.direction][p.x][p.y] = true;
 
 		//CostMap[curPos.x][curPos.y]=minCost(map,costMap,curPos,minDir)+map[curPos.x][curPos.y];
-		unsigned int min=minCost(map,curPos,move);
-		min+=map[curPos.x][curPos.y];
-		CostMap[curPos.x][curPos.y]	=min;
+		unsigned int min=minCost(map,p,nextMove);
+		min+=map[p.x][p.y];
+		CostMap3D[p.direction][p.x][p.y]=min;
 
-		if(move.direction!=move.NoDirection)
-			Gradient[curPos.x][curPos.y] = Point(	curPos.x+Move[move.direction][0],
-													curPos.y+Move[move.direction][1]);
+		if(nextMove.direction!=nextMove.NoDirection)
+			Gradient3D[p.direction][p.x][p.y] = Point(	p.x+Move[nextMove.direction][0],
+														p.y+Move[nextMove.direction][1]);
 
 		//Append available surrounding grid to the queue
 		for(size_t k=0;k<4;k++){		//Iterate Up,Down,Left,Right 4 direction
-			Point p(curPos.x+Move[k][0],curPos.y+Move[k][1]);
+			Point p(p.x+Move[k][0],p.y+Move[k][1]);
 
 			//if (isLegal(map,p))  //move up
 				//que.push(p);
