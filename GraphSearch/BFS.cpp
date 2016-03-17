@@ -53,7 +53,8 @@ private:
    unsigned int abs(Point &a,Point &b);
    unsigned int minCost(const vector<vector<unsigned int> > &map,
    						const vector<vector<unsigned int> > &costMap,
-   						const Point &p);
+   						const Point &p,
+						unsigned int &dir);
    int move[4][2]={
 		   {-1,0},	// x-1,y
 		   { 1,0},	// x+1,y
@@ -277,7 +278,9 @@ bool Search::aStar(const vector<vector<unsigned int> > &map) {
 
 unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 							 const vector<vector<unsigned int> > &costMap,
-							 const Point &point) {
+							 const Point &point,
+							 unsigned int &dir) {
+	dir=4;	//0:Up	1:Down	2:left	3:Down	4:None
 	if(point==target)
 		return 0;
 	unsigned int min = CostMax;		//Don't use UINT_MAX because it will overflow later on
@@ -286,7 +289,7 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 		Point p(point.x+move[k][0],point.y+move[k][1]);
 		if ((p.x < map.size() && p.y < map[0].size())&& checked[p.x][p.y] //Bounding check first
 					&& map[p.x][p.y] != Wall)
-			min = costMap[p.x][p.y] < min ? costMap[p.x][p.y] : min;
+			min = costMap[p.x][p.y] < min ? dir=k,costMap[p.x][p.y] : min;
 	}
 	return min;
 }
@@ -320,6 +323,7 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
 	que.push(target);
 	checked[target.x][target.y] = true;
 	costMap[target.x][target.y]	=0;
+	unsigned int minDir;
 
 	steps = 1;			//Reset the steps to count the search effort
 	route.clear();	//Clear the previous route
@@ -327,7 +331,7 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
 		Point curPos = que.front();
 		que.pop();
 		checked[curPos.x][curPos.y] = true;
-		unsigned int min=minCost(map,costMap,curPos);
+		unsigned int min=minCost(map,costMap,curPos,minDir);
 		min+=map[curPos.x][curPos.y];
 		costMap[curPos.x][curPos.y]	=min;
 		//costMap[curPos.x][curPos.y]	=minCost(map,costMap,curPos)+map[curPos.x][curPos.y];
@@ -341,16 +345,18 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
 		}
 	}
 
-		for(size_t i=0;i<costMap.size();i++){	//Test output the costMap
-			for(size_t j=0;j<costMap[i].size();j++){
-			cout<<costMap[i][j]<<"\t";
-			}
-			cout<<endl;
-		}
+	//	for(size_t i=0;i<costMap.size();i++){	//Test output the costMap
+	//		for(size_t j=0;j<costMap[i].size();j++){
+	//		cout<<costMap[i][j]<<"\t";
+	//		}
+	//		cout<<endl;
+	//	}
 
 	for(size_t i=0;i<map.size();i++)
 		for(size_t j=0;j<map[i].size();j++){
-
+			if(checked[i][j]){
+				//setDirection(i,j);
+			}
 		}
 	return false;
 }
