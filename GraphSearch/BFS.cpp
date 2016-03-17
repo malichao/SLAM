@@ -37,8 +37,8 @@ public:
 
    int 	getMinDistance(){return Route.size()-1;}
    void printRoute();
-   void printRouteOnMap(const vector<vector<unsigned int> > &m);
-   void printDirectionOnMap(const vector<vector<unsigned int> > &m);
+   void printRouteOnMap(const vector<vector<unsigned int> > &map);
+   void printDirectionOnMap(const vector<vector<unsigned int> > &map);
 
    bool bfs(const vector<vector<unsigned int> > &map);
    bool bfs(const vector<vector<unsigned int> > &map,
@@ -263,6 +263,7 @@ unsigned int Search::abs(Point &a,Point &b){
 	return std::abs(a.x-b.x)+std::abs(a.y-b.y);
 }
 
+//Comparison object to be used to order the heap
 struct lowestF{
 	bool operator()(const AStarPoint &lhs,const AStarPoint &rhs) const{
 		return lhs.f>rhs.f;		//minimal priority queue
