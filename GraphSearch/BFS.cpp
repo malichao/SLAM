@@ -28,8 +28,8 @@ struct AStarPoint{
 };
 class Search {
 public:
-   const unsigned int Wall =0;	//positive value means the cost of each path
-   const unsigned int CostMax= 100;//Don't use UINT_MAX
+   const unsigned int Wall =0;			//positive value means the cost of each path
+   const unsigned int CostMax= 100;		//Don't use UINT_MAX,watch out for OVERFLOW
    Search():Start(0,0),Target(0,0),EffortCount(0){};
 
    void setStart(const Point &s){Start.x=s.x; Start.y=s.y;}
@@ -51,11 +51,11 @@ public:
    bool dpSearch(const vector<vector<unsigned int> > &map);
    bool dpSearch(const vector<vector<unsigned int> > &map,
 		   	     const Point &start,const Point &target);
-
 private:
    Point Start;
    Point Target;
    unsigned int EffortCount;
+
    vector<vector<bool> > Checked;
    vector<vector<Point> > Direction;
    vector<Point> Route;
@@ -88,87 +88,87 @@ void Search::printRoute() {
 	}
 }
 
-void Search::printRouteOnMap(const vector<vector<unsigned int> > &m) {
+void Search::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 	if (Route.size() == 0) {
 		cout << "No route.\n";
 		return;
 	}
 	//the original map is unsigned int type,to print route on the map
 	//we need to convert it to char
-	vector<vector<char> > map;
-	for (size_t i = 0; i < m.size(); i++) {
-		vector<char> row(m[i].size());
-		for (size_t j = 0; j < m[i].size(); j++) {
-			row[j] = m[i][j] + '0';
+	vector<vector<char> > charMap;
+	for (size_t i = 0; i < map.size(); i++) {
+		vector<char> row(map[i].size());
+		for (size_t j = 0; j < map[i].size(); j++) {
+			row[j] = map[i][j] + '0';
 		}
-		map.push_back(row);
+		charMap.push_back(row);
 	}
 
 	for (size_t i = 1; i + 1 < Route.size(); i++) {
 		int dX = Route[i + 1].x - Route[i].x;
 		int dY = Route[i + 1].y - Route[i].y;
 		if (dX == 1)
-			map[Route[i].x][Route[i].y] = 'v';	//Down
+			charMap[Route[i].x][Route[i].y] = 'v';	//Down
 		else if (dX == -1)
-			map[Route[i].x][Route[i].y] = '^';	//Up
+			charMap[Route[i].x][Route[i].y] = '^';	//Up
 		else if (dY == 1)
-			map[Route[i].x][Route[i].y] = '>';	//Right
+			charMap[Route[i].x][Route[i].y] = '>';	//Right
 		else if (dX == -1)
-			map[Route[i].x][Route[i].y] = '<';	//Left
+			charMap[Route[i].x][Route[i].y] = '<';	//Left
 	}
 
-	map[Route[0].x][Route[0].y] = 'S';	//Mark the start point
-	map[Route[Route.size() - 1].x][Route[Route.size() - 1].y] = 'T';	//And the target point
+	charMap[Route[0].x][Route[0].y] = 'S';	//Mark the start point
+	charMap[Route[Route.size() - 1].x][Route[Route.size() - 1].y] = 'T';	//And the target point
 
 	cout << "Search effort: " << EffortCount;
 	cout << "\nShortest path:" << getMinDistance() << endl;
-	for (size_t i = 0; i < map.size(); i++) {
-		for (size_t j = 0; j < map[i].size(); j++) {
-			cout << map[i][j] << " ";
+	for (size_t i = 0; i < charMap.size(); i++) {
+		for (size_t j = 0; j < charMap[i].size(); j++) {
+			cout << charMap[i][j] << " ";
 		}
 		cout << endl;
 	}
 }
 
-void Search::printDirectionOnMap(const vector<vector<unsigned int> > &m) {
+void Search::printDirectionOnMap(const vector<vector<unsigned int> > &map) {
 	if (CostMap.size()==0) {
 		cout << "'costMap' data needed.\n";
 		return;
 	}
 	//the original map is unsigned int type,to print route on the map
 	//we need to convert it to char
-	vector<vector<char> > map;
-	for (size_t i = 0; i < m.size(); i++) {
-		vector<char> row(m[i].size());
-		for (size_t j = 0; j < m[i].size(); j++) {
-			row[j] = m[i][j] + '0';
+	vector<vector<char> > charMap;
+	for (size_t i = 0; i < map.size(); i++) {
+		vector<char> row(map[i].size());
+		for (size_t j = 0; j < map[i].size(); j++) {
+			row[j] = map[i][j] + '0';
 		}
-		map.push_back(row);
+		charMap.push_back(row);
 	}
 
-	for (size_t i = 0; i < map.size(); i++)
-		for (size_t j = 0; j < map[i].size(); j++) {
+	for (size_t i = 0; i < charMap.size(); i++)
+		for (size_t j = 0; j < charMap[i].size(); j++) {
 			if (Checked[i][j]) {
 				size_t dir;
-				minCost(m, Point(i, j), dir);
+				minCost(map, Point(i, j), dir);
 				switch (dir) {
-				case 0:	map[i][j] = '^';break;
-				case 1:	map[i][j] = 'v';break;
-				case 2:	map[i][j] = '<';break;
-				case 3:	map[i][j] = '>';break;
+				case 0:	charMap[i][j] = '^';break;
+				case 1:	charMap[i][j] = 'v';break;
+				case 2:	charMap[i][j] = '<';break;
+				case 3:	charMap[i][j] = '>';break;
 				default:break;
 				}
 			}
 		}
 
-	map[Start.x][Start.y] = 'S';	//Mark the start point
-	map[Target.x][Target.y] = 'T';	//And the target point
+	charMap[Start.x][Start.y] = 'S';	//Mark the start point
+	charMap[Target.x][Target.y] = 'T';	//And the target point
 
 	cout << "Search effort: " << EffortCount;
 	cout << "\nShortest path:" << getMinDistance() << endl;
-	for (size_t i = 0; i < map.size(); i++) {
-		for (size_t j = 0; j < map[i].size(); j++) {
-			cout << map[i][j] << " ";
+	for (size_t i = 0; i < charMap.size(); i++) {
+		for (size_t j = 0; j < charMap[i].size(); j++) {
+			cout << charMap[i][j] << " ";
 		}
 		cout << endl;
 	}
