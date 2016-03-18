@@ -21,10 +21,16 @@ struct Point {
    Point(unsigned int x,unsigned int y):x(x),y(y),direction(NoDirection){};
    Point(unsigned int x,unsigned int y,unsigned int dir):x(x),y(y),direction(dir){};
    Point(const Point &p):x(p.x),y(p.y),direction(p.direction){};
+   void set(const Point &p){
+	   x=p.x;
+	   y=p.y;
+	   direction=p.direction;
+   }
    Point& operator=(const Point &rhs){
 	   x=rhs.x;
 	   y=rhs.y;
 	   direction=rhs.direction;
+	   return *this;
    }
 
    bool operator== (const Point &rhs) const{
@@ -397,6 +403,7 @@ bool Search::aStar(const vector<vector<unsigned int> > &map) {
 	return false;
 }
 
+//Todo:rewrite this function to make it clear
 //Find the minimal cost of the four direction
 unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 							 const Point &point,
@@ -405,14 +412,13 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 	if(point==Target)
 		return 0;
 	unsigned int min = CostMax;		//Don't use UINT_MAX otherwise it will overflow later on
-	Point p(point);
 	for(size_t k=0;k<4;k++){		//Iterate Up,Down,Left,Right 4 direction
-		Point p(point.x+Move[k][0],point.y+Move[k][1]);
+		Point p(point.x+Move[k][0],point.y+Move[k][1],k);
 
 		//In the predicate,must check the bounding first
 		if ((p.x < map.size() && p.y < map[0].size())&& Checked[p.x][p.y]
 					&& map[p.x][p.y] != Wall)
-			min = CostMap[p.x][p.y] < min ? move.direction=k,CostMap[p.x][p.y] : min;
+			min = CostMap[p.x][p.y] < min ? move.set(p),CostMap[p.x][p.y] : min;
 	}
 	return min;
 }
@@ -426,15 +432,15 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 	if(point==Target)
 		return 0;
 	unsigned int min = CostMax;		//Don't use UINT_MAX because it will overflow later on
-	Point p(point);
+
 	for(size_t dir=0;dir<move.DirectionSize;dir++){
 		for(size_t k=0;k<4;k++){		//Iterate Up,Down,Left,Right 4 direction
-			Point p(point.x+Move[k][0],point.y+Move[k][1]);
+			Point tempP(point.x+Move[k][0],point.y+Move[k][1],k);
 
 			//In the predicate,must check the bounding first
-			if ((p.x < map.size() && p.y < map[0].size())&& Checked[p.x][p.y]
-						&& map[p.x][p.y] != Wall)
-				min = CostMap[p.x][p.y] < min ? move.direction=k,CostMap[p.x][p.y] : min;
+			if ((tempP.x < map.size() && tempP.y < map[0].size())&& Checked[tempP.x][tempP.y]
+						&& map[tempP.x][tempP.y] != Wall)
+				min = CostMap[tempP.x][tempP.y] < min ? move=tempP,CostMap[tempP.x][tempP.y] : min;
 		}
 	}
 
@@ -493,9 +499,11 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
 		min+=map[p.x][p.y];
 		CostMap[p.x][p.y]	=min;
 
-		if(move.direction!=move.NoDirection)
-			Gradient[p.x][p.y] = Point(	p.x+Move[move.direction][0],
-										p.y+Move[move.direction][1]);
+		//Todo:rewrite minCost and Gradient to make it clear
+		if(move.direction!=move.NoDirection){
+			Gradient[p.x][p.y] = Point(p.x+Move[move.direction][0],p.y+Move[move.direction][1]);
+		}
+
 
 		//Append available surrounding grid to the queue
 		for(size_t k=0;k<4;k++){		//Iterate Up,Down,Left,Right 4 direction
@@ -529,7 +537,7 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map,
 		Gradient3D.push_back(gradient2D);
 	}
 
-	Checked.clear();
+	Checked3D.clear();
 	for(size_t dir=0;dir<3;dir++){
 		vector<vector<bool> > checked2D;
 		for (size_t i = 0; i < map.size(); i++) {			//Init the checked set
