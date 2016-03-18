@@ -6,11 +6,12 @@
 #include <climits>
 using namespace std;
 struct Point {
+   //Must define these values in clockwise/counter-clockwise manner
    const unsigned int DirectionSize=4;
    const unsigned int Up=0;
-   const unsigned int Down=1;
-   const unsigned int Left=2;
-   const unsigned int Right=3;
+   const unsigned int Right=1;
+   const unsigned int Down=2;
+   const unsigned int Left=3;
 
    unsigned int x;
    unsigned int y;
@@ -145,10 +146,11 @@ private:
 	//const unsigned int NoneDirection = 4;
 	int Move[5][2] = {
 		   {-1,0},	// x-1,y
+		   { 0,1},	// x,y+1
 		   { 1,0},	// x+1,y
 		   {0,-1},	// x,y-1
-		   {0, 1},	// x,y+1
 		   {0, 0}};	// x,y
+	char DirSymbol[5]={'^','>','V','<',' '};
 
 };
 
@@ -220,13 +222,12 @@ void Search::printGradientOnMap(const vector<vector<unsigned int> > &map) {
 		charMap.push_back(row);
 	}
 
-	char dirSymbol[5]={'^','V','<','>',' '};
 	for (size_t i = 0; i < charMap.size(); i++)
 		for (size_t j = 0; j < charMap[i].size(); j++) {
 			if (Checked[i][j]) {
 				Point move;
 				minCost(map, Point(i, j), move);
-				charMap[i][j] =dirSymbol[move.dir];
+				charMap[i][j] =DirSymbol[move.dir];
 			}
 		}
 
@@ -690,7 +691,7 @@ unsigned int actionCost[]={1,20,2};
 {0, 0, 1, 0, 0},
 */
 int main(void) {
-   Point start(4,4),target(0,0);
+   Point start(0,0),target(4,4);
    Search b;
 
 
