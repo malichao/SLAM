@@ -465,19 +465,15 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 	if(point==Target)
 		return 0;
 	unsigned int min = CostMax;		//Don't use UINT_MAX because it will overflow later on
-
-	for(size_t dir=0;dir<point.DirectionSize;dir++){	//Four orientation
-		for(size_t k=0;k<4;k++){		//Iterate Up,Down,Left,Right 4 direction
-			Point p(point.x+Move[k][0],point.y+Move[k][1],dir);
-
-			//In the predicate,must check the bounding first.We don't use isLegal() because we're
-			//going to find the minimal cost point in previously visited points
-			if ((p.x < map.size() && p.y < map[0].size())&& Checked3D[dir][p.x][p.y]
-						&& map[p.x][p.y] != Wall)
-				if(CostMap3D[dir][p.x][p.y] < min){
-					min = CostMap3D[dir][p.x][p.y];
-					nextMove=p;
-				}
+	//int Action[3]={-1,0,1};//Left,forward,right
+	for(int action=-1;action<=1;action++){
+		size_t nextDir=(action+point.dir)%point.DirectionSize;
+		Point p(point.x+Move[nextDir][0],point.y+Move[nextDir][1],nextDir);
+		if ((p.x < map.size() && p.y < map[0].size())&& Checked3D[nextDir][p.x][p.y]
+								&& map[p.x][p.y] != Wall)
+		if(CostMap3D[nextDir][p.x][p.y] < min){
+			min=CostMap3D[nextDir][p.x][p.y];
+			nextMove=p;
 		}
 	}
 
@@ -532,7 +528,6 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
 		pQue.pop();
 		Checked[p.x][p.y] = true;
 
-		//CostMap[curPos.x][curPos.y]=minCost(map,costMap,curPos,minDir)+map[curPos.x][curPos.y];
 		CostMap[p.x][p.y] = minCost(map,p,nextMove)+map[p.x][p.y];
 		//Point the current point to the lowest cost point
 		Gradient[p.x][p.y] = nextMove;
@@ -573,7 +568,7 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map,
 	for(size_t dir=0;dir<nextMove.DirectionSize;dir++){
 		vector<vector<Point> > gradient2D;
 		for (size_t i = 0; i < map.size(); i++) {			//Init the direction map
-			vector<Point> zero(map[i].size(), Point(0, 0,dir));
+			vector<Point> zero(map[i].size(), Point(0, 0,nextMove.Up));
 			gradient2D.push_back(zero);
 		}
 		Gradient3D.push_back(gradient2D);
@@ -616,30 +611,22 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map,
 		pQue.pop();
 		Checked3D[p.dir][p.x][p.y] = true;
 
-		//CostMap[curPos.x][curPos.y]=minCost(map,costMap,curPos,minDir)+map[curPos.x][curPos.y];
 		unsigned int min=minCost(map,moveCost,p,nextMove);
-		min+=map[p.x][p.y]+moveCost[p.dir];
-		CostMap3D[p.dir][p.x][p.y]=min;
+		min+=map[p.x][p.y];
+		CostMap3D[p.dir][p.x][p.y] = min;
+		//CostMap3D[p.dir][p.x][p.y] = minCost(map,moveCost,p,nextMove)+map[p.x][p.y];
+		Gradient3D[p.dir][p.x][p.y] = nextMove;
 
-		//if(move.direction!=move.NoDirection)
-		/*
-			Gradient3D[p.dir][p.x][p.y] = Point(	p.x+Move[move.dir][0],
-														p.y+Move[move.dir][1],
-														move.dir);
-		 	 */
 		//Append available surrounding grid to the queue
-		for(size_t action=0;action<3;action++){
-
+		int Action[3]={-1,2,1};//Left,forward,right
+		for(int a=0;a<2;a++){
+			size_t nextDir=(Action[a]+p.dir)%p.DirectionSize;
+			Point tempP(p.x+Move[nextDir][0],p.y+Move[nextDir][1],(2+nextDir)%4);
+			//If this point is available,put it in the queue,notice that we're searching from
+			//target towards start,so the action should reverse.
+			if (isLegal(map,moveCost,tempP))
+				pQue.push(DPPoint(tempP,map[p.x][p.y]+moveCost[2-a]));
 		}
-		for(size_t dir=0;dir<nextMove.DirectionSize;dir++){
-			for(size_t k=0;k<4;k++){		//Iterate Up,Down,Left,Right 4 direction
-				Point tempP(p.x+Move[k][0],p.y+Move[k][1],dir);
-
-				if (isLegal(map,moveCost,tempP))  //move up
-					pQue.push(DPPoint(tempP,map[p.x][p.y]+moveCost[p.dir]));
-			}
-		}
-
 	}
 
 	for(size_t k=0;k<5;k++){
@@ -675,13 +662,13 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map,
  */
 vector<vector<unsigned int> > map = {
 		{1, 0, 1, 1, 1},
-		{1, 1, 1, 0, 1},
-		{1, 1, 0, 0, 1},
-		{1, 1, 2, 3, 1},
-		{1, 0, 6, 5, 1}};
+		{1, 0, 1, 0, 1},
+		{1, 1, 1, 1, 1},
+		{0, 0, 1, 0, 0},
+		{0, 0, 1, 0, 0},};
 //Define the cost for each action,left turn is expensive in real life
-//[0]:Forward	[1]:Left turn	[2]:Right turn
-unsigned int actionCost[]={1,20,2};
+//[0]:Left turn	[1]:Forward	[2]:Right turn
+unsigned int actionCost[]={20,1,2};
 
 /*
 {1, 0, 1, 1, 1},
@@ -694,7 +681,7 @@ int main(void) {
    Point start(0,0),target(4,4);
    Search b;
 
-
+   /*
 	if (b.bfs(map, start, target)) {
 		b.printRouteOnMap(map);
 	} else {
@@ -711,8 +698,8 @@ int main(void) {
 	} else {
 		cout << "Search failed.\n";
 	}
-
-   //Point start1(4,2),target1(0,0);
-   //b.dpSearch(map,moveCost,start1,target1);
+*/
+   Point start1(4,2),target1(0,0);
+   b.dpSearch(map,actionCost,start1,target1);
    return 0;
 }
