@@ -5,8 +5,6 @@ using namespace std;
 
 class BFS{
 public:
-
-
 struct Point
 {
    int x;
@@ -16,6 +14,10 @@ private:
    vector<vector<bool> > checked;
    vector<vector<Point> > father;
  }; 
+
+ bool bfs(int map[][]){
+   
+ }
 
 const int MapSize=5;
 int map[MapSize][MapSize]={

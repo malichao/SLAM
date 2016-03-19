@@ -84,8 +84,8 @@ public:
    const unsigned int CostMax= 999;		//Don't use UINT_MAX,watch out for OVERFLOW
    Search():Start(0,0),Target(0,0),EffortCount(0){};
 
-   void setStart(const Point &s){Start.x=s.x; Start.y=s.y;}
-   void setTarget(const Point &t){Target.x=t.x; Target.y=t.y;}
+   void setStart(const Point &s){Start.x=s.x; Start.y=s.y;Start.dir=s.dir;}
+   void setTarget(const Point &t){Target.x=t.x; Target.y=t.y;Target.dir=t.dir;}
 
    int 	getMinDistance(){return Route.size()-1;}
    void printRoute();
@@ -179,7 +179,7 @@ void Search::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 	for (size_t i = 0; i < map.size(); i++) {
 		vector<char> row(map[i].size());
 		for (size_t j = 0; j < map[i].size(); j++) {
-			row[j] = map[i][j]==0 ? ObstacleSymbol: map[i][j] + '0';
+			row[j] = map[i][j]==0 ? ObstacleSymbol: '.';
 		}
 		charMap.push_back(row);
 	}
@@ -230,14 +230,6 @@ void Search::printGradientOnMap(const vector<vector<unsigned int> > &map) {
 		charMap.push_back(row);
 	}
 
-	for (size_t i = 0; i < charMap.size(); i++)
-		for (size_t j = 0; j < charMap[i].size(); j++) {
-			if (Checked[i][j]) {
-				Point move;
-				minCost(map, Point(i, j), move);
-				charMap[i][j] =DirSymbol[move.dir];
-			}
-		}
 
 	//charMap[Start.x][Start.y] = 'S';	//Mark the start point
 	charMap[Target.x][Target.y] = 'T';	//And the target point
@@ -610,13 +602,17 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 	bool success = false;
 	EffortCount = 1;			//Reset the EffortCount to count the search effort
 	Route.clear();		//Clear the previous route
+	unsigned int searchTime=0;
 	while (!pQue.empty()) {
+		cout<<searchTime++<<endl;
+		if(searchTime==101)
+			searchTime=101;
 		AStarPoint curPos = pQue.top();
 		Point p = curPos.point;
 		pQue.pop();
 		Checked3D[p.dir][p.x][p.y] = true;
 		//CostMap3D[p.dir][p.x][p.y]=curPos.f;
-		//printf("\n(%u,%u,%c) f=%u\n",p.x,p.y,DirSymbol[p.dir],curPos.f);
+		printf("\n(%u,%u,%c) f=%u\n",p.x,p.y,DirSymbol[p.dir],curPos.f);
 		if (p == Target) {
 			success = true;
 			break;
@@ -670,16 +666,16 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 	}
 
 	//Test: Output CostMasp3D
-	//for(size_t k=0;k<4;k++){
-	//	cout<<"layer: "<<k<<endl;
-	//	for(size_t i=0;i<map.size();i++){	//Test output the costMap
-	//		for(size_t j=0;j<map[i].size();j++){
-	//		cout<<CostMap3D[k][i][j]<<"\t";
-	//		}
-	//		cout<<endl;
-	//	}
-	//	cout<<endl;
-	//}
+	for(size_t k=0;k<4;k++){
+		cout<<"layer: "<<k<<endl;
+		for(size_t i=0;i<map.size();i++){	//Test output the costMap
+			for(size_t j=0;j<map[i].size();j++){
+			cout<<CostMap3D[k][i][j]<<"\t";
+			}
+			cout<<endl;
+		}
+		cout<<endl;
+	}
 	//Test: Output Gradient3D
 	//for(size_t k=0;k<4;k++){
 	//		cout<<"layer: "<<k<<endl;
@@ -906,7 +902,8 @@ vector<vector<unsigned int> > map = {
 		{0, 0, 1, 0, 0},};
 //Define the cost for each action,left turn is expensive in real life
 //[0]:Left turn	[1]:Forward	[2]:Right turn
-unsigned int actionCost[]={100,2,4};
+//unsigned int actionCost[]={100,2,4};
+unsigned int actionCost[]={1,0,50};
 
 /*
 {1, 0, 1, 1, 1},
@@ -915,8 +912,23 @@ unsigned int actionCost[]={100,2,4};
 {0, 0, 1, 0, 0},
 {0, 0, 1, 0, 0},
 */
+/*
+ * unsigned int actionCost[]={15,0,10};
+ * Point start1(8,13),target1(0,13);
+		{5,	20,	10,	10,	10,	10,	10,	10,	10,	10,	10,	10,	10,	10},
+		{5,	0,	0,	0,	15,	0,	10,	10,	0,	15,	0,	0,	0,	10},
+		{5,	0,	15,	15,	15,	0,	0,	10,	0,	15,	0,	0,	0,	10},
+		{5,	0,	15,	0,	15,	0,	0,	10,	15,	15,	0,	0,	0,	90},
+		{5,	0,	15,	0,	15,	0,	0,	10,	15,	0,	0,	0,	0,	10},
+		{5,	0,	15,	0,	15,	0,	0,	10,	20,	15,	0,	15,	15,	10},
+		{5,	0,	15,	15,	15,	10,	10,	10,	0,	15,	15,	15,	0,	90},
+		{5,	0,	0,	0,	0,	0,	0,	10,	0,	0,	15,	15,	15,	90},
+		{5,	50,	5,	5,	5,	5,	5,	5,	5,	5,	5,	5,	5,	5},
+ */
 int main(void) {
-   Point start(0,0),target(4,4);
+   //Point start(0,0),target(2,2);
+   Point start(8,13),target(2,2);
+   Point dummy;
    Search b;
 
    /*
@@ -931,17 +943,21 @@ int main(void) {
 	} else {
 		cout << "Search failed.\n";
 	}
+
+
 	if (b.dpSearch(map, start, target)) {
 		b.printGradientOnMap(map);
 	} else {
 		cout << "Search failed.\n";
 	}
 */
-   Point start1(4,2),target1(0,0);
+
+   Point start1(0,0,dummy.Down),target1(4,2);
    if (b.aStar(map,actionCost,start1,target1)) {
    		b.printRouteOnMap(map);
    	} else {
    		cout << "Search failed.\n";
    	}
+
    return 0;
 }
