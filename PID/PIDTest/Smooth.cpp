@@ -11,7 +11,7 @@ using namespace pnt;//Point operation
 
 class Smooth{
 private:
-	vector<Point> Route;
+	vector<Point> SmoothRoute;
 	float Tolerance=0.01;
 	float WeightData=0.5;
 	float WeightSmooth=0.1;
@@ -20,5 +20,11 @@ public:
 };
 
 void Smooth::smooth(const vector<Point> &route){
-
+	SmoothRoute=route;
+	float change=Tolerance;
+	while(change>=Tolerance){
+		for(size_t i=1;i<route.size()-1;i++){
+			SmoothRoute[i]=pnt
+		}
+	}
 }

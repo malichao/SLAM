@@ -43,6 +43,7 @@ struct Point {
    bool operator!= (const Point &rhs){
 		return (x!=rhs.x||y!=rhs.y);	//Different orientation considered as the same
 	 }
+
 };
 
 namespace pnt{
@@ -57,6 +58,8 @@ unsigned int dis(Point &a,Point &b){
 	unsigned int y = a.y > b.y ? a.y - b.y : b.y - a.y;
 	return x*x+y*y;
 }
+
+
 
 }
 
