@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include <climits>
+#include <algorithm>    // std::reverse
 using namespace std;
 struct Point {
    //Must define these values in clockwise/counter-clockwise manner
@@ -191,7 +192,13 @@ void Search::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 	for (size_t i = 0; i + 1 < Route.size(); i++) {
 		int dX = Route[i + 1].x - Route[i].x;	//dX = -1 or 1
 		int dY = Route[i + 1].y - Route[i].y;	//dY = -1 or 1
-		charMap[Route[i].x][Route[i].y]=dirSymbol[1+dX][1+dY];
+		if(charMap[Route[i].x][Route[i].y]=='^'||	//This predicate is to solve the route overlap problem,
+			charMap[Route[i].x][Route[i].y]=='>'||	//if this grid is already a route,then we use '+' to
+			charMap[Route[i].x][Route[i].y]=='V'||	//indicate overlap
+			charMap[Route[i].x][Route[i].y]=='V')
+			charMap[Route[i].x][Route[i].y]='+';
+		else
+			charMap[Route[i].x][Route[i].y]=dirSymbol[1+dX][1+dY];
 	}
 
 	//charMap[Route[0].x][Route[0].y] = 'S';	//Mark the start point
@@ -265,6 +272,7 @@ void Search::generateRoute(const vector<vector<vector<Point> > > &Gradient){
        curPos=Gradient3D[curPos.dir][curPos.x][curPos.y];
     }while(curPos!=Start);
     Route.push_back(Start);
+    std::reverse(Route.begin(),Route.end());
 }
 //Generate a route using the direction info
 void Search::generateRoute(const vector<vector<unsigned int> > &map){
