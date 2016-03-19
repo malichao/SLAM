@@ -616,12 +616,14 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 		unsigned int g=curPos.g;
 
 		//Append available surrounding grid to the queue
-		Point nextP(p.x,p.y,(p.dir-1)%p.DirectionSize);		//left turn,same grid
+		Point nextP(p.x+Move[(p.dir-1)%p.DirectionSize][0],
+					p.y+Move[(p.dir-1)%p.DirectionSize][1],
+					(p.dir-1)%p.DirectionSize);		//left turn,next grid
 		unsigned int x,y;
 		unsigned int valueG;
-		x=p.x+Move[(p.dir-1)%p.DirectionSize][0];
-		y=p.y+Move[(p.dir-1)%p.DirectionSize][1];
-		if(x<map.size()&&y<map[0].size()&&map[x][y]!=Wall)
+		//x=p.x+Move[(p.dir-1)%p.DirectionSize][0];
+		//y=p.y+Move[(p.dir-1)%p.DirectionSize][1];
+		//if(x<map.size()&&y<map[0].size()&&map[x][y]!=Wall)
 			//if(isLegal(map,moveCost,nextP)){
 			if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Wall){
 				valueG=map[nextP.x][nextP.y]+moveCost[0]+g;
@@ -649,10 +651,12 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 			}
 		  }
 
-		nextP.set(p.x,p.y,(p.dir+1)%p.DirectionSize);						//right turn,same grid
-		x=p.x+Move[(p.dir+1)%p.DirectionSize][0];
-		y=p.y+Move[(p.dir+1)%p.DirectionSize][1];
-		if(x<map.size()&&y<map[0].size()&&map[x][y]!=Wall){
+		nextP.set(p.x+Move[(p.dir+1)%p.DirectionSize][0],
+				  p.y+Move[(p.dir+1)%p.DirectionSize][1],
+				  (p.dir+1)%p.DirectionSize);						//right turn,same grid
+		//x=p.x+Move[(p.dir+1)%p.DirectionSize][0];
+		//y=p.y+Move[(p.dir+1)%p.DirectionSize][1];
+		//if(x<map.size()&&y<map[0].size()&&map[x][y]!=Wall){
 			if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Wall){
 				valueG=map[nextP.x][nextP.y]+moveCost[2]+g;
 				if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
@@ -664,8 +668,8 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 					  printf("  =)R (%u,%u,%c) f=%u\n",nextP.x,nextP.y,DirSymbol[nextP.dir],valueG+abs(nextP, Target));
 				}
 			  }
-		}
 	}
+
 	for(size_t k=0;k<4;k++){
 		cout<<"layer: "<<k<<endl;
 		for(size_t i=0;i<map.size();i++){	//Test output the costMap
