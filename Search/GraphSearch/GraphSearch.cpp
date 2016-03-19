@@ -162,7 +162,7 @@ void GraphSearch::generateRoute(const vector<vector<unsigned int> > &map){
 
 bool GraphSearch::isLegal(const vector<vector<unsigned int> > &map,const Point &p){
 	EffortCount++;
-	if(p.x>=map.size()||p.y>=map[0].size())		//x and y are unsigned int
+	if(p.x<0||p.y<0||p.x>=map.size()||p.y>=map[0].size())		//x and y are int
 	  return false;
 	if(Checked[p.x][p.y])   	//Current position has been searched
 	  return false;
@@ -175,7 +175,7 @@ bool GraphSearch::isLegal(const vector<vector<unsigned int> > &map,
 					 const unsigned int* const moveCost,
 					 const Point &p){
 	EffortCount++;
-	if(p.x>=map.size()||p.y>=map[0].size())		//x and y are unsigned int
+	if(p.x<0||p.y<0||p.x>=map.size()||p.y>=map[0].size())		//x and y are int
 	  return false;
 	if(Checked3D[p.dir][p.x][p.y])   	//Current position has been searched
 	  return false;
@@ -336,7 +336,7 @@ unsigned int GraphSearch::minCost(const vector<vector<unsigned int> > &map,
 
 		//In the predicate,must check the bounding first.We don't use isLegal() because we're
 		//going to find the minimal cost point in previously visited points
-		if ((p.x < map.size() && p.y < map[0].size())&& Checked[p.x][p.y]
+		if ((p.x>=0 && p.y>=0 && p.x < map.size() &&p.y < map[0].size())&& Checked[p.x][p.y]
 					&& map[p.x][p.y] != Obstacle){
 			if(CostMap[p.x][p.y] < min){
 				min=CostMap[p.x][p.y];
@@ -360,7 +360,7 @@ unsigned int GraphSearch::minCost(const vector<vector<unsigned int> > &map,
 	Point p(point.x,point.y,(point.dir-1)%point.DirectionSize);//check left turn,same grid
 	//In the predicate,must check the bounding first.We don't use isLegal() because we're
 	//going to find the minimal cost point in previously visited points
-	if ((p.x < map.size() && p.y < map[0].size())&&
+	if ((p.x>=0 && p.y>=0 && p.x < map.size() && p.y < map[0].size())&&
 			Checked3D[p.dir][p.x][p.y]&&
 			map[p.x][p.y] != Obstacle){
 		if(CostMap3D[p.dir][p.x][p.y] < min){
@@ -371,14 +371,14 @@ unsigned int GraphSearch::minCost(const vector<vector<unsigned int> > &map,
 	p.set(point.x+Move[(point.dir+2)%p.DirectionSize][0],//check backward
 		  point.y+Move[(point.dir+2)%p.DirectionSize][1],
 		  point.dir);
-	if(p.x < map.size() && p.y < map[0].size()&&Checked3D[p.dir][p.x][p.y]&&map[p.x][p.y] != Obstacle)
+	if(p.x>=0 && p.y>=0 && p.x < map.size() && p.y < map[0].size()&&Checked3D[p.dir][p.x][p.y]&&map[p.x][p.y] != Obstacle)
 		if(CostMap3D[p.dir][p.x][p.y] < min){
 			min=CostMap3D[p.dir][p.x][p.y];
 			nextMove=p;
 		}
 
 	p.set(point.x,point.y,(point.dir+1)%point.DirectionSize);//check right turn,same grid
-	if((p.x < map.size() && p.y < map[0].size())&&
+	if((p.x>=0 && p.y>=0 && p.x < map.size() && p.y < map[0].size())&&
 			Checked3D[p.dir][p.x][p.y]&&
 			map[p.x][p.y] != Obstacle){
 		if(CostMap3D[p.dir][p.x][p.y] < min){
@@ -474,7 +474,7 @@ bool GraphSearch::aStar(const vector<vector<unsigned int> > &map,
 					p.y+Move[(p.dir-1)%p.DirectionSize][1],
 					(p.dir-1)%p.DirectionSize);		//left turn,next grid
 		unsigned int valueG;
-			if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
+			if(nextP.x>=0 && nextP.y>=0 && nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
 				valueG=map[nextP.x][nextP.y]+moveCost[0]+g;
 				if(pnt::abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
 					pQue.push(AStarPoint(	nextP,						//Point(x,y)
@@ -487,7 +487,7 @@ bool GraphSearch::aStar(const vector<vector<unsigned int> > &map,
 			  }
 
 		nextP.set(p.x+Move[p.dir][0],p.y+Move[p.dir][1],p.dir);					//move forward
-		if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
+		if(nextP.x>=0 && nextP.y>=0 && nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
 			valueG=map[nextP.x][nextP.y]+moveCost[1]+g;
 			if(pnt::abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
 				pQue.push(AStarPoint(	nextP,						//Point(x,y)
@@ -502,7 +502,7 @@ bool GraphSearch::aStar(const vector<vector<unsigned int> > &map,
 		nextP.set(p.x+Move[(p.dir+1)%p.DirectionSize][0],
 				  p.y+Move[(p.dir+1)%p.DirectionSize][1],
 				  (p.dir+1)%p.DirectionSize);						//right turn,same grid
-		if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
+		if(nextP.x>=0 && nextP.y>=0 && nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
 			valueG=map[nextP.x][nextP.y]+moveCost[2]+g;
 			if(pnt::abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
 				pQue.push(AStarPoint(	nextP,						//Point(x,y)
@@ -622,108 +622,7 @@ bool GraphSearch::dpSearch(const vector<vector<unsigned int> > &map,
 
 bool GraphSearch::dpSearch(const vector<vector<unsigned int> > &map,
 					  const unsigned int *const moveCost) {
-	Gradient3D.clear();
-	Point nextMove;
-	for(size_t dir=0;dir<nextMove.DirectionSize;dir++){
-		vector<vector<Point> > gradient2D;
-		for (size_t i = 0; i < map.size(); i++) {			//Init the direction map
-			vector<Point> zero(map[i].size(), Point(0, 0,nextMove.Up));
-			gradient2D.push_back(zero);
-		}
-		Gradient3D.push_back(gradient2D);
-	}
 
-	Checked3D.clear();
-	for(size_t dir=0;dir<nextMove.DirectionSize;dir++){
-		vector<vector<bool> > checked2D;
-		for (size_t i = 0; i < map.size(); i++) {			//Init the checked set
-			vector<bool> temp(map[i].size(), false);
-			checked2D.push_back(temp);
-		}
-		Checked3D.push_back(checked2D);
-	}
-
-
-	if (!isLegal(map,moveCost,Target) || !isLegal(map, moveCost,Start))	//Todo:Check left/right turn availability
-		return false;
-
-	CostMap3D.clear();
-	for(size_t dir=0;dir<nextMove.DirectionSize;dir++){									//Construct a 3D vector
-		CostMap3D.push_back(vector<vector<unsigned int> >			//Construct a 2D vector
-								(map.size(),vector<unsigned int>	//Construct a 1D vector
-											(map[0].size(),CostMax)));
-	}
-	for(size_t dir=0;dir<nextMove.DirectionSize;dir++){
-		Checked3D[dir][Start.x][Start.y] = true;
-		CostMap3D[dir][Start.x][Start.y] =CostMax;	//Todo: init the value according to the action
-	}
-	CostMap3D[Start.dir][Start.x][Start.y] =0;
-
-	priority_queue<DPPoint, vector<DPPoint>, lessCost> pQue;
-	pQue.push(DPPoint(Start,0));
-
-
-	EffortCount = 1;		//Reset the EffortCount to count the search effort
-	Route.clear();			//Clear the previous route
-	while (!pQue.empty()) {
-		DPPoint curPos = pQue.top();
-		Point p= curPos.point;
-		pQue.pop();
-		Checked3D[p.dir][p.x][p.y] = true;
-
-		unsigned int min=minCost(map,moveCost,p,nextMove);
-		min+=map[p.x][p.y];
-		CostMap3D[p.dir][p.x][p.y] = curPos.cost+map[p.x][p.y];
-		CostMap3D[p.dir][p.x][p.y] = minCost(map,moveCost,p,nextMove)+map[p.x][p.y];
-		Gradient3D[p.dir][p.x][p.y] = nextMove;
-
-		//Append available surrounding grid to the queue
-		Point nextP(p.x,p.y,(p.dir-1)%p.DirectionSize);//left turn,same grid
-		unsigned int x,y;
-		x=p.x+Move[(p.dir-1)%p.DirectionSize][0];
-		y=p.y+Move[(p.dir-1)%p.DirectionSize][1];
-		if(x<map.size()&&y<map[0].size()&&map[x][y]!=Obstacle)
-			if(isLegal(map,moveCost,nextP)){
-				pQue.push(DPPoint(nextP,CostMap3D[p.dir][p.x][p.y]+moveCost[0]));
-			}
-		nextP.set(p.x+Move[p.dir][0],p.y+Move[p.dir][1],p.dir);//move forward
-		if(isLegal(map,moveCost,nextP)){
-			pQue.push(DPPoint(nextP,CostMap3D[p.dir][p.x][p.y]+moveCost[1]));
-		}
-
-		nextP.set(p.x,p.y,(p.dir+1)%p.DirectionSize);//right turn,same grid
-		x=p.x+Move[(p.dir+1)%p.DirectionSize][0];
-		y=p.y+Move[(p.dir+1)%p.DirectionSize][1];
-		if(x<map.size()&&y<map[0].size()&&map[x][y]!=Obstacle)
-			if(isLegal(map,moveCost,nextP)){
-				pQue.push(DPPoint(nextP,CostMap3D[p.dir][p.x][p.y]+moveCost[2]));
-			}
-		/*
-		int Action[3]={-1,0,1};//Left,forward,right
-		for(int a=0;a<=2;a++){
-			size_t nextDir=(Action[a]+p.dir)%p.DirectionSize;
-			Point tempP(p.x+Move[nextDir][0],p.y+Move[nextDir][1],nextDir);
-			//If this point is available,put it in the queue
-			if (isLegal(map,moveCost,tempP))
-				pQue.push(DPPoint(tempP,map[p.x][p.y]+moveCost[a]));
-		}
-		*/
-	}
-
-	for(size_t k=0;k<4;k++){
-		cout<<"layer: "<<k<<endl;
-		for(size_t i=0;i<map.size();i++){	//Test output the costMap
-			for(size_t j=0;j<map[i].size();j++){
-			cout<<CostMap3D[k][i][j]<<"\t";
-			}
-			cout<<endl;
-		}
-		cout<<endl;
-	}
-
-
-	generateRoute(map);
-	return true;
 }
 
 
