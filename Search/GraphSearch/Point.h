@@ -8,6 +8,7 @@
 #ifndef POINT_H_
 #define POINT_H_
 
+
 struct Point {
    //Must define these values in clockwise/counter-clockwise manner
    const unsigned int DirectionSize=4;
@@ -44,6 +45,19 @@ struct Point {
 	 }
 };
 
+namespace pnt{
+unsigned int abs(Point &a,Point &b){
+	unsigned int x = a.x > b.x ? a.x - b.x : b.x - a.x;
+	unsigned int y = a.y > b.y ? a.y - b.y : b.y - a.y;
+	return x+y;
+}
 
+unsigned int dis(Point &a,Point &b){
+	unsigned int x = a.x > b.x ? a.x - b.x : b.x - a.x;
+	unsigned int y = a.y > b.y ? a.y - b.y : b.y - a.y;
+	return x*x+y*y;
+}
+
+}
 
 #endif /* POINT_H_ */

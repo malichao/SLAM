@@ -1,6 +1,6 @@
 #include "GraphSearch.h"
 using namespace std;
-
+using namespace pnt;//Point operation
 struct Point;
 struct AStarPoint;
 struct DPPoint;
@@ -247,11 +247,6 @@ bool GraphSearch::bfs(const vector<vector<unsigned int> > &map){
    return false;
 }
 
-unsigned int GraphSearch::abs(Point &a,Point &b){
-	unsigned int x = a.x > b.x ? a.x - b.x : b.x - a.x;
-	unsigned int y = a.y > b.y ? a.y - b.y : b.y - a.y;
-	return x+y;
-}
 
 //Comparison object to be used to order the heap in A* search
 struct lowestF{
@@ -293,7 +288,7 @@ bool GraphSearch::aStar(const vector<vector<unsigned int> > &map) {
 
 	//Similar to BFS,but we use minimal priority queue instead
 	priority_queue<AStarPoint, vector<AStarPoint>, lowestF> pQue;
-	pQue.push(AStarPoint(Target, map[Target.x][Target.y], abs(Target, Start)));
+	pQue.push(AStarPoint(Target, map[Target.x][Target.y], pnt::abs(Target, Start)));
 	Checked[Target.x][Target.y] = true;
 	bool success = false;
 	EffortCount = 1;			//Reset the EffortCount to count the search effort
@@ -314,7 +309,7 @@ bool GraphSearch::aStar(const vector<vector<unsigned int> > &map) {
 		  Point tempP(p.x+Move[k][0],p.y+Move[k][1]);
 		  if(isLegal(map,tempP)){
 			  pQue.push(AStarPoint(	tempP,						//Point(x,y)
-			  						abs(tempP, Target),			//heuristic value
+					  	  	  	  	pnt::abs(tempP, Target),			//heuristic value
 			  						map[tempP.x][tempP.y]+g));	//grid cost
 			  Gradient[tempP.x][tempP.y] = p;
 		  }
@@ -452,7 +447,7 @@ bool GraphSearch::aStar(const vector<vector<unsigned int> > &map,
 
 	//Similar to BFS,but we use minimal priority queue instead
 	priority_queue<AStarPoint, vector<AStarPoint>, lowestF> pQue;
-	pQue.push(AStarPoint(Start, map[Start.x][Start.y], abs(Target, Start)));
+	pQue.push(AStarPoint(Start, map[Start.x][Start.y], pnt::abs(Target, Start)));
 	Checked3D[Start.dir][Start.x][Start.y] = true;
 	bool success = false;
 	EffortCount = 1;			//Reset the EffortCount to count the search effort
@@ -481,12 +476,12 @@ bool GraphSearch::aStar(const vector<vector<unsigned int> > &map,
 		unsigned int valueG;
 			if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
 				valueG=map[nextP.x][nextP.y]+moveCost[0]+g;
-				if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
+				if(pnt::abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
 					pQue.push(AStarPoint(	nextP,						//Point(x,y)
-											abs(nextP, Target),			//heuristic value
+											pnt::abs(nextP, Target),			//heuristic value
 											valueG));	//use left turn cost
 					  Gradient3D[nextP.dir][nextP.x][nextP.y] = p;
-					  CostMap3D[nextP.dir][nextP.x][nextP.y]=abs(nextP, Target)+valueG;
+					  CostMap3D[nextP.dir][nextP.x][nextP.y]=pnt::abs(nextP, Target)+valueG;
 					  //printf("  =)L (%u,%u,%c) f=%u\n",nextP.x,nextP.y,DirSymbol[nextP.dir],valueG+abs(nextP, Target));
 				}
 			  }
@@ -494,12 +489,12 @@ bool GraphSearch::aStar(const vector<vector<unsigned int> > &map,
 		nextP.set(p.x+Move[p.dir][0],p.y+Move[p.dir][1],p.dir);					//move forward
 		if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
 			valueG=map[nextP.x][nextP.y]+moveCost[1]+g;
-			if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
+			if(pnt::abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
 				pQue.push(AStarPoint(	nextP,						//Point(x,y)
-										abs(nextP, Target),			//heuristic value
+										pnt::abs(nextP, Target),			//heuristic value
 										valueG));	//use left turn cost
 				  Gradient3D[nextP.dir][nextP.x][nextP.y] = p;
-				  CostMap3D[nextP.dir][nextP.x][nextP.y]=abs(nextP, Target)+valueG;
+				  CostMap3D[nextP.dir][nextP.x][nextP.y]=pnt::abs(nextP, Target)+valueG;
 				  //printf("  =)F (%u,%u,%c) f=%u\n",nextP.x,nextP.y,DirSymbol[nextP.dir],valueG+abs(nextP, Target));
 			}
 		  }
@@ -509,12 +504,12 @@ bool GraphSearch::aStar(const vector<vector<unsigned int> > &map,
 				  (p.dir+1)%p.DirectionSize);						//right turn,same grid
 		if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
 			valueG=map[nextP.x][nextP.y]+moveCost[2]+g;
-			if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
+			if(pnt::abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
 				pQue.push(AStarPoint(	nextP,						//Point(x,y)
-										abs(nextP, Target),			//heuristic value
+										pnt::abs(nextP, Target),			//heuristic value
 										valueG));	//use left turn cost
 				  Gradient3D[nextP.dir][nextP.x][nextP.y] = p;
-				  CostMap3D[nextP.dir][nextP.x][nextP.y]=abs(nextP, Target)+valueG;
+				  CostMap3D[nextP.dir][nextP.x][nextP.y]=pnt::abs(nextP, Target)+valueG;
 				  //printf("  =)R (%u,%u,%c) f=%u\n",nextP.x,nextP.y,DirSymbol[nextP.dir],valueG+abs(nextP, Target));
 			}
 		  }
