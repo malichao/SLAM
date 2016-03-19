@@ -43,11 +43,11 @@ struct Point {
 struct AStarPoint{
 	Point point;
 	//f=h+g
-	int f;	//f is the final evaluation of a grid
-	int h;	//h is the heuristic value of a grid
-	int g;	//g is the cost of a grid given by the map
-	AStarPoint(Point p,int h,int g):
-		point(p),f(h+g),h(h),g(g){};
+	unsigned int f;	//f is the final evaluation of a grid
+	unsigned int h;	//h is the heuristic value of a grid
+	unsigned int g;	//g is the cost of a grid given by the map
+	AStarPoint(Point p,int i,int j):
+		point(p),f(i+j),h(i),g(j){};
 };
 struct DPPoint{
 	Point point;
@@ -128,6 +128,7 @@ private:
 
 	void generateRoute();
 	void generateRoute(const vector<vector<unsigned int> > &map);
+	void generateRoute(const vector<vector<vector<Point> > > &Gradient);
 	unsigned int abs(Point &a, Point &b);
 	bool isLegal(const vector<vector<unsigned int> > &map,
 				 const Point &p);
@@ -254,6 +255,16 @@ void Search::generateRoute(){
        curPos=Gradient[curPos.x][curPos.y];
     }while(curPos!=Target);
     Route.push_back(Target);
+}
+void Search::generateRoute(const vector<vector<vector<Point> > > &Gradient){
+	if(Gradient3D.size()==0)
+		return;
+    Point curPos=Target;	//Todo: reverse the route
+    do{
+       Route.push_back(curPos);
+       curPos=Gradient3D[curPos.dir][curPos.x][curPos.y];
+    }while(curPos!=Start);
+    Route.push_back(Start);
 }
 //Generate a route using the direction info
 void Search::generateRoute(const vector<vector<unsigned int> > &map){
@@ -382,7 +393,9 @@ bool Search::bfs(const vector<vector<unsigned int> > &map){
 }
 
 unsigned int Search::abs(Point &a,Point &b){
-	return std::abs(a.x-b.x)+std::abs(a.y-b.y);
+	unsigned int x = a.x > b.x ? a.x - b.x : b.x - a.x;
+	unsigned int y = a.y > b.y ? a.y - b.y : b.y - a.y;
+	return x+y;
 }
 
 //Comparison object to be used to order the heap in A* search
@@ -533,6 +546,154 @@ struct lessCost{
 		return lhs.cost>rhs.cost;		//minimal priority queue
 	}
 };
+
+bool Search::aStar(const vector<vector<unsigned int> > &map,
+					  const unsigned int *const moveCost,
+					  const Point &start,
+					  const Point &target){
+	setTarget(target);
+	setStart(start);
+	return aStar(map,moveCost);
+}
+
+bool Search::aStar(const vector<vector<unsigned int> > &map,
+					  const unsigned int *const moveCost){
+	Gradient3D.clear();
+	Point nextMove;
+	for(size_t dir=0;dir<nextMove.DirectionSize;dir++){
+		vector<vector<Point> > gradient2D;
+		for (size_t i = 0; i < map.size(); i++) {			//Init the direction map
+			vector<Point> zero(map[i].size(), Point(0, 0,nextMove.Up));
+			gradient2D.push_back(zero);
+		}
+		Gradient3D.push_back(gradient2D);
+	}
+
+	Checked3D.clear();
+	for(size_t dir=0;dir<nextMove.DirectionSize;dir++){
+		vector<vector<bool> > checked2D;
+		for (size_t i = 0; i < map.size(); i++) {			//Init the checked set
+			vector<bool> temp(map[i].size(), false);
+			checked2D.push_back(temp);
+		}
+		Checked3D.push_back(checked2D);
+	}
+
+
+	if (!isLegal(map,moveCost,Target) || !isLegal(map, moveCost,Start))	//Todo:Check left/right turn availability
+		return false;
+
+	CostMap3D.clear();
+	for(size_t dir=0;dir<nextMove.DirectionSize;dir++){									//Construct a 3D vector
+		CostMap3D.push_back(vector<vector<unsigned int> >			//Construct a 2D vector
+								(map.size(),vector<unsigned int>	//Construct a 1D vector
+											(map[0].size(),CostMax)));
+	}
+	for(size_t dir=0;dir<nextMove.DirectionSize;dir++){
+		Checked3D[dir][Start.x][Start.y] = true;
+		CostMap3D[dir][Start.x][Start.y] =CostMax;	//Todo: init the value according to the action
+	}
+	CostMap3D[Start.dir][Start.x][Start.y] =0;
+
+	//Similar to BFS,but we use minimal priority queue instead
+	priority_queue<AStarPoint, vector<AStarPoint>, lowestF> pQue;
+	pQue.push(AStarPoint(Start, map[Start.x][Start.y], abs(Target, Start)));
+	Checked3D[Start.dir][Start.x][Start.y] = true;
+	bool success = false;
+	EffortCount = 1;			//Reset the EffortCount to count the search effort
+	Route.clear();		//Clear the previous route
+	while (!pQue.empty()) {
+		AStarPoint curPos = pQue.top();
+		Point p = curPos.point;
+		pQue.pop();
+		Checked3D[p.dir][p.x][p.y] = true;
+		//CostMap3D[p.dir][p.x][p.y]=curPos.f;
+		printf("\n(%u,%u,%c) f=%u\n",p.x,p.y,DirSymbol[p.dir],curPos.f);
+		if (p == Target) {
+			success = true;
+			break;
+		}
+		unsigned int g=curPos.g;
+
+		//Append available surrounding grid to the queue
+		Point nextP(p.x,p.y,(p.dir-1)%p.DirectionSize);		//left turn,same grid
+		unsigned int x,y;
+		unsigned int valueG;
+		x=p.x+Move[(p.dir-1)%p.DirectionSize][0];
+		y=p.y+Move[(p.dir-1)%p.DirectionSize][1];
+		if(x<map.size()&&y<map[0].size()&&map[x][y]!=Wall)
+			//if(isLegal(map,moveCost,nextP)){
+			if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Wall){
+				valueG=map[nextP.x][nextP.y]+moveCost[0]+g;
+				if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
+					pQue.push(AStarPoint(	nextP,						//Point(x,y)
+											abs(nextP, Target),			//heuristic value
+											valueG));	//use left turn cost
+					  Gradient3D[nextP.dir][nextP.x][nextP.y] = p;
+					  CostMap3D[nextP.dir][nextP.x][nextP.y]=abs(nextP, Target)+valueG;
+					  printf("  =)L (%u,%u,%c) f=%u\n",nextP.x,nextP.y,DirSymbol[nextP.dir],valueG+abs(nextP, Target));
+				}
+			  }
+
+		nextP.set(p.x+Move[p.dir][0],p.y+Move[p.dir][1],p.dir);					//move forward
+			//if(isLegal(map,moveCost,nextP)){
+		if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Wall){
+			valueG=map[nextP.x][nextP.y]+moveCost[1]+g;
+			if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
+				pQue.push(AStarPoint(	nextP,						//Point(x,y)
+										abs(nextP, Target),			//heuristic value
+										valueG));	//use left turn cost
+				  Gradient3D[nextP.dir][nextP.x][nextP.y] = p;
+				  CostMap3D[nextP.dir][nextP.x][nextP.y]=abs(nextP, Target)+valueG;
+				  printf("  =)F (%u,%u,%c) f=%u\n",nextP.x,nextP.y,DirSymbol[nextP.dir],valueG+abs(nextP, Target));
+			}
+		  }
+
+		nextP.set(p.x,p.y,(p.dir+1)%p.DirectionSize);						//right turn,same grid
+		x=p.x+Move[(p.dir+1)%p.DirectionSize][0];
+		y=p.y+Move[(p.dir+1)%p.DirectionSize][1];
+		if(x<map.size()&&y<map[0].size()&&map[x][y]!=Wall){
+			if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Wall){
+				valueG=map[nextP.x][nextP.y]+moveCost[2]+g;
+				if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
+					pQue.push(AStarPoint(	nextP,						//Point(x,y)
+											abs(nextP, Target),			//heuristic value
+											valueG));	//use left turn cost
+					  Gradient3D[nextP.dir][nextP.x][nextP.y] = p;
+					  CostMap3D[nextP.dir][nextP.x][nextP.y]=abs(nextP, Target)+valueG;
+					  printf("  =)R (%u,%u,%c) f=%u\n",nextP.x,nextP.y,DirSymbol[nextP.dir],valueG+abs(nextP, Target));
+				}
+			  }
+		}
+	}
+	for(size_t k=0;k<4;k++){
+		cout<<"layer: "<<k<<endl;
+		for(size_t i=0;i<map.size();i++){	//Test output the costMap
+			for(size_t j=0;j<map[i].size();j++){
+			cout<<CostMap3D[k][i][j]<<"\t";
+			}
+			cout<<endl;
+		}
+		cout<<endl;
+	}
+	for(size_t k=0;k<4;k++){
+			cout<<"layer: "<<k<<endl;
+			for(size_t i=0;i<map.size();i++){	//Test output the costMap
+				for(size_t j=0;j<map[i].size();j++){
+				printf("(%u,%u,%c)\t",Gradient3D[k][i][j].x,Gradient3D[k][i][j].y,DirSymbol[Gradient3D[k][i][j].dir]);
+				}
+				cout<<endl;
+			}
+			cout<<endl;
+		}
+	if (success) {
+
+		generateRoute(Gradient3D);
+		return true;
+	}
+	return false;
+
+}
 
 bool Search::dpSearch(const vector<vector<unsigned int> > &map,
 					  const Point &start,const Point &target) {
@@ -715,6 +876,8 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map,
 	return true;
 }
 
+
+
 /*
  * About the map:
  *  0 means the wall,positive values means the cost each grid.Although
@@ -738,7 +901,7 @@ vector<vector<unsigned int> > map = {
 		{0, 0, 1, 0, 0},};
 //Define the cost for each action,left turn is expensive in real life
 //[0]:Left turn	[1]:Forward	[2]:Right turn
-unsigned int actionCost[]={50,1,2};
+unsigned int actionCost[]={100,2,4};
 
 /*
 {1, 0, 1, 1, 1},
@@ -770,7 +933,7 @@ int main(void) {
 	}
 */
    Point start1(4,2),target1(0,0);
-   if (b.dpSearch(map,actionCost,start1,target1)) {
+   if (b.aStar(map,actionCost,start1,target1)) {
    		b.printRouteOnMap(map);
    	} else {
    		cout << "Search failed.\n";
