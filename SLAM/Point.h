@@ -72,6 +72,9 @@ struct Point {
 namespace pnt{
 int abs(Point<unsigned int> &a,Point<unsigned int> &b);
 int dis(Point<unsigned int> &a,Point<unsigned int> &b);
+
+float abs(Point<float> &a,Point<float> &b);
+float dis(Point<float> &a,Point<float> &b);
 }
 
 #endif /* POINT_H_ */
