@@ -37,6 +37,16 @@ struct Point {
 	   return *this;
    }
 
+   Point operator+(const Point &rhs)const{
+	   return Point(x+rhs.x,y+rhs.y,(dir+rhs.dir)%DirectionSize);
+   }
+   Point operator-(const Point &rhs)const{
+   	   return Point(x-rhs.x,y-rhs.y,(dir-rhs.dir)%DirectionSize);
+    }
+   Point operator*(const int rhs){
+      	   return Point(x*rhs,y*rhs,dir);
+   }
+
    bool operator== (const Point &rhs) const{
       return (x==rhs.x&&y==rhs.y);		//Different orientation considered as the same
    }

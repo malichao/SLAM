@@ -12,6 +12,7 @@
 #include <climits>
 #include <algorithm>    // std::reverse
 #include <GraphSearch.cpp>
+#include <smooth.cpp>
 
 using namespace std;
 
@@ -43,6 +44,8 @@ int main(void) {
 		cout << "Search failed.\n";
 	}
 
+	Smooth sm;
+	sm.smooth(route);
 
 
    return 0;
