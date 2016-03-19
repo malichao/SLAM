@@ -11,11 +11,11 @@
 template<class T>
 struct Point {
    //Must define these values in clockwise/counter-clockwise manner
-   const int DirectionSize=4;
-   const int Up=0;
-   const int Right=1;
-   const int Down=2;
-   const int Left=3;
+   static const int DirectionSize=4;
+   static const int Up=0;
+   static const int Right=1;
+   static const int Down=2;
+   static const int Left=3;
 
    T x;
    T y;
@@ -70,8 +70,8 @@ struct Point {
 };
 
 namespace pnt{
-int abs(Point<int> &a,Point<int> &b);
-int dis(Point<int> &a,Point<int> &b);
+int abs(Point<unsigned int> &a,Point<unsigned int> &b);
+int dis(Point<unsigned int> &a,Point<unsigned int> &b);
 }
 
 #endif /* POINT_H_ */

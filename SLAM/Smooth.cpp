@@ -12,15 +12,15 @@ using namespace std;
 
 class Smooth{
 private:
-	vector<Point<int> > SmoothRoute;
+	vector<Point<unsigned int> > SmoothRoute;
 	float Tolerance=0.01;
 	float WeightData=0.5;
 	float WeightSmooth=0.1;
 public:
-	void smooth(const vector<Point<int> > &route);
+	void smooth(const vector<Point<unsigned int> > &route);
 };
 
-void Smooth::smooth(const vector<Point<int> > &route){
+void Smooth::smooth(const vector<Point<unsigned int> > &route){
 	/*
 	SmoothRoute=route;
 	float change=Tolerance;
