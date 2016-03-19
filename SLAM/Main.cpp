@@ -33,10 +33,10 @@ unsigned int actionCost[]={1,0,50};
 
 int main(void) {
 	//Point start(0,0),target(2,2);
-	Point start(0,0),target(4,2);
-	Point dummy;
+	Point<int> start(0,0),target(4,2);
+	Point<int> dummy;
 	GraphSearch gs;
-	vector<Point> route;
+	vector<Point<int> > route;
 
 	if (gs.aStar(map, start, target)) {
 		gs.printRouteOnMap(map);

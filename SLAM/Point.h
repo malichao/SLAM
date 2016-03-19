@@ -8,7 +8,7 @@
 #ifndef POINT_H_
 #define POINT_H_
 
-
+template<class T>
 struct Point {
    //Must define these values in clockwise/counter-clockwise manner
    const int DirectionSize=4;
@@ -17,15 +17,15 @@ struct Point {
    const int Down=2;
    const int Left=3;
 
-   int x;
-   int y;
+   T x;
+   T y;
    unsigned int dir;	//0:Up	1:Down 2:Left	2:Right
 
    Point():x(0),y(0),dir(Up){};
-   Point(int x,int y):x(x),y(y),dir(Up){};
-   Point(int x,int y,int dir):x(x),y(y),dir(dir){};
+   Point(T x,T y):x(x),y(y),dir(Up){};
+   Point(T x,T y,unsigned int dir):x(x),y(y),dir(dir){};
    Point(const Point &p):x(p.x),y(p.y),dir(p.dir){};
-   void set(const int x,const int y,const unsigned int dir){
+   void set(const T x,const T y,const unsigned int dir){
 	   this->x=x;
 	   this->y=y;
 	   this->dir=dir;
@@ -70,8 +70,8 @@ struct Point {
 };
 
 namespace pnt{
-int abs(Point &a,Point &b);
-int dis(Point &a,Point &b);
+int abs(Point<int> &a,Point<int> &b);
+int dis(Point<int> &a,Point<int> &b);
 }
 
 #endif /* POINT_H_ */

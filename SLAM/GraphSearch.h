@@ -18,18 +18,18 @@
 using namespace std;
 
 struct AStarPoint{
-	Point point;
+	Point<int> point;
 	//f=h+g
 	unsigned int f;	//f is the final evaluation of a grid
 	unsigned int h;	//h is the heuristic value of a grid
 	unsigned int g;	//g is the cost of a grid given by the map
-	AStarPoint(Point p,int i,int j):
+	AStarPoint(Point<int> &p,int i,int j):
 		point(p),f(i+j),h(i),g(j){};
 };
 struct DPPoint{
-	Point point;
+	Point<int> point;
 	int cost;
-	DPPoint(const Point &p,unsigned int cost):
+	DPPoint(const Point<int> &p,unsigned int cost):
 		point(p),cost(cost){};
 };
 
@@ -40,67 +40,67 @@ public:
    const unsigned int CostMax= 999;		//Don't use UINT_MAX,watch out for OVERFLOW
    GraphSearch():Start(0,0),Target(0,0),EffortCount(0){};
 
-   void setStart(const Point &s){Start.x=s.x; Start.y=s.y;Start.dir=s.dir;}
-   void setTarget(const Point &t){Target.x=t.x; Target.y=t.y;Target.dir=t.dir;}
+   void setStart(const Point<int> &s){Start.x=s.x; Start.y=s.y;Start.dir=s.dir;}
+   void setTarget(const Point<int> &t){Target.x=t.x; Target.y=t.y;Target.dir=t.dir;}
 
    int 	getMinDistance(){return Route.size()-1;}
    void printRoute();
-   void getRoute(vector<Point> &route);
+   void getRoute(vector<Point<int> > &route);
    void printRouteOnMap(const vector<vector<unsigned int> > &map);
    void printGradientOnMap(const vector<vector<unsigned int> > &map);
 
    bool bfs(const vector<vector<unsigned int> > &map);
    bool bfs(const vector<vector<unsigned int> > &map,
-		    const Point &start,const Point &target);
+		    const Point<int> &start,const Point<int> &target);
 
    bool aStar(const vector<vector<unsigned int> > &map);
    bool aStar(const vector<vector<unsigned int> > &map,
-		      const Point &start,const Point &target);
+		      const Point<int> &start,const Point<int> &target);
    bool aStar(const vector<vector<unsigned int> > &map,
 		   	  const unsigned int *const moveCost);
    bool aStar(const vector<vector<unsigned int> > &map,
 		   	  const unsigned int *const moveCost,
-   		      const Point &start,const Point &target);
+   		      const Point<int> &start,const Point<int> &target);
 
    bool dpSearch(const vector<vector<unsigned int> > &map);
    bool dpSearch(const vector<vector<unsigned int> > &map,
-		   	     const Point &start,const Point &target);
+		   	     const Point<int> &start,const Point<int> &target);
    bool dpSearch(const vector<vector<unsigned int> > &map,
 		   	     const unsigned int *const moveCost);
    bool dpSearch(const vector<vector<unsigned int> > &map,
 		   	   	 const unsigned int *const moveCost,
-   		   	     const Point &start,const Point &target);
+   		   	     const Point<int> &start,const Point<int> &target);
 private:
-	Point Start;
-	Point Target;
+	Point<int> Start;
+	Point<int> Target;
 	unsigned int EffortCount;
 
-	vector<Point> Route;
+	vector<Point<int> > Route;
 	vector<vector<bool> > Checked;
-	vector<vector<Point> > Gradient;
+	vector<vector<Point<int> > > Gradient;
 	vector<vector<unsigned int> > CostMap;
 
 	vector<vector<vector<bool> > > Checked3D;
-	vector<vector<vector<Point> > > Gradient3D;
+	vector<vector<vector<Point<int> > > > Gradient3D;
 	vector<vector<vector<unsigned int> > > CostMap3D;
 
 	void generateRoute();
 	void generateRoute(const vector<vector<unsigned int> > &map);
-	void generateRoute(const vector<vector<vector<Point> > > &Gradient);
-	unsigned int abs(Point &a, Point &b);
+	void generateRoute(const vector<vector<vector<Point<int> > > > &Gradient);
+	unsigned int abs(Point<int> &a, Point<int> &b);
 	bool isLegal(const vector<vector<unsigned int> > &map,
-				 const Point &p);
+				 const Point<int> &p);
 	bool isLegal(const vector<vector<unsigned int> > &map,
 				 const unsigned int* const moveCost,
-				 const Point &p);
+				 const Point<int> &p);
 	unsigned int minCost(const vector<vector<unsigned int> > &map,
-   						const Point &p,
-						Point &move);
+   						const Point<int> &p,
+						Point<int> &move);
 
 	unsigned int minCost(const vector<vector<unsigned int> > &map,
 						 const unsigned int* const moveCost,
-						 const Point &point,
-						 Point &move);
+						 const Point<int> &point,
+						 Point<int> &move);
 
 	//const unsigned int NoneDirection = 4;
 	int Move[5][2] = {

@@ -7,12 +7,12 @@
 #include "Point.h"
 
 namespace pnt{
-int abs(Point &a,Point &b){
+int abs(Point<int> &a,Point<int> &b){
 	int x = a.x > b.x ? a.x - b.x : b.x - a.x;
 	int y = a.y > b.y ? a.y - b.y : b.y - a.y;
 	return x+y;
 }
-int dis(Point &a,Point &b){
+int dis(Point<int> &a,Point<int> &b){
 	int x = a.x > b.x ? a.x - b.x : b.x - a.x;
 	int y = a.y > b.y ? a.y - b.y : b.y - a.y;
 	return x*x+y*y;
