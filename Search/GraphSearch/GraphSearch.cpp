@@ -1,162 +1,11 @@
-#include <cstdio>
-#include <cstring>
-#include <queue>
-#include <iostream>
-#include <cmath>
-#include <climits>
-#include <algorithm>    // std::reverse
+#include "GraphSearch.h"
 using namespace std;
-struct Point {
-   //Must define these values in clockwise/counter-clockwise manner
-   const unsigned int DirectionSize=4;
-   const unsigned int Up=0;
-   const unsigned int Right=1;
-   const unsigned int Down=2;
-   const unsigned int Left=3;
 
-   unsigned int x;
-   unsigned int y;
-   unsigned int dir;	//0:Up	1:Down 2:Left	2:Right
+struct Point;
+struct AStarPoint;
+struct DPPoint;
 
-   Point():x(0),y(0),dir(Up){};
-   Point(unsigned int x,unsigned int y):x(x),y(y),dir(Up){};
-   Point(unsigned int x,unsigned int y,unsigned int dir):x(x),y(y),dir(dir){};
-   Point(const Point &p):x(p.x),y(p.y),dir(p.dir){};
-   void set(const unsigned int x,const unsigned int y,const unsigned int dir){
-	   this->x=x;
-	   this->y=y;
-	   this->dir=dir;
-   }
-   Point& operator=(const Point &rhs){
-	   x=rhs.x;
-	   y=rhs.y;
-	   dir=rhs.dir;
-	   return *this;
-   }
-
-   bool operator== (const Point &rhs) const{
-      return (x==rhs.x&&y==rhs.y);		//Different orientation considered as the same
-   }
-   bool operator!= (const Point &rhs){
-		return (x!=rhs.x||y!=rhs.y);	//Different orientation considered as the same
-	 }
-};
-struct AStarPoint{
-	Point point;
-	//f=h+g
-	unsigned int f;	//f is the final evaluation of a grid
-	unsigned int h;	//h is the heuristic value of a grid
-	unsigned int g;	//g is the cost of a grid given by the map
-	AStarPoint(Point p,int i,int j):
-		point(p),f(i+j),h(i),g(j){};
-};
-struct DPPoint{
-	Point point;
-	int cost;
-	DPPoint(const Point &p,unsigned int cost):
-		point(p),cost(cost){};
-};
-/*
-struct Movement{
-	const unsigned int DirectionSize=4;
-	const unsigned int Up=0;
-	const unsigned int Down=1;
-	const unsigned int Left=2;
-	const unsigned int Right=3;
-	const unsigned int NoneDirection = 4;
-
-	const unsigned int ThetaSize=3;
-	const unsigned int Forward=0;
-	const unsigned int TurnLeft=1;
-	const unsigned int TurnRight=2;
-
-	Movement():direction(NoneDirection),theta(Forward){};
-	Movement(unsigned int direction,unsigned int theta):
-								direction(direction),theta(theta){};
-	unsigned int direction;	//For x and y movement 0:Up	1:Down	2:Left	3:Right	4:None
-	unsigned int theta;	//FOr steering movement 0:Forward	1:Left turn	2:Right turn
-};
-*/
-class Search {
-public:
-   const unsigned int Obstacle =0;			//positive value means the cost of each path
-   const char ObstacleSymbol = '#';
-   const unsigned int CostMax= 999;		//Don't use UINT_MAX,watch out for OVERFLOW
-   Search():Start(0,0),Target(0,0),EffortCount(0){};
-
-   void setStart(const Point &s){Start.x=s.x; Start.y=s.y;Start.dir=s.dir;}
-   void setTarget(const Point &t){Target.x=t.x; Target.y=t.y;Target.dir=t.dir;}
-
-   int 	getMinDistance(){return Route.size()-1;}
-   void printRoute();
-   void printRouteOnMap(const vector<vector<unsigned int> > &map);
-   void printGradientOnMap(const vector<vector<unsigned int> > &map);
-
-   bool bfs(const vector<vector<unsigned int> > &map);
-   bool bfs(const vector<vector<unsigned int> > &map,
-		    const Point &start,const Point &target);
-
-   bool aStar(const vector<vector<unsigned int> > &map);
-   bool aStar(const vector<vector<unsigned int> > &map,
-		      const Point &start,const Point &target);
-   bool aStar(const vector<vector<unsigned int> > &map,
-		   	  const unsigned int *const moveCost);
-   bool aStar(const vector<vector<unsigned int> > &map,
-		   	  const unsigned int *const moveCost,
-   		      const Point &start,const Point &target);
-
-   bool dpSearch(const vector<vector<unsigned int> > &map);
-   bool dpSearch(const vector<vector<unsigned int> > &map,
-		   	     const Point &start,const Point &target);
-   bool dpSearch(const vector<vector<unsigned int> > &map,
-		   	     const unsigned int *const moveCost);
-   bool dpSearch(const vector<vector<unsigned int> > &map,
-		   	   	 const unsigned int *const moveCost,
-   		   	     const Point &start,const Point &target);
-private:
-	Point Start;
-	Point Target;
-	unsigned int EffortCount;
-
-	vector<Point> Route;
-	vector<vector<bool> > Checked;
-	vector<vector<Point> > Gradient;
-	vector<vector<unsigned int> > CostMap;
-
-	vector<vector<vector<bool> > > Checked3D;
-	vector<vector<vector<Point> > > Gradient3D;
-	vector<vector<vector<unsigned int> > > CostMap3D;
-
-	void generateRoute();
-	void generateRoute(const vector<vector<unsigned int> > &map);
-	void generateRoute(const vector<vector<vector<Point> > > &Gradient);
-	unsigned int abs(Point &a, Point &b);
-	bool isLegal(const vector<vector<unsigned int> > &map,
-				 const Point &p);
-	bool isLegal(const vector<vector<unsigned int> > &map,
-				 const unsigned int* const moveCost,
-				 const Point &p);
-	unsigned int minCost(const vector<vector<unsigned int> > &map,
-   						const Point &p,
-						Point &move);
-
-	unsigned int minCost(const vector<vector<unsigned int> > &map,
-						 const unsigned int* const moveCost,
-						 const Point &point,
-						 Point &move);
-
-	//const unsigned int NoneDirection = 4;
-	int Move[5][2] = {
-		   {-1,0},	// x-1,y
-		   { 0,1},	// x,y+1
-		   { 1,0},	// x+1,y
-		   {0,-1},	// x,y-1
-		   {0, 0}};	// x,y
-	char DirSymbol[5]={'^','>','V','<',' '};
-
-};
-
-void Search::printRoute() {
+void GraphSearch::printRoute() {
 	if (Route.size() == 0) {
 		cout << "No route.\n";
 		return;
@@ -168,7 +17,7 @@ void Search::printRoute() {
 	}
 }
 
-void Search::printRouteOnMap(const vector<vector<unsigned int> > &map) {
+void GraphSearch::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 	if (Route.size() == 0) {
 		cout << "No route.\n";
 		return;
@@ -214,7 +63,7 @@ void Search::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 	}
 }
 
-void Search::printGradientOnMap(const vector<vector<unsigned int> > &map) {
+void GraphSearch::printGradientOnMap(const vector<vector<unsigned int> > &map) {
 	if (CostMap.size()==0) {
 		cout << "'costMap' data needed.\n";
 		return;
@@ -245,7 +94,7 @@ void Search::printGradientOnMap(const vector<vector<unsigned int> > &map) {
 }
 
 //Generate a route using the direction info
-void Search::generateRoute(){
+void GraphSearch::generateRoute(){
 	if(Gradient.size()==0)
 		return;
     Point curPos=Start;
@@ -255,7 +104,7 @@ void Search::generateRoute(){
     }while(curPos!=Target);
     Route.push_back(Target);
 }
-void Search::generateRoute(const vector<vector<vector<Point> > > &Gradient){
+void GraphSearch::generateRoute(const vector<vector<vector<Point> > > &Gradient){
 	if(Gradient3D.size()==0)
 		return;
     Point curPos=Target;	//Todo: reverse the route
@@ -267,7 +116,7 @@ void Search::generateRoute(const vector<vector<vector<Point> > > &Gradient){
     std::reverse(Route.begin(),Route.end());
 }
 //Generate a route using the direction info
-void Search::generateRoute(const vector<vector<unsigned int> > &map){
+void GraphSearch::generateRoute(const vector<vector<unsigned int> > &map){
 	if(Gradient3D.size()==0)
 		return;
 	Point prevP=Target;
@@ -305,7 +154,7 @@ void Search::generateRoute(const vector<vector<unsigned int> > &map){
     Route.push_back(Target);
 }
 
-bool Search::isLegal(const vector<vector<unsigned int> > &map,const Point &p){
+bool GraphSearch::isLegal(const vector<vector<unsigned int> > &map,const Point &p){
 	EffortCount++;
 	if(p.x>=map.size()||p.y>=map[0].size())		//x and y are unsigned int
 	  return false;
@@ -316,7 +165,7 @@ bool Search::isLegal(const vector<vector<unsigned int> > &map,const Point &p){
 	return true;
 }
 
-bool Search::isLegal(const vector<vector<unsigned int> > &map,
+bool GraphSearch::isLegal(const vector<vector<unsigned int> > &map,
 					 const unsigned int* const moveCost,
 					 const Point &p){
 	EffortCount++;
@@ -329,7 +178,7 @@ bool Search::isLegal(const vector<vector<unsigned int> > &map,
 	return true;
 }
 
-bool Search::bfs(const vector<vector<unsigned int> > &map,
+bool GraphSearch::bfs(const vector<vector<unsigned int> > &map,
 				 const Point &start,const Point &target){
    setTarget(target);
    setStart(start);
@@ -344,7 +193,7 @@ bool Search::bfs(const vector<vector<unsigned int> > &map,
  * -Read grids from the queue and check if the start grid is reached
  * -When searching is done,iterate the direction vector to generate the route
  */
-bool Search::bfs(const vector<vector<unsigned int> > &map){
+bool GraphSearch::bfs(const vector<vector<unsigned int> > &map){
 	Gradient.clear();
    for(size_t i=0;i<map.size();i++){				//Init the direction map
       vector<Point> zero(map[i].size(),Point(0,0));
@@ -392,7 +241,7 @@ bool Search::bfs(const vector<vector<unsigned int> > &map){
    return false;
 }
 
-unsigned int Search::abs(Point &a,Point &b){
+unsigned int GraphSearch::abs(Point &a,Point &b){
 	unsigned int x = a.x > b.x ? a.x - b.x : b.x - a.x;
 	unsigned int y = a.y > b.y ? a.y - b.y : b.y - a.y;
 	return x+y;
@@ -405,7 +254,7 @@ struct lowestF{
 	}
 };
 
-bool Search::aStar(const vector<vector<unsigned int> > &map,
+bool GraphSearch::aStar(const vector<vector<unsigned int> > &map,
 				   const Point &start,const Point &target) {
 	setTarget(target);
 	setStart(start);
@@ -421,7 +270,7 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
  * -Get the minimal cost grid from the priority queue and iterate
  * -When searching is done,iterate the direction vector to generate the route
  */
-bool Search::aStar(const vector<vector<unsigned int> > &map) {
+bool GraphSearch::aStar(const vector<vector<unsigned int> > &map) {
 	Gradient.clear();
 	for (size_t i = 0; i < map.size(); i++) {			//Init the direction map
 		vector<Point> zero(map[i].size(), Point(0, 0));
@@ -474,7 +323,7 @@ bool Search::aStar(const vector<vector<unsigned int> > &map) {
 
 //Todo:rewrite this function to make it clear
 //Find the minimal cost of the four direction from visited points
-unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
+unsigned int GraphSearch::minCost(const vector<vector<unsigned int> > &map,
 							 const Point &point,
 							 Point &nextMove) {
 	nextMove=point;	//0:Up	1:Down	2:Left	3:Right	4:None
@@ -497,7 +346,7 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 	return min;
 }
 
-unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
+unsigned int GraphSearch::minCost(const vector<vector<unsigned int> > &map,
 							 const unsigned int* const moveCost,
 							 const Point &point,
 							 Point &nextMove) {
@@ -547,7 +396,7 @@ struct lessCost{
 	}
 };
 
-bool Search::aStar(const vector<vector<unsigned int> > &map,
+bool GraphSearch::aStar(const vector<vector<unsigned int> > &map,
 					  const unsigned int *const moveCost,
 					  const Point &start,
 					  const Point &target){
@@ -556,7 +405,7 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 	return aStar(map,moveCost);
 }
 
-bool Search::aStar(const vector<vector<unsigned int> > &map,
+bool GraphSearch::aStar(const vector<vector<unsigned int> > &map,
 					  const unsigned int *const moveCost){
 	Gradient3D.clear();
 	Point nextMove;
@@ -696,14 +545,14 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 
 }
 
-bool Search::dpSearch(const vector<vector<unsigned int> > &map,
+bool GraphSearch::dpSearch(const vector<vector<unsigned int> > &map,
 					  const Point &start,const Point &target) {
 	setTarget(target);
 	setStart(start);
 	return dpSearch(map);
 }
 
-bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
+bool GraphSearch::dpSearch(const vector<vector<unsigned int> > &map) {
 	Gradient.clear();
 	for (size_t i = 0; i < map.size(); i++) {			//Init the direction map
 		vector<Point> zero(map[i].size(), Point(0, 0));
@@ -761,7 +610,7 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map) {
 	return true;
 }
 
-bool Search::dpSearch(const vector<vector<unsigned int> > &map,
+bool GraphSearch::dpSearch(const vector<vector<unsigned int> > &map,
 					  const unsigned int *const moveCost,
 					  const Point &start,
 					  const Point &target){
@@ -770,7 +619,7 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map,
 	return dpSearch(map,moveCost);
 }
 
-bool Search::dpSearch(const vector<vector<unsigned int> > &map,
+bool GraphSearch::dpSearch(const vector<vector<unsigned int> > &map,
 					  const unsigned int *const moveCost) {
 	Gradient3D.clear();
 	Point nextMove;
@@ -893,17 +742,19 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map,
  *  v
  *  x
  */
+/*
 vector<vector<unsigned int> > map = {
 		{1, 0, 1, 1, 1},
 		{1, 0, 1, 0, 1},
 		{1, 1, 1, 1, 1},
 		{0, 0, 1, 0, 0},
 		{0, 0, 1, 0, 0},};
+
 //Define the cost for each action,left turn is expensive in real life
 //[0]:Left turn	[1]:Forward	[2]:Right turn
 //unsigned int actionCost[]={100,2,4};
 unsigned int actionCost[]={1,0,50};
-
+*/
 /*
 {1, 0, 1, 1, 1},
 {1, 0, 1, 0, 1},
@@ -924,11 +775,12 @@ unsigned int actionCost[]={1,0,50};
 		{5,	0,	0,	0,	0,	0,	0,	10,	0,	0,	15,	15,	15,	90},
 		{5,	50,	5,	5,	5,	5,	5,	5,	5,	5,	5,	5,	5,	5},
  */
+/*
 int main(void) {
    //Point start(0,0),target(2,2);
    Point start(8,13),target(2,2);
    Point dummy;
-   Search b;
+   GraphSearch b;
 
    /*
 	if (b.bfs(map, start, target)) {
@@ -950,7 +802,7 @@ int main(void) {
 		cout << "Search failed.\n";
 	}
 */
-
+/*
    Point start1(0,0,dummy.Down),target1(4,2);
    if (b.aStar(map,actionCost,start1,target1)) {
    		b.printRouteOnMap(map);
@@ -960,3 +812,4 @@ int main(void) {
 
    return 0;
 }
+*/
