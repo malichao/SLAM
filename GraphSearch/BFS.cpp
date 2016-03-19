@@ -836,7 +836,6 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map,
 			if(isLegal(map,moveCost,nextP)){
 				pQue.push(DPPoint(nextP,CostMap3D[p.dir][p.x][p.y]+moveCost[0]));
 			}
-
 		nextP.set(p.x+Move[p.dir][0],p.y+Move[p.dir][1],p.dir);//move forward
 		if(isLegal(map,moveCost,nextP)){
 			pQue.push(DPPoint(nextP,CostMap3D[p.dir][p.x][p.y]+moveCost[1]));
