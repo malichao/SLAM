@@ -45,6 +45,7 @@ public:
 
    int 	getMinDistance(){return Route.size()-1;}
    void printRoute();
+   void getRoute(vector<Point> &route);
    void printRouteOnMap(const vector<vector<unsigned int> > &map);
    void printGradientOnMap(const vector<vector<unsigned int> > &map);
 

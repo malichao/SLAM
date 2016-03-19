@@ -28,39 +28,22 @@ vector<vector<unsigned int> > map = {
 unsigned int actionCost[]={1,0,50};
 
 int main(void) {
-   //Point start(0,0),target(2,2);
-   Point start(8,13),target(2,2);
-   Point dummy;
-   GraphSearch b;
+	//Point start(0,0),target(2,2);
+	Point start(0,0),target(4,2);
+	Point dummy;
+	GraphSearch gs;
+	vector<Point> route;
 
-   /*
-	if (b.bfs(map, start, target)) {
-		b.printRouteOnMap(map);
+	if (gs.aStar(map, start, target)) {
+		gs.printRouteOnMap(map);
+		gs.getRoute(route);
+		for(auto r : route)
+			cout << "(" << r.x << "," << r.y << ")" << endl;
 	} else {
 		cout << "Search failed.\n";
 	}
 
-	if (b.aStar(map, start, target)) {
-		b.printRouteOnMap(map);
-	} else {
-		cout << "Search failed.\n";
-	}
 
-
-	if (b.dpSearch(map, start, target)) {
-		b.printGradientOnMap(map);
-	} else {
-		cout << "Search failed.\n";
-	}
-*/
-
-   Point start1(0,0,dummy.Down),target1(4,2);
-   if(b.aStar(map,actionCost,start1,target1));
-   if (b.aStar(map,actionCost,start1,target1)) {
-   		b.printRouteOnMap(map);
-   	} else {
-   		cout << "Search failed.\n";
-   	}
 
    return 0;
 }

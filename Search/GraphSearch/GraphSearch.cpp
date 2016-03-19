@@ -5,6 +5,12 @@ struct Point;
 struct AStarPoint;
 struct DPPoint;
 
+void GraphSearch::getRoute(vector<Point> &route){
+	if(Route.size()==0)
+		return;
+	route=Route;
+}
+
 void GraphSearch::printRoute() {
 	if (Route.size() == 0) {
 		cout << "No route.\n";
@@ -782,7 +788,7 @@ int main(void) {
    Point dummy;
    GraphSearch b;
 
-   /*
+
 	if (b.bfs(map, start, target)) {
 		b.printRouteOnMap(map);
 	} else {
