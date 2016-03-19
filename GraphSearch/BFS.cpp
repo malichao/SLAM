@@ -616,7 +616,7 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 		pQue.pop();
 		Checked3D[p.dir][p.x][p.y] = true;
 		//CostMap3D[p.dir][p.x][p.y]=curPos.f;
-		printf("\n(%u,%u,%c) f=%u\n",p.x,p.y,DirSymbol[p.dir],curPos.f);
+		//printf("\n(%u,%u,%c) f=%u\n",p.x,p.y,DirSymbol[p.dir],curPos.f);
 		if (p == Target) {
 			success = true;
 			break;
@@ -628,10 +628,6 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 					p.y+Move[(p.dir-1)%p.DirectionSize][1],
 					(p.dir-1)%p.DirectionSize);		//left turn,next grid
 		unsigned int valueG;
-		//x=p.x+Move[(p.dir-1)%p.DirectionSize][0];
-		//y=p.y+Move[(p.dir-1)%p.DirectionSize][1];
-		//if(x<map.size()&&y<map[0].size()&&map[x][y]!=Obstacle)
-			//if(isLegal(map,moveCost,nextP)){
 			if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
 				valueG=map[nextP.x][nextP.y]+moveCost[0]+g;
 				if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
@@ -640,12 +636,11 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 											valueG));	//use left turn cost
 					  Gradient3D[nextP.dir][nextP.x][nextP.y] = p;
 					  CostMap3D[nextP.dir][nextP.x][nextP.y]=abs(nextP, Target)+valueG;
-					  printf("  =)L (%u,%u,%c) f=%u\n",nextP.x,nextP.y,DirSymbol[nextP.dir],valueG+abs(nextP, Target));
+					  //printf("  =)L (%u,%u,%c) f=%u\n",nextP.x,nextP.y,DirSymbol[nextP.dir],valueG+abs(nextP, Target));
 				}
 			  }
 
 		nextP.set(p.x+Move[p.dir][0],p.y+Move[p.dir][1],p.dir);					//move forward
-			//if(isLegal(map,moveCost,nextP)){
 		if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
 			valueG=map[nextP.x][nextP.y]+moveCost[1]+g;
 			if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
@@ -654,49 +649,48 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 										valueG));	//use left turn cost
 				  Gradient3D[nextP.dir][nextP.x][nextP.y] = p;
 				  CostMap3D[nextP.dir][nextP.x][nextP.y]=abs(nextP, Target)+valueG;
-				  printf("  =)F (%u,%u,%c) f=%u\n",nextP.x,nextP.y,DirSymbol[nextP.dir],valueG+abs(nextP, Target));
+				  //printf("  =)F (%u,%u,%c) f=%u\n",nextP.x,nextP.y,DirSymbol[nextP.dir],valueG+abs(nextP, Target));
 			}
 		  }
 
 		nextP.set(p.x+Move[(p.dir+1)%p.DirectionSize][0],
 				  p.y+Move[(p.dir+1)%p.DirectionSize][1],
 				  (p.dir+1)%p.DirectionSize);						//right turn,same grid
-		//x=p.x+Move[(p.dir+1)%p.DirectionSize][0];
-		//y=p.y+Move[(p.dir+1)%p.DirectionSize][1];
-		//if(x<map.size()&&y<map[0].size()&&map[x][y]!=Obstacle){
-			if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
-				valueG=map[nextP.x][nextP.y]+moveCost[2]+g;
-				if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
-					pQue.push(AStarPoint(	nextP,						//Point(x,y)
-											abs(nextP, Target),			//heuristic value
-											valueG));	//use left turn cost
-					  Gradient3D[nextP.dir][nextP.x][nextP.y] = p;
-					  CostMap3D[nextP.dir][nextP.x][nextP.y]=abs(nextP, Target)+valueG;
-					  printf("  =)R (%u,%u,%c) f=%u\n",nextP.x,nextP.y,DirSymbol[nextP.dir],valueG+abs(nextP, Target));
-				}
-			  }
+		if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
+			valueG=map[nextP.x][nextP.y]+moveCost[2]+g;
+			if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
+				pQue.push(AStarPoint(	nextP,						//Point(x,y)
+										abs(nextP, Target),			//heuristic value
+										valueG));	//use left turn cost
+				  Gradient3D[nextP.dir][nextP.x][nextP.y] = p;
+				  CostMap3D[nextP.dir][nextP.x][nextP.y]=abs(nextP, Target)+valueG;
+				  //printf("  =)R (%u,%u,%c) f=%u\n",nextP.x,nextP.y,DirSymbol[nextP.dir],valueG+abs(nextP, Target));
+			}
+		  }
 	}
 
-	for(size_t k=0;k<4;k++){
-		cout<<"layer: "<<k<<endl;
-		for(size_t i=0;i<map.size();i++){	//Test output the costMap
-			for(size_t j=0;j<map[i].size();j++){
-			cout<<CostMap3D[k][i][j]<<"\t";
-			}
-			cout<<endl;
-		}
-		cout<<endl;
-	}
-	for(size_t k=0;k<4;k++){
-			cout<<"layer: "<<k<<endl;
-			for(size_t i=0;i<map.size();i++){	//Test output the costMap
-				for(size_t j=0;j<map[i].size();j++){
-				printf("(%u,%u,%c)\t",Gradient3D[k][i][j].x,Gradient3D[k][i][j].y,DirSymbol[Gradient3D[k][i][j].dir]);
-				}
-				cout<<endl;
-			}
-			cout<<endl;
-		}
+	//Test: Output CostMasp3D
+	//for(size_t k=0;k<4;k++){
+	//	cout<<"layer: "<<k<<endl;
+	//	for(size_t i=0;i<map.size();i++){	//Test output the costMap
+	//		for(size_t j=0;j<map[i].size();j++){
+	//		cout<<CostMap3D[k][i][j]<<"\t";
+	//		}
+	//		cout<<endl;
+	//	}
+	//	cout<<endl;
+	//}
+	//Test: Output Gradient3D
+	//for(size_t k=0;k<4;k++){
+	//		cout<<"layer: "<<k<<endl;
+	//		for(size_t i=0;i<map.size();i++){	//Test output the costMap
+	//			for(size_t j=0;j<map[i].size();j++){
+	//			printf("(%u,%u,%c)\t",Gradient3D[k][i][j].x,Gradient3D[k][i][j].y,DirSymbol[Gradient3D[k][i][j].dir]);
+	//			}
+	//			cout<<endl;
+	//		}
+	//		cout<<endl;
+	//	}
 	if (success) {
 
 		generateRoute(Gradient3D);
