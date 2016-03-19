@@ -79,8 +79,8 @@ struct Movement{
 */
 class Search {
 public:
-   const unsigned int Wall =0;			//positive value means the cost of each path
-   const char WallSymbol = '#';
+   const unsigned int Obstacle =0;			//positive value means the cost of each path
+   const char ObstacleSymbol = '#';
    const unsigned int CostMax= 999;		//Don't use UINT_MAX,watch out for OVERFLOW
    Search():Start(0,0),Target(0,0),EffortCount(0){};
 
@@ -179,7 +179,7 @@ void Search::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 	for (size_t i = 0; i < map.size(); i++) {
 		vector<char> row(map[i].size());
 		for (size_t j = 0; j < map[i].size(); j++) {
-			row[j] = map[i][j]==0 ? WallSymbol: map[i][j] + '0';
+			row[j] = map[i][j]==0 ? ObstacleSymbol: map[i][j] + '0';
 		}
 		charMap.push_back(row);
 	}
@@ -225,7 +225,7 @@ void Search::printGradientOnMap(const vector<vector<unsigned int> > &map) {
 	for (size_t i = 0; i < map.size(); i++) {
 		vector<char> row(map[i].size());
 		for (size_t j = 0; j < map[i].size(); j++) {
-			row[j] = map[i][j]==0 ? WallSymbol: map[i][j] + '0';
+			row[j] = map[i][j]==0 ? ObstacleSymbol: map[i][j] + '0';
 		}
 		charMap.push_back(row);
 	}
@@ -285,7 +285,7 @@ void Search::generateRoute(const vector<vector<unsigned int> > &map){
        unsigned int min=INT_MAX;
        Point bestP=Target;
 		Point p(nextP.x,nextP.y,(nextP.dir-1)%nextP.DirectionSize);//left turn,same grid
-		if ((p.x < map.size() && p.y < map[0].size())&&Checked3D[p.dir][p.x][p.y]&&map[p.x][p.y] != Wall){
+		if ((p.x < map.size() && p.y < map[0].size())&&Checked3D[p.dir][p.x][p.y]&&map[p.x][p.y] != Obstacle){
 			if(CostMap3D[p.dir][p.x][p.y] < min && p!=prevP){
 				min=CostMap3D[p.dir][p.x][p.y];
 				bestP=p;
@@ -293,7 +293,7 @@ void Search::generateRoute(const vector<vector<unsigned int> > &map){
 		}
 
 		p.set(nextP.x+Move[nextP.dir][0],nextP.y+Move[nextP.dir][1],nextP.dir);//move forward
-		if ((p.x < map.size() && p.y < map[0].size())&&Checked3D[p.dir][p.x][p.y]&&map[p.x][p.y] != Wall){
+		if ((p.x < map.size() && p.y < map[0].size())&&Checked3D[p.dir][p.x][p.y]&&map[p.x][p.y] != Obstacle){
 			if(CostMap3D[p.dir][p.x][p.y] < min && p!=prevP){
 				min=CostMap3D[p.dir][p.x][p.y];
 				bestP=p;
@@ -301,7 +301,7 @@ void Search::generateRoute(const vector<vector<unsigned int> > &map){
 		}
 
 		p.set(nextP.x,nextP.y,(nextP.dir+1)%nextP.DirectionSize);//right turn,same grid
-		if ((p.x < map.size() && p.y < map[0].size())&&Checked3D[p.dir][p.x][p.y]&&map[p.x][p.y] != Wall){
+		if ((p.x < map.size() && p.y < map[0].size())&&Checked3D[p.dir][p.x][p.y]&&map[p.x][p.y] != Obstacle){
 			if(CostMap3D[p.dir][p.x][p.y] < min && p!=prevP){
 				min=CostMap3D[p.dir][p.x][p.y];
 				bestP=p;
@@ -319,7 +319,7 @@ bool Search::isLegal(const vector<vector<unsigned int> > &map,const Point &p){
 	  return false;
 	if(Checked[p.x][p.y])   	//Current position has been searched
 	  return false;
-	if(map[p.x][p.y]==Wall)		//Don't hit the wall
+	if(map[p.x][p.y]==Obstacle)		//Don't hit the wall
 	  return false;
 	return true;
 }
@@ -332,7 +332,7 @@ bool Search::isLegal(const vector<vector<unsigned int> > &map,
 	  return false;
 	if(Checked3D[p.dir][p.x][p.y])   	//Current position has been searched
 	  return false;
-	if(map[p.x][p.y]==Wall)		//Don't hit the wall
+	if(map[p.x][p.y]==Obstacle)		//Don't hit the wall
 	  return false;
 	return true;
 }
@@ -495,7 +495,7 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 		//In the predicate,must check the bounding first.We don't use isLegal() because we're
 		//going to find the minimal cost point in previously visited points
 		if ((p.x < map.size() && p.y < map[0].size())&& Checked[p.x][p.y]
-					&& map[p.x][p.y] != Wall){
+					&& map[p.x][p.y] != Obstacle){
 			if(CostMap[p.x][p.y] < min){
 				min=CostMap[p.x][p.y];
 				nextMove=p;
@@ -520,7 +520,7 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 	//going to find the minimal cost point in previously visited points
 	if ((p.x < map.size() && p.y < map[0].size())&&
 			Checked3D[p.dir][p.x][p.y]&&
-			map[p.x][p.y] != Wall){
+			map[p.x][p.y] != Obstacle){
 		if(CostMap3D[p.dir][p.x][p.y] < min){
 			min=CostMap3D[p.dir][p.x][p.y];
 			nextMove=p;
@@ -529,7 +529,7 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 	p.set(point.x+Move[(point.dir+2)%p.DirectionSize][0],//check backward
 		  point.y+Move[(point.dir+2)%p.DirectionSize][1],
 		  point.dir);
-	if(p.x < map.size() && p.y < map[0].size()&&Checked3D[p.dir][p.x][p.y]&&map[p.x][p.y] != Wall)
+	if(p.x < map.size() && p.y < map[0].size()&&Checked3D[p.dir][p.x][p.y]&&map[p.x][p.y] != Obstacle)
 		if(CostMap3D[p.dir][p.x][p.y] < min){
 			min=CostMap3D[p.dir][p.x][p.y];
 			nextMove=p;
@@ -538,7 +538,7 @@ unsigned int Search::minCost(const vector<vector<unsigned int> > &map,
 	p.set(point.x,point.y,(point.dir+1)%point.DirectionSize);//check right turn,same grid
 	if((p.x < map.size() && p.y < map[0].size())&&
 			Checked3D[p.dir][p.x][p.y]&&
-			map[p.x][p.y] != Wall){
+			map[p.x][p.y] != Obstacle){
 		if(CostMap3D[p.dir][p.x][p.y] < min){
 			min=CostMap3D[p.dir][p.x][p.y];
 			nextMove=p;
@@ -627,13 +627,12 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 		Point nextP(p.x+Move[(p.dir-1)%p.DirectionSize][0],
 					p.y+Move[(p.dir-1)%p.DirectionSize][1],
 					(p.dir-1)%p.DirectionSize);		//left turn,next grid
-		unsigned int x,y;
 		unsigned int valueG;
 		//x=p.x+Move[(p.dir-1)%p.DirectionSize][0];
 		//y=p.y+Move[(p.dir-1)%p.DirectionSize][1];
-		//if(x<map.size()&&y<map[0].size()&&map[x][y]!=Wall)
+		//if(x<map.size()&&y<map[0].size()&&map[x][y]!=Obstacle)
 			//if(isLegal(map,moveCost,nextP)){
-			if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Wall){
+			if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
 				valueG=map[nextP.x][nextP.y]+moveCost[0]+g;
 				if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
 					pQue.push(AStarPoint(	nextP,						//Point(x,y)
@@ -647,7 +646,7 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 
 		nextP.set(p.x+Move[p.dir][0],p.y+Move[p.dir][1],p.dir);					//move forward
 			//if(isLegal(map,moveCost,nextP)){
-		if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Wall){
+		if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
 			valueG=map[nextP.x][nextP.y]+moveCost[1]+g;
 			if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
 				pQue.push(AStarPoint(	nextP,						//Point(x,y)
@@ -664,8 +663,8 @@ bool Search::aStar(const vector<vector<unsigned int> > &map,
 				  (p.dir+1)%p.DirectionSize);						//right turn,same grid
 		//x=p.x+Move[(p.dir+1)%p.DirectionSize][0];
 		//y=p.y+Move[(p.dir+1)%p.DirectionSize][1];
-		//if(x<map.size()&&y<map[0].size()&&map[x][y]!=Wall){
-			if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Wall){
+		//if(x<map.size()&&y<map[0].size()&&map[x][y]!=Obstacle){
+			if(nextP.x<map.size()&&nextP.y<map[0].size()&&map[nextP.x][nextP.y]!=Obstacle){
 				valueG=map[nextP.x][nextP.y]+moveCost[2]+g;
 				if(abs(nextP, Target)+valueG<CostMap3D[nextP.dir][nextP.x][nextP.y]){
 					pQue.push(AStarPoint(	nextP,						//Point(x,y)
@@ -843,7 +842,7 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map,
 		unsigned int x,y;
 		x=p.x+Move[(p.dir-1)%p.DirectionSize][0];
 		y=p.y+Move[(p.dir-1)%p.DirectionSize][1];
-		if(x<map.size()&&y<map[0].size()&&map[x][y]!=Wall)
+		if(x<map.size()&&y<map[0].size()&&map[x][y]!=Obstacle)
 			if(isLegal(map,moveCost,nextP)){
 				pQue.push(DPPoint(nextP,CostMap3D[p.dir][p.x][p.y]+moveCost[0]));
 			}
@@ -856,7 +855,7 @@ bool Search::dpSearch(const vector<vector<unsigned int> > &map,
 		nextP.set(p.x,p.y,(p.dir+1)%p.DirectionSize);//right turn,same grid
 		x=p.x+Move[(p.dir+1)%p.DirectionSize][0];
 		y=p.y+Move[(p.dir+1)%p.DirectionSize][1];
-		if(x<map.size()&&y<map[0].size()&&map[x][y]!=Wall)
+		if(x<map.size()&&y<map[0].size()&&map[x][y]!=Obstacle)
 			if(isLegal(map,moveCost,nextP)){
 				pQue.push(DPPoint(nextP,CostMap3D[p.dir][p.x][p.y]+moveCost[2]));
 			}
