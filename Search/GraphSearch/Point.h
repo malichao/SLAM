@@ -70,20 +70,8 @@ struct Point {
 };
 
 namespace pnt{
-int abs(Point &a,Point &b){
-	int x = a.x > b.x ? a.x - b.x : b.x - a.x;
-	int y = a.y > b.y ? a.y - b.y : b.y - a.y;
-	return x+y;
-}
-
-int dis(Point &a,Point &b){
-	int x = a.x > b.x ? a.x - b.x : b.x - a.x;
-	int y = a.y > b.y ? a.y - b.y : b.y - a.y;
-	return x*x+y*y;
-}
-
-
-
+int abs(Point &a,Point &b);
+int dis(Point &a,Point &b);
 }
 
 #endif /* POINT_H_ */

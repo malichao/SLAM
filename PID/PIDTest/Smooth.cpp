@@ -5,10 +5,11 @@
  *      Author: Lichao
  */
 #include <vector>
+#include <iostream>
 #include "Point.h"
 using namespace std;
-using namespace pnt;//Point operation
-
+//using namespace pnt;//Point operation
+/*
 class Smooth{
 private:
 	vector<Point> SmoothRoute;
@@ -20,6 +21,7 @@ public:
 };
 
 void Smooth::smooth(const vector<Point> &route){
+	/*
 	SmoothRoute=route;
 	float change=Tolerance;
 	int test=0;
@@ -37,4 +39,5 @@ void Smooth::smooth(const vector<Point> &route){
 						break;
 	}
 	cout<<"smooth failed\n";
-}
+	*/
+//}
