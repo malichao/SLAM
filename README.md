@@ -13,7 +13,7 @@ Current Progress:
 ![alt text](https://github.com/malichao/SLAM/blob/master/LIDAR/snapshots/2016%20Feb%2004%20-5.jpg)  
   
 #### ● Map search algorithm comparison(BFS,A*,Dynamic programming,3-dimension A*)  
-![alt text](https://github.com/malichao/SLAM/blob/master/Search/comparison.jpg)  
+![alt text](https://github.com/malichao/SLAM/blob/master/Search/comparison-s.jpg)  
   
 In real life,situation is more complicated.For example,if we are heading to a place in rush hour and we need to go through a traffic light.Then perhaps we don't want to take a left turn because it's gonna wait for 5 minutes.Instead we may want to take a detour,which is faster then taking a left turn.This problem can be solved by adding a third dimension,which is orientation factor.Consider the following example:  
 start(4,2)  
@@ -44,5 +44,5 @@ Here is another example of trajectories smooth algorithm:
    
 #### ● PID simulator(one dimension) 
 Here is an one dimensional PID controller example,in which a car is trying to reach at 100m position. The following three curves show the result of different PID coefficients.  
-![alt text](https://github.com/malichao/SLAM/blob/master/PID/pid1.png)   
+![alt text](https://github.com/malichao/SLAM/blob/master/PID/pid1-s.png)   
   
