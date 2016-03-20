@@ -6,6 +6,7 @@
  */
 #include "Point.h"
 
+
 namespace pnt{
 int abs(Point<unsigned int> &a,Point<unsigned int> &b){
 	int x = a.x > b.x ? a.x - b.x : b.x - a.x;

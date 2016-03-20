@@ -44,7 +44,10 @@ struct Point {
    	   return Point(x-rhs.x,y-rhs.y,(dir-rhs.dir)%DirectionSize);
     }
    Point operator*(const int rhs){
-      	   return Point(x*rhs,y*rhs,dir);
+      return Point(x*rhs,y*rhs,dir);
+   }
+   Point operator*(const float rhs){
+      return Point<float>(x*rhs,y*rhs,dir);
    }
 
    bool operator== (const Point &rhs) const{

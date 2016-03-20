@@ -14,8 +14,7 @@
 #include <algorithm>    // std::reverse
 #include "Point.h"
 #include "GraphSearch.h"
-
-//#include "smooth.cpp"
+#include "smooth.h"
 
 using namespace std;
 
@@ -47,9 +46,16 @@ int main(void) {
 		cout << "Search failed.\n";
 	}
 
-	//Smooth sm;
-	//sm.smooth(route);
+	vector<Point<float> > smoothRoute;
+	for(auto r:route){
+		Point<float> p(r.x,r.y,r.dir);
+		smoothRoute.push_back(p);
+	}
 
+	Smooth sm;
+	sm.smooth(smoothRoute);
+	for(auto r : smoothRoute)
+		printf("(%.2f,%.2f)\n",r.x,r.y);
 
    return 0;
 }
