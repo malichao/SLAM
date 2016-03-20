@@ -454,7 +454,7 @@ bool GraphSearch::aStar(const vector<vector<unsigned int> > &map,
 	Route.clear();		//Clear the previous route
 	unsigned int searchTime=0;
 	while (!pQue.empty()) {
-		cout<<searchTime++<<endl;
+		//cout<<searchTime++<<endl;
 		if(searchTime==101)
 			searchTime=101;
 		AStarPoint curPos = pQue.top();
@@ -462,7 +462,7 @@ bool GraphSearch::aStar(const vector<vector<unsigned int> > &map,
 		pQue.pop();
 		Checked3D[p.dir][p.x][p.y] = true;
 		//CostMap3D[p.dir][p.x][p.y]=curPos.f;
-		printf("\n(%u,%u,%c) f=%u\n",p.x,p.y,DirSymbol[p.dir],curPos.f);
+		//printf("\n(%u,%u,%c) f=%u\n",p.x,p.y,DirSymbol[p.dir],curPos.f);
 		if (p == Target) {
 			success = true;
 			break;
@@ -516,16 +516,16 @@ bool GraphSearch::aStar(const vector<vector<unsigned int> > &map,
 	}
 
 	//Test: Output CostMasp3D
-	for(size_t k=0;k<4;k++){
-		cout<<"layer: "<<k<<endl;
-		for(size_t i=0;i<map.size();i++){	//Test output the costMap
-			for(size_t j=0;j<map[i].size();j++){
-			cout<<CostMap3D[k][i][j]<<"\t";
-			}
-			cout<<endl;
-		}
-		cout<<endl;
-	}
+	//for(size_t k=0;k<4;k++){
+	//	cout<<"layer: "<<k<<endl;
+	//	for(size_t i=0;i<map.size();i++){	//Test output the costMap
+	//		for(size_t j=0;j<map[i].size();j++){
+	//		cout<<CostMap3D[k][i][j]<<"\t";
+	//		}
+	//		cout<<endl;
+	//	}
+	//	cout<<endl;
+	//}
 	//Test: Output Gradient3D
 	//for(size_t k=0;k<4;k++){
 	//		cout<<"layer: "<<k<<endl;

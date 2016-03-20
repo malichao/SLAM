@@ -28,16 +28,16 @@ vector<vector<unsigned int> > map = {
 //Define the cost for each action,left turn is expensive in real life
 //[0]:Left turn	[1]:Forward	[2]:Right turn
 //unsigned int actionCost[]={100,2,4};
-unsigned int actionCost[]={1,0,50};
+unsigned int actionCost[]={100,0,2};
 
 int main(void) {
 	//Point start(0,0),target(2,2);
-	Point<unsigned int> start(0,0),target(4,2);
+	Point<unsigned int> start(4,2),target(0,0);
 	Point<unsigned int> dummy;
 	GraphSearch gs;
 	vector<Point<unsigned int> > route;
 
-	if (gs.aStar(map, start, target)) {
+	if (gs.aStar(map,actionCost,start,target)) {
 		gs.printRouteOnMap(map);
 		gs.getRoute(route);
 		for(auto r : route)
@@ -53,9 +53,10 @@ int main(void) {
 	}
 
 	Smooth sm;
-	sm.smooth(smoothRoute);
+	//sm.smooth(smoothRoute);
+	sm.smooth(smoothRoute,3);
 	for(auto r : smoothRoute)
-		printf("(%.2f,%.2f)\n",r.x,r.y);
+		printf("%.2f,%.2f\n",r.x,r.y);
 
    return 0;
 }
