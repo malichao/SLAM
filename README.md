@@ -27,7 +27,7 @@ target(0,0)
 Using three dimensional(x,y,orientation) A* we can get the following path:  
 Search effort: 1  
 Shortest path:14  
-![alt text](https://github.com/malichao/SLAM/blob/master/SLAM/snapshot/search%20result.jpg)  
+![alt text](https://github.com/malichao/SLAM/blob/master/SLAM/snapshot/search%20result-s.jpg)  
   
 Where  
 'T' is target  
@@ -37,10 +37,10 @@ Where
     
 #### ● Smooth algorithm  
 After calculating the shortest path,we want to smooth the path.  
-![alt text](https://github.com/malichao/SLAM/blob/master/SLAM/snapshot/search%20and%20smooth%20result.jpg)  
+![alt text](https://github.com/malichao/SLAM/blob/master/SLAM/snapshot/search%20and%20smooth%20result-s.jpg)  
    
 Here is another example of trajectories smooth algorithm:  
-![alt text](https://github.com/malichao/SLAM/blob/master/SLAM/snapshot/search%20and%20smooth%20result2.jpg)  
+![alt text](https://github.com/malichao/SLAM/blob/master/SLAM/snapshot/search%20and%20smooth%20result2-s.jpg)  
    
 #### ● PID simulator(one dimension) 
 Here is an one dimensional PID controller example,in which a car is trying to reach at 100m position. The following three curves show the result of different PID coefficients.  
