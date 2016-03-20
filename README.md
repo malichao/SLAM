@@ -2,7 +2,7 @@
 Robotics Simultaneous Localization and Mapping  
 ### Current Progress:  
 #### [● LIDAR sensor data acquisition and visulization](https://github.com/malichao/SLAM/tree/master/LIDAR)  
-#### [● Map search algorithm comparison(BFS,A*,Dynamic programming,3-dimension A*)](https://github.com/malichao/SLAM/tree/master/SLAM)  
+#### [● Map search algorithm comparison(BFS, A* ,Dynamic programming,3-dimensional A* )](https://github.com/malichao/SLAM/tree/master/SLAM)  
 #### [● Smooth algorithm](https://github.com/malichao/SLAM/tree/master/SLAM)  
 #### [● PID simulator(one dimension)](https://github.com/malichao/SLAM/tree/master/PID)  
     
@@ -12,7 +12,7 @@ Robotics Simultaneous Localization and Mapping
 ![alt text](https://github.com/malichao/SLAM/blob/master/LIDAR/snapshots/2016%20Feb%2004%20-3.jpg)  
 ![alt text](https://github.com/malichao/SLAM/blob/master/LIDAR/snapshots/2016%20Feb%2004%20-5.jpg)  
   
-#### ● Map search algorithm comparison(BFS,A*,Dynamic programming,3-dimension A*)  
+#### ● Map search algorithm comparison(BFS,A* , Dynamic programming, 3-dimensional A* )  
 ![alt text](https://github.com/malichao/SLAM/blob/master/Search/comparison-s.jpg)  
   
 In real life,situation is more complicated.For example,if we are heading to a place in rush hour and we need to go through a traffic light.Then perhaps we don't want to take a left turn because it's gonna wait for 5 minutes.Instead we may want to take a detour,which is faster then taking a left turn.This problem can be solved by adding a third dimension,which is orientation factor.Consider the following example:  
