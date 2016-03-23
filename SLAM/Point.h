@@ -8,10 +8,13 @@
 #ifndef POINT_H_
 #define POINT_H_
 
+//Define Point as template because in GraphSearch cases,map coordinate are positive
+//integers.But in smooth algorithm,these points will be converted to float to make
+//the path smooth.
 template<class T>
 struct Point {
-   //Must define these values in clockwise/counter-clockwise manner
    static const int DirectionSize=4;
+   //Must define these values in clockwise/counter-clockwise manner
    static const int Up=0;
    static const int Right=1;
    static const int Down=2;
@@ -19,7 +22,7 @@ struct Point {
 
    T x;
    T y;
-   unsigned int dir;	//0:Up	1:Down 2:Left	2:Right
+   unsigned int dir;	//0:Up	1:Right 2:Down	3:Left
 
    Point():x(0),y(0),dir(Up){};
    Point(T x,T y):x(x),y(y),dir(Up){};
