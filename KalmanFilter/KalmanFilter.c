@@ -3,7 +3,6 @@ struct KFParameter{
   float Q[2];     //Process noise
   float R;        //Measurement noise
   float H[2];     //Measurement Matrix
-  float K[2];     //Kalman gain
   float P[2][2];  //Error covariance
   float X[2];     //State of the system
 };
@@ -31,8 +30,8 @@ A general linear system could be described as
     C is a observe matrix
     D is a constant matrix
 */
-float kalmanFilter(KFParameter *kfp,float accAngle, float gyroRate){
-  float dt=kfp->dt;
+float kalmanFilter(KFParameter *p,float accAngle, float gyroRate){
+  float dt=p->dt;
   /*
   Step 1. Predict the next state
     Take measuring car angle using gyro as an example:
@@ -42,7 +41,7 @@ float kalmanFilter(KFParameter *kfp,float accAngle, float gyroRate){
     X(k)=A*X(k-1)=|1 dt| *X(k-1)
                   |0  1|
   */
-  kfp->X[0] += dt * (gyroRate - kfp->X[1]);
+  p->X[0] += dt * (gyroRate - p->X[1]);
   
   /*
   Step2. Update the error covariance
@@ -54,10 +53,10 @@ float kalmanFilter(KFParameter *kfp,float accAngle, float gyroRate){
       (AT) is the transpose of A(Matrix,not Angle)
       Q is the process noise
   */
-  kfp->P[0][0] +=  - dt * (kfp->P[1][0] + kfp->P[0][1]) + kfp->Q[0] * dt;
-  kfp->P[0][1] +=  - dt * kfp->P[1][1];
-  kfp->P[1][0] +=  - dt * kfp->P[1][1];
-  kfp->P[1][1] +=  + kfp->Q[1] * dt;
+  p->P[0][0] +=  - dt * (p->P[1][0] + p->P[0][1]) + p->Q[0] * dt;
+  p->P[0][1] +=  - dt * p->P[1][1];
+  p->P[1][0] +=  - dt * p->P[1][1];
+  p->P[1][1] +=  + p->Q[1] * dt;
  
  /*
   Step3. Update the Kalman gain
@@ -68,39 +67,41 @@ float kalmanFilter(KFParameter *kfp,float accAngle, float gyroRate){
  */
   float Z[2];
   float denominator;
+  float K[2];     //Kalman gain
 
   Z[0]=accAngle;
   Z[1]=0;
-  denominator = kfp->P[0][0] + kfp->R;
-  kfp->K[0] = kfp->P[0][0] / denominator;
-  kfp->K[1] = kfp->P[1][0] / denominator;
+  //denominator = p->P[0][0] + p->R;
+  K[0] = p->P[0][0] / (p->P[0][0] + p->R);
+  K[1] = p->P[1][0] / (p->P[0][0] + p->R);
  
   /*
   Step4. Update estimate
  */
-  kfp->X[0] += kfp->K[0] * (Z[0] - kfp->X[0]);
-  kfp->X[1] += kfp->K[1] * (Z[1] - kfp->X[1]);
+  p->X[0] += K[0] * (Z[0] - p->X[0]);
+  p->X[1] += K[1] * (Z[0] - p->X[0]);
 
   /*
   Step5. Update error covariance
  */
-  kfp->P[0][0] -=  kfp->K[0] * kfp->P[0][0];
-  kfp->P[0][1] -=  kfp->K[0] * kfp->P[0][1];
-  kfp->P[1][0] -=  kfp->K[1] * kfp->P[0][0];
-  kfp->P[1][1] -=  kfp->K[1] * kfp->P[0][1];
+  p->P[0][0] -=  K[0] * p->P[0][0];
+  p->P[0][1] -=  K[0] * p->P[0][1];
+  p->P[1][0] -=  K[1] * p->P[0][0];
+  p->P[1][1] -=  K[1] * p->P[0][1];
 
-  return kfp->X[0];
+  return p->X[0];
 }
 
+/*
 int main(){
   float AccAngle,gyroRate;
-  KFParameter kfp={ .dt=0.02,         //Sampling time
+  KFParameter p={ .dt=0.02,         //Sampling time
                     .Q={0.01,0.03},   //Process noise
                     .R=0.01,          //Measurement noise
                     .H={1,0},         //Measurement matrix,set to {1,0}
-                    .K={0,0},         //Kalman gain,init to 0
                     .P={{0,0},{0,0}}, //Error covariance,init to 0
                     .X={0,0}};        //System state,init to 0
-  KFParameter *p=&kfp;
+  KFParameter *p=&p;
   float kalmanY = kalmanFilter(p,AccAngle, gyroRate);
 }
+*/
