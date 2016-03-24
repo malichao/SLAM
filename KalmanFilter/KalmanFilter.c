@@ -1,11 +1,31 @@
+/******************************************************************************
+Author    : Lichao Ma
+Date      : Mar 23,2016
+Description :
+  Kalman filter for accelerometer and gyroscope fusion.All the intermediate
+  data are store in the struct and thus it available for multiple sensors
+  fusion.
+  
+  A usable setting for accelerometer and gyro:
+    KFParameter kfp={ .dt=0.5,            //Sampling time
+                    .Q={0.0001,0.0001},     //Process noise,usually very small
+                    .R=2,               //Measurement noise
+                    .H={1,0},             //Measurement matrix,set to {1,0}
+                    .P={{0,0},{0,0}},     //Error covariance,init to 0
+                    .X={0,0}};            //System state,init to 0
+*****************************************************************************/
+                    
+#include "KalmanFilter.h"
+/*
 struct KFParameter{
   float dt;       //Sampling period
-  float Q[2];     //Process noise
-  float R;        //Measurement noise
+  float Q[2];     //Process noise covariance
+  float R;        //Measurement noise covariance
   float H[2];     //Measurement Matrix
   float P[2][2];  //Error covariance
   float X[2];     //State of the system
 };
+*/
 
 /*
 Quick RECAP of state space matrix:
@@ -45,10 +65,10 @@ float kalmanFilter(KFParameter *p,float accAngle, float gyroRate){
       (AT) is the transpose of A(Matrix,not Angle)
       Q is the process noise
   */
-  p->P[0][0] +=  - dt * (p->P[1][0] + p->P[0][1]) + p->Q[0] * dt;
+  p->P[0][0] +=  - dt * (p->P[1][0] + p->P[0][1]) + p->Q[0] * p->coef * dt;
   p->P[0][1] +=  - dt * p->P[1][1];
   p->P[1][0] +=  - dt * p->P[1][1];
-  p->P[1][1] +=  + p->Q[1] * dt;
+  p->P[1][1] +=  + p->Q[1] * p->coef  * dt;
  
  /*
   Step3. Update the Kalman gain
@@ -57,8 +77,9 @@ float kalmanFilter(KFParameter *p,float accAngle, float gyroRate){
     H=|1|
       |0|
  */
-  float Z[2];
-  float denominator;
+  
+  //float denominator;
+  float Z[2];     //Observer input
   float K[2];     //Kalman gain
 
   Z[0]=accAngle;
@@ -82,6 +103,28 @@ float kalmanFilter(KFParameter *p,float accAngle, float gyroRate){
   p->P[1][1] -=  K[1] * p->P[0][1];
 
   return p->X[0];
+}
+
+void initKalmanFilter(KFParameter *p,float sampleTime,float coef,float R){
+  p->dt=sampleTime;
+  p->R=R;
+  p->coef=coef;
+  p->Q[0]=sampleTime*sampleTime*sampleTime/3.0;
+  p->Q[1]=sampleTime*sampleTime;
+  p->P[0][0]=0;p->P[0][1]=0;
+  p->P[1][0]=0;p->P[1][1]=0;
+  p->H[0]=1;
+  p->H[1]=0;
+  p->X[0]=0;
+  p->X[1]=0;
+}
+
+void setKFCoef(KFParameter *p,float coef){
+  p->coef=coef;
+}
+
+void setKFMeasureNoise(KFParameter *p,float R){
+  p->R=R;
 }
 
 /*
