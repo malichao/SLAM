@@ -1,21 +1,26 @@
-const float DT=0.02;      //Sampling period
-float Q_angle  =  0.01;   //Process noise
-float Q_gyro   =  0.0003; //Process noise
-float Q[2]={0.01,0.003};  //Process noise
-float Rk  =  0.01;   //Measurement noise
-float x_bias = 0;
-float y_bias = 0;
-float XP_00 = 0, XP_01 = 0, XP_10 = 0, XP_11 = 0;
-float YP_00 = 0, YP_01 = 0, YP_10 = 0, YP_11 = 0;
-float KFangleX = 0.0;
-float Xk = 0.0;
-
-float kalmanFilterY(float accAngle, float gyroRate){
-  float  y, denominator;
-  float K[2];   //Kalman gain
-  float Zk=accAngle;
-  float numerator[2][2]={{0,0},{0,0}};
-  float Pk[2][2]={{0,0},{0,0}};
+float DT=0.02;                //Sampling period
+float Q[2]={0.01,0.003};      //Process noise
+float Rk  =  0.01;            //Measurement noise
+float K[2];                   //Kalman gain
+float Pk[2][2]={{0,0},{0,0}}; //Error covariance
+float H[2]={1,0};             //Measurement Matrix
+float Xk[2]={0,0};            //State of the system
+/*
+Quick RECAP of state space matrix:
+A general linear system could be described as
+  Xdot = AX + Bu
+  Y    = CX + D
+  where 
+    X is the state of the system
+    Y is the output of the system
+    u is the control signal
+    Xdot is the derivative of the state X
+    A is the physical equation of the system 
+    B is a control matrix
+    C is a observe matrix
+    D is a constant matrix
+*/
+float kalmanFilter(float accAngle, float gyroRate){
   /*
   Step 1. Predict the next state
     Take measuring car angle using gyro as an example:
@@ -25,13 +30,16 @@ float kalmanFilterY(float accAngle, float gyroRate){
     X(k)=A*X(k-1)=|1 dt| *X(k-1)
                   |0  1|
   */
-  Xk += DT * (gyroRate - y_bias);
+  Xk[0] += DT * (gyroRate - Xk[1]);
   
   /*
   Step2. Update the error covariance
     P=AP(AT) + Q
     where
-      (AT) is the transpose of A
+      P is the corvariance of Angle(A) and Speed(S)
+      P=|Corv(AA) Corv(AS)|
+        |Corv(SA) Corv(SS)|
+      (AT) is the transpose of A(Matrix,not Angle)
       Q is the process noise
   */
   Pk[0][0] +=  - DT * (Pk[1][0] + Pk[0][1]) + Q[0] * DT;
@@ -41,24 +49,39 @@ float kalmanFilterY(float accAngle, float gyroRate){
  
  /*
   Step3. Update the Kalman gain
+  Since the accelerometer only measure the angle not the 
+  angular speed,so
+    H=|1|
+      |0|
  */
-  y = Zk - Xk;
-  denominator = YP_00 + Rk;
-  K[0] = YP_00 / denominator;
-  K[1] = YP_10 / denominator;
+  float Zk[2];
+  float denominator;
+
+  Zk[0]=accAngle;
+  Zk[1]=0;
+  denominator = Pk[0][0] + Rk;
+  K[0] = Pk[0][0] / denominator;
+  K[1] = Pk[1][0] / denominator;
  
-  Xk +=  K[0] * y;
-  y_bias  +=  K[1] * y;
-  YP_00 -= K[0] * YP_00;
-  YP_01 -= K[0] * YP_01;
-  YP_10 -= K[1] * YP_00;
-  YP_11 -= K[1] * YP_01;
- 
-  return Xk;
+  /*
+  Step4. Update estimate
+ */
+  Xk[0] += K[0] * (Zk[0] - Xk[0]);
+  Xk[1] += K[1] * (Zk[1] - Xk[1]);
+
+  /*
+  Step5. Update error covariance
+ */
+  Pk[0][0] -=  K[0] * Pk[0][0];
+  Pk[0][1] -=  K[0] * Pk[0][1];
+  Pk[1][0] -=  K[1] * Pk[0][0];
+  Pk[1][1] -=  K[1] * Pk[0][1];
+
+  return Xk[0];
 }
 
 int main(){
   float AccYangle,rate_gyr_y;
   //float kalmanX = kalmanFilterX(AccXangle, rate_gyr_x);
-  float kalmanY = kalmanFilterY(AccYangle, rate_gyr_y);
+  float kalmanY = kalmanFilter(AccYangle, rate_gyr_y);
 }
