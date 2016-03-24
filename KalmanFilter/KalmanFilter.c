@@ -73,7 +73,7 @@ float kalmanFilter(KFParameter *p,float accAngle, float gyroRate){
   Z[1]=0;
   //denominator = p->P[0][0] + p->R;
   K[0] = p->P[0][0] / (p->P[0][0] + p->R);
-  K[1] = p->P[1][0] / (p->P[0][0] + p->R);
+  K[1] = p->P[1][0] / (p->P[1][0] + p->R);
  
   /*
   Step4. Update estimate
