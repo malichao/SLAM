@@ -6,15 +6,7 @@ struct KFParameter{
   float P[2][2];  //Error covariance
   float X[2];     //State of the system
 };
-/*
-float dt=0.02;                //Sampling period
-float Q[2]={0.01,0.003};      //Process noise
-float Rk  =  0.01;            //Measurement noise
-float K[2];                   //Kalman gain
-float P[2][2]={{0,0},{0,0}}; //Error covariance
-float H[2]={1,0};             //Measurement Matrix
-float X[2]={0,0};            //State of the system
-*/
+
 /*
 Quick RECAP of state space matrix:
 A general linear system could be described as
@@ -94,14 +86,18 @@ float kalmanFilter(KFParameter *p,float accAngle, float gyroRate){
 
 /*
 int main(){
-  float AccAngle,gyroRate;
-  KFParameter p={ .dt=0.02,         //Sampling time
-                    .Q={0.01,0.03},   //Process noise
-                    .R=0.01,          //Measurement noise
-                    .H={1,0},         //Measurement matrix,set to {1,0}
-                    .P={{0,0},{0,0}}, //Error covariance,init to 0
-                    .X={0,0}};        //System state,init to 0
-  KFParameter *p=&p;
-  float kalmanY = kalmanFilter(p,AccAngle, gyroRate);
+  float accAngle,gyroRate,fuseAngle;
+  KFParameter kfp={ .dt=0.5,            //Sampling time
+                    .Q={0.0001,0.0001},     //Process noise,usually very small
+                    .R=2,               //Measurement noise
+                    .H={1,0},             //Measurement matrix,set to {1,0}
+                    .P={{0,0},{0,0}},     //Error covariance,init to 0
+                    .X={0,0}};            //System state,init to 0
+  KFParameter *p=&kfp;
+
+  for(float i=0;i<500;i+=p->dt){
+    fuseAngle=kalmanFilter(p,accAngle, gyroRate);
+    printf("%.3f,%.3f,%.3f\n",accAngle,gyroRate,fuseAngle);
+  }
 }
 */

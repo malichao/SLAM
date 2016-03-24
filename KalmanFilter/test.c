@@ -6,12 +6,12 @@
 
 int main(){
 	float accAngle,gyroRate,fuseAngle;
-	KFParameter kfp={ .dt=0.5,         //Sampling time
-	                .Q={0.0001,0.0003},   //Process noise
-	                .R=1,          //Measurement noise
-	                .H={1,0},         //Measurement matrix,set to {1,0}
-	                .P={{0,0},{0,0}}, //Error covariance,init to 0
-	                .X={0,0}};        //System state,init to 0
+	KFParameter kfp={	.dt=0.5,         		//Sampling time
+		                .Q={0.0001,0.0001},   	//Process noise,usually very small
+		                .R=2,          			//Measurement noise
+		                .H={1,0},         		//Measurement matrix,set to {1,0}
+		                .P={{0,0},{0,0}}, 		//Error covariance,init to 0
+		                .X={0,0}};        		//System state,init to 0
 	KFParameter *p=&kfp;
 	//float kalmanY = kalmanFilter(p,AccAngle, gyroRate);
 	gyroRate=0;
@@ -21,9 +21,12 @@ int main(){
 
 	for(float i=0;i<500;i+=p->dt){
 		accAngle=sin(i*3.14/180)*10.0;
-		gyroRate=accAngle-lastAccAngle+1;	//This gyro has a constant driff of 1
+		gyroRate=accAngle-lastAccAngle+0.05;//This gyro has a constant driff of 0.05
+		gyroRate+=rand()%8/100.0;			//Add 10% white noise 0~0.08
 		lastAccAngle=accAngle;
-		accAngle+=accAngle+rand()%100/100.0;	//0~1
+		accAngle+=rand()%200/100.0;			//Add some white noise 0~1
+		if(rand()%100==0)					//Add 1% of spike,-10~10
+			accAngle+=(rand()%200-100)/10.0;
 		fuseAngle=kalmanFilter(p,accAngle, gyroRate);
 		//fuseAngle=kalmanUpdate(gyroRate,accAngle);
 		//fuseAngle=kalmanFilter2(accAngle, gyroRate);
