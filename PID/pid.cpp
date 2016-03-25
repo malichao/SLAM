@@ -6,8 +6,6 @@ Description :
 	PID controller program for controlling the car
 *****************************************************************************/
 #include <math.h>
-#include <iostream>
-#include <stdio.h>
 #include <numeric>      // std::accumulate
 #include "car.h"
 #include "pid.h"
@@ -61,7 +59,7 @@ float PID::simulate(Car &car, const float target, const size_t simulationTimes) 
 //target: the target position of the car
 //tolerance: the minimal steps to probe the PID parameters
 //simulationTimes: the duration to try out each PID setting
-void PID::twiddle(	Car &car,
+bool PID::twiddle(	Car &car,
 					const float target,
 					const float tolerance,
 					const unsigned int simulationTimes){
@@ -71,19 +69,19 @@ void PID::twiddle(	Car &car,
 	float deltaPID[3] = { 1, 1, 1 };	//The steps it takes to probe the PID values
 	float bestError = simulate(car, target, simulationTimes);
 
-	unsigned int watchDog = 1000;	//Prevent dead loop
+	//Set maximum trail times to 200 to prevent dead loop
+	unsigned int watchDog = 200;
 	bool success = true;
 
 	//Tolerance is the minimal steps to probe the PID coefficient
 	while (accumulate(deltaPID, deltaPID + 3, 0) > tolerance) {
-		if (--watchDog == 0) {
-			//cout << "twiddle() runtime exceeded!\n" << endl;
-			success = false;
-			break;
-		}
-
 		float error = 0;
 		for (size_t i = 0; i < 3; i++) {	//Probing P,I,D one by one
+
+			if (--watchDog == 0) {
+				success = false;
+				break;
+			}
 			pid[i] += deltaPID[i];			//First,try increasing the PID
 			setPID(pid[0], pid[1], pid[2]);
 			error = simulate(car, target, simulationTimes);
@@ -111,8 +109,6 @@ void PID::twiddle(	Car &car,
 
 	//If optimization succeeded,update the pid coefficient,otherwise restore the values
 	if (success) {
-		//cout << "twiddle success\n";
-		//printf("Optimal PID setting:\nP%.3f\tI%.3f\tD%.3f\n", pid[0], pid[1],pid[2]);
 		setPID(pid[0], pid[1], pid[2]);
 	} else {
 		setPID(pidBackup[0], pidBackup[1], pidBackup[2]);
@@ -120,17 +116,4 @@ void PID::twiddle(	Car &car,
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 

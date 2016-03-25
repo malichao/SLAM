@@ -30,13 +30,15 @@ int main(){
 	simpleCar.setSystemLag(2);
 	PID pid(kP,kI,kD);
 
-	///////////////Testing Twiddle////////////////////
-	//float twiddleTolerance=0.5;
-	//pid.twiddle(simpleCar,target,twiddleTolerance,simulationTime);
+	//////// Testing the PID self optimization algorithm //////
+	float twiddleTolerance=0.5;
+	if(pid.twiddle(simpleCar,target,twiddleTolerance,simulationTime)){
+		cout <<"twiddle success\n";
+	}else{
+		cout << "twiddle() runtime exceeded!\n";
+	}
+	printf("P %.3f\t\tI %.3f\t\tD %.3f\n",pid.getP(),pid.getI(),pid.getD());
 
-	//cout<<"Input kP kI kD and file number\n";
-	//string number;
-	//cin>>kP>>kI>>kD>>number;
 
 	cout<<"PID simulation:\n";
 	cout<<"time\tVelocity\tDistance\n";

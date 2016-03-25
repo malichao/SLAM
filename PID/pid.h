@@ -16,6 +16,9 @@ public:
 		kI=i;
 		kD=d;
 	}
+	float getP(){return kP;}
+	float getI(){return kI;}
+	float getD(){return kD;}
 
 	void update(Car &car,const float target);
 
@@ -31,7 +34,7 @@ public:
 	//target: the target position of the car
 	//tolerance: the minimal steps to probe the PID parameters
 	//simulationTimes: the duration to try out each PID setting
-	void twiddle(	Car &car,
+	bool twiddle(	Car &car,
 					const float target,
 					const float tolerance,
 					const unsigned int simulationTimes);
