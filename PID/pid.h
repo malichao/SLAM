@@ -10,7 +10,7 @@
 
 class PID{
 public:
-	void update(Car &car,float target);
+	void update(Car &car,const float target);
 	PID(float p,float i,float d):kP(p),kI(i),kD(d),output(0){}
 	void setPID(float p,float i,float d){
 		kP=p;
@@ -18,6 +18,11 @@ public:
 		kD=d;
 	}
 	float getOutput(){return output;}
+	float simulate(Car &car,const float target,const size_t simulationTime);
+	void twiddle(	Car &car,
+					const float target,
+					const float tolerance,
+					const unsigned int simulationTime);
 private:
 	float kP;
 	float kI;

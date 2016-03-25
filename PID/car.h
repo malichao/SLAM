@@ -18,6 +18,7 @@ public:
 		mass(m),friction(f),resistance(r),velocity(v),distance(dis),direction(dir){}
 	float getVelocity(){return velocity;}
 	float getDistance(){return distance;}
+	void resetOrigin(){velocity=0;distance=0;}
 private:
 	float mass;			//kg
 	float friction;		//ratio
