@@ -61,9 +61,11 @@ void PID::twiddle(	Car &car,
 	float bestError=simulate(car,target,simulationTime);
 
 	unsigned int watchDog=1000;	//Prevent dead loop
+	bool success=true;
 	while(accumulate(deltaPID,deltaPID+3,0)>tolerance){
 		if(--watchDog==0){
 			cout<<"twiddle() runtime exceeded!\n"<<endl;
+			success=false;
 			break;
 		}
 
@@ -89,7 +91,15 @@ void PID::twiddle(	Car &car,
 			}
 		}
 	}
-	printf("Optimal PID setting:\nP%.3f\tI%.3f\tD%.3f\n",pid[0],pid[1],pid[2]);
+	if(success){
+		cout<<"twiddle success\n";
+		printf("Optimal PID setting:\nP%.3f\tI%.3f\tD%.3f\n",pid[0],pid[1],pid[2]);
+		setPID(pid[0],pid[1],pid[2]);
+	}
+	else{
+		setPID(pidBackup[0],pidBackup[1],pidBackup[2]);
+	}
+
 
 }
 

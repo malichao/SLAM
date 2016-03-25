@@ -15,18 +15,19 @@
 using namespace std;
 
 int main(){
-	//float kP=1;
-	//float kI=0;
-	//float kD=0.5;
-	float kP=19.188;
+	float kP=1;
 	float kI=0;
-	float kD=58.473;
+	float kD=3;
+	//float kP=19.188;
+	//float kI=0;
+	//float kD=58.473;
 	vector<float> speed;
 	vector<float> distance;
 	float target=100;
 	size_t simulationTime=200;
 
 	Car simpleCar(1,0.1,0.01,0.1);//Mass(1),Friction(0.1),Resistance(0.01),Period(0.1)
+	simpleCar.setSystemLag(2);
 	PID pid(kP,kI,kD);
 
 	///////////////Testing Twiddle////////////////////
@@ -38,8 +39,8 @@ int main(){
 	//cin>>kP>>kI>>kD>>number;
 
 	cout<<"PID simulation:\n";
-
 	cout<<"time\tVelocity\tDistance\n";
+	simpleCar.resetOrigin();
 	for(size_t i=0;i<simulationTime;i++){
 		//cout<<update(simpleCar,force)<<endl;
 		pid.update(simpleCar,target);
@@ -49,7 +50,7 @@ int main(){
 	}
 
 	ofstream file("result.csv");
-	for(int i=0;i<simulationTime;i++)
+	for(size_t i=0;i<simulationTime;i++)
 		file<<speed[i]<<","<<distance[i]<<endl;
 	file.close();
 

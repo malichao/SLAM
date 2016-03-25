@@ -21,6 +21,7 @@ public:
 			Mass(m),Friction(f),Resistance(r),Velocity(0),Distance(0),Direction(Still),Period(p),Lag(0){}
 	float getVelocity(){return Velocity;}
 	float getDistance(){return Distance;}
+	void setSystemLag(size_t l){Lag=l;}
 	void resetOrigin(){
 		Velocity=0;
 		Distance=0;
