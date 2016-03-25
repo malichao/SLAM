@@ -1,9 +1,12 @@
-/*
- * test.cpp
- *
- *  Created on: Mar 25, 2016
- *      Author: Lichao
- */
+/******************************************************************************
+Author		: Lichao Ma
+Date  		: Mar 25,2016
+version		: v0.2
+Description :
+	Test file for testing the car model,PID controller,and PID self optimization
+	algorithm.The simulated result are both printed on screen and saved to the
+	log file for further use.
+*****************************************************************************/
 
 #include <iostream>
 #include <vector>
@@ -39,7 +42,7 @@ int main(){
 	}
 	printf("P %.3f\t\tI %.3f\t\tD %.3f\n",pid.getP(),pid.getI(),pid.getD());
 
-
+	////////////// Simulate the car movement ////////////////
 	cout<<"PID simulation:\n";
 	cout<<"time\tVelocity\tDistance\n";
 	simpleCar.resetOrigin();
@@ -51,6 +54,7 @@ int main(){
 		distance.push_back(simpleCar.getDistance());
 	}
 
+	///////// Save the result to result.csv for visualizing the data ////////
 	ofstream file("result.csv");
 	for(size_t i=0;i<simulationTime;i++)
 		file<<speed[i]<<","<<distance[i]<<endl;
