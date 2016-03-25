@@ -5,4 +5,44 @@
  *      Author: Lichao
  */
 
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <cstdlib>
+#include <string>
+#include "car.h"
+#include "pid.h"
+using namespace std;
 
+int main(){
+	float kP=1;
+	float kI=0;
+	float dIt=0.1;
+	float kD=0;
+	float force=10;
+	vector<float> speed;
+	vector<float> distance;
+
+	Car simpleCar(1,0.1,0.01,0,0,Car::Still);
+	PID pid(kP,kI,kD);
+
+	//cout<<"Input kP kI kD and file number\n";
+	//string number;
+	//cin>>kP>>kI>>kD>>number;
+	cout<<"result:\n";
+
+	int simulationTime=200;
+	for(int i=0;i<simulationTime;i++){
+		//cout<<update(simpleCar,force)<<endl;
+		pid.update(simpleCar,100);
+		cout<<i<<"\t";
+		speed.push_back(simpleCar.getVelocity());
+		distance.push_back(simpleCar.getDistance());
+	}
+
+	ofstream file("result.csv");
+	for(int i=0;i<simulationTime;i++)
+		file<<speed[i]<<","<<distance[i]<<endl;
+	file.close();
+	system("pause");
+}
