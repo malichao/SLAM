@@ -1,8 +1,31 @@
+/******************************************************************************
+Author		: Lichao Ma
+Date  		: Mar 19,2016
+version		: v0.2
+Description :
+	A simplified car model to simulate car motion.Currently only moves in one
+	dimension(horizontal).
+	Simulation model includes the following parameters:
+	Mass		: the mass of the car
+	Friction	: always in the opposite direction of the car motion
+	Resistance	: wind resistance,proportional to velocity square
+	Velocity	: m/s
+	Distance	: meter
+	Direction	: Backward,Still,Forward
+	Period		: simulation update period,e.g.,0.1s,0.5s,1s
+	Lag			: simulate the delay of the system
+*****************************************************************************/
 #include "math.h"
 #include "car.h"
 
 using namespace std;
 
+//Here's the current simulation process:
+//1. Check the lag of the system
+//2. The force applied on the car must be greater then the static friction to make
+//	 the car move.
+//3. If the car is moving,there will be wind resistance,which is proportional to
+//	 the square of velocity.
 void Car::update(const float f){
 	float force=f;
 	float dragForce;
@@ -23,7 +46,8 @@ void Car::update(const float f){
 		return;
 	}
 
-	if(fabs(Velocity)<Epsilon){		//Considered as still
+	//If the car is moving too slow,we consider it as stopped
+	if(fabs(Velocity)<Epsilon){
 		Direction=Still;
 		if(force>0){
 			forceDelta=force-Mass*Friction*10;

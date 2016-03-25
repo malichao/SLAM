@@ -1,9 +1,10 @@
-/*
- * pid.h
- *
- *  Created on: Mar 25, 2016
- *      Author: Lichao
- */
+/******************************************************************************
+Author		: Lichao Ma
+Date  		: Mar 25,2016
+version		: v0.1
+Description :
+	PID controller program for controlling the car
+*****************************************************************************/
 
 #ifndef PID_H_
 #define PID_H_
