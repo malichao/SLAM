@@ -3,7 +3,7 @@ Author    : Lichao Ma
 Date      : Mar 23,2016
 Description :
   Kalman filter for accelerometer and gyroscope fusion.All the intermediate
-  data are store in the struct and thus it available for multiple sensors
+  data are store in the struct and thus it's available for multiple sensors
   fusion.
   
   A usable setting for accelerometer and gyro:
