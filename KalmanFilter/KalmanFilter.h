@@ -28,7 +28,7 @@ struct KFParameter{
   float X[2];     //State of the system
 };
 
-void initKalmanFilter(KFParameter *p,float sampleTime,float R);
+void initKalmanFilter(KFParameter *p,float sampleTime,float coef,float R);
 float kalmanFilter(KFParameter *p,float accAngle, float gyroRate);
 void setKFCoef(KFParameter *p,float coef);
 void setKFMeasureNoise(KFParameter *p,float R);
