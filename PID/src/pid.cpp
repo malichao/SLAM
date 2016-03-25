@@ -110,10 +110,11 @@ bool PID::twiddle(	Car &car,
 	//If optimization succeeded,update the pid coefficient,otherwise restore the values
 	if (success) {
 		setPID(pid[0], pid[1], pid[2]);
+		return true;
 	} else {
 		setPID(pidBackup[0], pidBackup[1], pidBackup[2]);
+		return false;
 	}
-
-
+	return false;
 }
 
