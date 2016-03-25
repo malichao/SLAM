@@ -26,7 +26,7 @@ int main(){
 	float target=100;
 	size_t simulationTime=200;
 
-	Car simpleCar(1,0.1,0.01,0,0,Car::Still);
+	Car simpleCar(1,0.1,0.01,0.1);//Mass(1),Friction(0.1),Resistance(0.01),Period(0.1)
 	PID pid(kP,kI,kD);
 
 	///////////////Testing Twiddle////////////////////
