@@ -17,9 +17,7 @@ using namespace std;
 int main(){
 	float kP=1;
 	float kI=0;
-	float dIt=0.1;
-	float kD=0;
-	float force=10;
+	float kD=0.5;
 	vector<float> speed;
 	vector<float> distance;
 
@@ -29,13 +27,14 @@ int main(){
 	//cout<<"Input kP kI kD and file number\n";
 	//string number;
 	//cin>>kP>>kI>>kD>>number;
-	cout<<"result:\n";
+	cout<<"PID simulation:\n";
 
 	int simulationTime=200;
+	cout<<"time\tVelocity\tDistance\n";
 	for(int i=0;i<simulationTime;i++){
 		//cout<<update(simpleCar,force)<<endl;
 		pid.update(simpleCar,100);
-		cout<<i<<"\t";
+		printf("%d\t%.3f\t\t%.3f\n",i,simpleCar.getVelocity(),simpleCar.getDistance());
 		speed.push_back(simpleCar.getVelocity());
 		distance.push_back(simpleCar.getDistance());
 	}
@@ -44,5 +43,4 @@ int main(){
 	for(int i=0;i<simulationTime;i++)
 		file<<speed[i]<<","<<distance[i]<<endl;
 	file.close();
-	system("pause");
 }

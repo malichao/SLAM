@@ -11,7 +11,7 @@
 class PID{
 public:
 	void update(Car &car,float target);
-	PID(float p,float i,float d):kP(p),kI(i),kD(d){}
+	PID(float p,float i,float d):kP(p),kI(i),kD(d),output(0){}
 	void setPID(float p,float i,float d){
 		kP=p;
 		kI=i;
@@ -21,7 +21,6 @@ public:
 private:
 	float kP;
 	float kI;
-	float dIt;
 	float kD;
 	float output;
 	void constrain(float &val,const float min,const float max);

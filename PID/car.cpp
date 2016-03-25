@@ -1,9 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <fstream>
-#include <cmath>
-#include <cstdlib>
-#include <string>
+#include "math.h"
 #include "car.h"
 
 using namespace std;

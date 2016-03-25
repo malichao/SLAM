@@ -15,7 +15,7 @@ void PID::update(Car &car,float target){
 
 	error=target-car.getDistance();
 	dError=error-lastError;
-	integral+=error*dIt;
+	integral+=error;
 	constrain(integral,-100,100);
 	lastError=error;
 
