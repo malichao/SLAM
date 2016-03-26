@@ -75,7 +75,7 @@ private:
 	float NoiseLevelDistance;
 	float NoiseLevelVelocity;
 	std::queue<float> ForceQue;
-	const static float Epsilon=1E-5;
+	const static float Epsilon;
 
 	void constrain(float &val, const float min, const float max) const{
 		if (val < min) val = min;

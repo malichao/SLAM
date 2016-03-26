@@ -22,6 +22,7 @@ Description :
 #include <math.h>
 #include "car.h"
 
+const float Car::Epsilon=1E-5;
 using namespace std;
 
 void Car::setNoise(const float noiseF,const float noiseD,const float noiseV){
