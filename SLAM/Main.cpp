@@ -33,7 +33,6 @@ unsigned int actionCost[]={100,0,2};
 int main(void) {
 	//Point start(0,0),target(2,2);
 	Point<unsigned int> start(4,2),target(0,0);
-	Point<unsigned int> dummy;
 	GraphSearch gs;
 	vector<Point<unsigned int> > route;
 

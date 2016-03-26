@@ -11,24 +11,25 @@ Description :
 
 class PID{
 public:
-	PID(float p, float i, float d) : kP(p), kI(i), kD(d), output(0) {}
-	void setPID(float p,float i,float d){
+	PID(const float p,const float i,const float d) :
+					kP(p), kI(i), kD(d), output(0) {}
+	void setPID(float p,const float i,const float d){
 		kP=p;
 		kI=i;
 		kD=d;
 	}
-	float getP(){return kP;}
-	float getI(){return kI;}
-	float getD(){return kD;}
+	float getP() const { return kP; }
+	float getI() const { return kI; }
+	float getD() const { return kD; }
 
 	void update(Car &car,const float target);
 
-	float getOutput(){ return output; }
+	float getOutput() const { return output; }
 
 	//Simply simulate the car motion using PID control and return the average error.
 	//If you want to record the speed and distance of the car at every time step,
 	//use update() and manually record the speed and distance.
-	float simulate(Car &car,const float target,const size_t simulationTime);
+	float simulate(Car &car,const float target,const std::size_t simulationTime);
 
 	//PID parameter self optimizing function,parameter description:
 	//car	: this program use a one-dimensional car as trail example
@@ -38,7 +39,7 @@ public:
 	bool twiddle(	Car &car,
 					const float target,
 					const float tolerance,
-					const unsigned int simulationTimes);
+					const std::size_t simulationTimes);
 private:
 	float kP;
 	float kI;
@@ -46,7 +47,10 @@ private:
 	float output;
 
 	//Constrain the output of each term
-	void constrain(float &val,const float min,const float max);
+	void constrain(float &val, const float min, const float max) const{
+		if (val < min) val = min;
+		if (val > max) val = max;
+	}
 };
 
 #endif /* PID_H_ */

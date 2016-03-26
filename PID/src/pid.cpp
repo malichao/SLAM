@@ -31,13 +31,6 @@ void PID::update(Car &car, const float target) {
 }
 
 
-void PID::constrain(float &val, const float min, const float max) {
-	if (val < min)
-		val = min;
-	if (val > max)
-		val = max;
-}
-
 //Simply simulate the car motion using PID control and return the average error.
 //If you want to record the speed and distance of the car at every time step,
 //use update() and manually record the speed and distance.
