@@ -37,7 +37,10 @@ void Car::update(const float f){
 	float force=f+(rand() % 200-100)/100.0*NoiseLevelForce;	//Add some random noise to the input
 	float dragForce;
 	float forceDelta;
-
+	float forceLimit= fabs(Velocity)<Epsilon ? MaxForce : MaxPowerOutput/Velocity;
+	constrain(force,-forceLimit,forceLimit);
+	constrain(force,-MaxForce,MaxForce);
+	Force=force;
 	/*
 	 * First we deal with system lag.
 	 * If there is no lag,ideally,then Lag=0,and we update the car every time.
@@ -92,7 +95,7 @@ void Car::update(const float f){
 			Velocity+=forceDelta*Period;
 		}
 	}
-	constrain(Velocity,-MaxSpeed,MaxSpeed);
+	//constrain(Velocity,-MaxSpeed,MaxSpeed);
 	Distance+=Velocity*Period;
 }
 

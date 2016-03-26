@@ -21,9 +21,9 @@ int main(){
 	float kP=1;
 	float kI=0;
 	float kD=3;
-	//float kP=19.188;
+	//float kP=4.8;
 	//float kI=0;
-	//float kD=58.473;
+	//float kD=25;
 	vector<float> speed;
 	vector<float> distance;
 	float target=100;
@@ -45,12 +45,12 @@ int main(){
 
 	////////////// Simulate the car movement ////////////////
 	cout<<"PID simulation:\n";
-	cout<<"time\tVelocity\tDistance\n";
+	cout<<"time\tForce\tVelocity\tDistance\n";
 	simpleCar.resetOrigin();
 	for(size_t i=0;i<simulationTime;i++){
 		//cout<<update(simpleCar,force)<<endl;
 		pid.update(simpleCar,target);
-		printf("%d\t%.3f\t\t%.3f\n",i,simpleCar.getVelocity(),simpleCar.getDistance());
+		printf("%d\t%.3f\t%.3f\t\t%.3f\n",i,simpleCar.getForce(),simpleCar.getVelocity(),simpleCar.getDistance());
 		speed.push_back(simpleCar.getVelocity());
 		distance.push_back(simpleCar.getDistance());
 	}
