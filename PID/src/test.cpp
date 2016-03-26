@@ -44,15 +44,23 @@ int main(){
 	printf("P %.3f\t\tI %.3f\t\tD %.3f\n",pid.getP(),pid.getI(),pid.getD());
 
 	////////////// Simulate the car movement ////////////////
+	simpleCar.resetOrigin();
+	float targetQue[]={100,50,120,40};
+	size_t queSize=sizeof(targetQue)/sizeof(targetQue[0]);
+	cout<<"Target number = "<<queSize<<endl;
 	cout<<"PID simulation:\n";
 	cout<<"time\tForce\tVelocity\tDistance\n";
-	simpleCar.resetOrigin();
-	for(size_t i=0;i<simulationTime;i++){
-		//cout<<update(simpleCar,force)<<endl;
-		pid.update(simpleCar,target);
-		printf("%d\t%.3f\t%.3f\t\t%.3f\n",i,simpleCar.getForce(),simpleCar.getVelocity(),simpleCar.getDistance());
-		speed.push_back(simpleCar.getVelocity());
-		distance.push_back(simpleCar.getDistance());
+	for(size_t j=0;j<queSize;j++){
+		target=targetQue[j];
+		cout<<"\nTarget position = "<<target<<endl;
+		for(size_t i=0;i<simulationTime/queSize;i++){
+			//cout<<update(simpleCar,force)<<endl;
+			pid.update(simpleCar,target);
+			printf("%d\t%.2f\t%.2f\t\t%.2f\n",
+					i,simpleCar.getForce(),simpleCar.getVelocity(),simpleCar.getDistance());
+			speed.push_back(simpleCar.getVelocity());
+			distance.push_back(simpleCar.getDistance());
+		}
 	}
 
 	///////// Save the result to result.csv for visualizing the data ////////

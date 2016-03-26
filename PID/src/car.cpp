@@ -95,7 +95,7 @@ void Car::update(const float f){
 			Velocity+=forceDelta*Period;
 		}
 	}
-	//constrain(Velocity,-MaxSpeed,MaxSpeed);
+	constrain(Velocity,-MaxSpeed,MaxSpeed);
 	Distance+=Velocity*Period;
 }
 
