@@ -27,9 +27,9 @@ int main(){
 	vector<float> speed;
 	vector<float> distance;
 	float target=100;
-	size_t simulationTime=200;
+	size_t simulationTime=400;
 
-	Car simpleCar(1,0.1,0.01,0.1);//Mass(1),Friction(0.1),Resistance(0.01),Period(0.1)
+	Car simpleCar(1,0.1,0.01,0.05);//Mass(1),Friction(0.1),Resistance(0.01),Period(0.1)
 	simpleCar.setSystemLag(2);
 	simpleCar.setNoise(0.4,0.7,0.1);	//Force noise,distance and speed reading noise
 	PID pid(kP,kI,kD);
@@ -45,7 +45,7 @@ int main(){
 
 	////////////// Simulate the car movement ////////////////
 	simpleCar.resetOrigin();
-	float targetQue[]={100,50,120,40};
+	float targetQue[]={30,50,80,150,100,80};
 	size_t queSize=sizeof(targetQue)/sizeof(targetQue[0]);
 	cout<<"Target number = "<<queSize<<endl;
 	cout<<"PID simulation:\n";

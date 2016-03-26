@@ -32,12 +32,12 @@ public:
 			const float dis, Direction dir, const float p, std::size_t l) :
 						Mass(m), Friction(f), Resistance(r), Velocity(v),
 						Distance(dis), Direction(dir), Period(p), Lag(l),
-						Force(0),MaxSpeed(30), MaxForce(1.6),MaxPowerOutput(50),
+						Force(0),MaxSpeed(30), MaxForce(3),MaxPowerOutput(150),
 						NoiseLevelForce(0),NoiseLevelDistance(0), NoiseLevelVelocity(0) {}
 	Car(const float m, const float f, const float r, const float p) :
 						Mass(m), Friction(f), Resistance(r), Velocity(0),
 						Distance(0),Direction(Still), Period(p), Lag(0),
-						Force(0),MaxSpeed(30), MaxForce(1.6),MaxPowerOutput(50),
+						Force(0),MaxSpeed(30), MaxForce(3),MaxPowerOutput(150),
 						NoiseLevelForce(0),NoiseLevelDistance(0), NoiseLevelVelocity(0) {}
 
 	void update(const float force);
