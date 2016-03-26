@@ -15,10 +15,16 @@ Description :
 	Period		: simulation update period,e.g.,0.1s,0.5s,1s
 	Lag			: simulate the delay of the system
 *****************************************************************************/
-#include "math.h"
+#include <math.h>
 #include "car.h"
 
 using namespace std;
+
+void Car::setNoise(const float noiseD,const float noiseV){
+	NoiseLevelDistance=noiseD;
+	NoiseLevelVelocity=noiseV;
+	srand(time(NULL));
+}
 
 //Here's the current simulation process:
 //1. Check the lag of the system

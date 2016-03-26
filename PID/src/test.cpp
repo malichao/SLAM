@@ -31,6 +31,7 @@ int main(){
 
 	Car simpleCar(1,0.1,0.01,0.1);//Mass(1),Friction(0.1),Resistance(0.01),Period(0.1)
 	simpleCar.setSystemLag(2);
+	simpleCar.setNoise(1.0,0.5);	//DistanceNoise 1m,VelocityNoise 0.5m/s
 	PID pid(kP,kI,kD);
 
 	//////// Testing the PID self optimization algorithm //////
