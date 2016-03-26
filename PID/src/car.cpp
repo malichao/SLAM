@@ -20,7 +20,8 @@ Description :
 
 using namespace std;
 
-void Car::setNoise(const float noiseD,const float noiseV){
+void Car::setNoise(const float noiseF,const float noiseD,const float noiseV){
+	NoiseLevelForce=noiseF;
 	NoiseLevelDistance=noiseD;
 	NoiseLevelVelocity=noiseV;
 	srand(time(NULL));
@@ -33,7 +34,7 @@ void Car::setNoise(const float noiseD,const float noiseV){
 //3. If the car is moving,there will be wind resistance,which is proportional to
 //	 the square of velocity.
 void Car::update(const float f){
-	float force=f;
+	float force=f+(rand() % 200-100)/100.0*NoiseLevelForce;	//Add some random noise to the input
 	float dragForce;
 	float forceDelta;
 
@@ -91,7 +92,7 @@ void Car::update(const float f){
 			Velocity+=forceDelta*Period;
 		}
 	}
-
+	constrain(Velocity,-MaxSpeed,MaxSpeed);
 	Distance+=Velocity*Period;
 }
 
