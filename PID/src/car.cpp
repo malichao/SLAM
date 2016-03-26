@@ -1,7 +1,7 @@
 /******************************************************************************
 Author		: Lichao Ma
 Date  		: Mar 19,2016
-version		: v0.2
+version		: v0.3
 Description :
 	A simplified car model to simulate car motion.Currently only moves in one
 	dimension(horizontal).
@@ -14,6 +14,10 @@ Description :
 	Direction	: Backward,Still,Forward
 	Period		: simulation update period,e.g.,0.1s,0.5s,1s
 	Lag			: simulate the delay of the system
+
+	-v0.3 : Add constrain--Power=Force*Speed
+	-v0.2 : Add system lag
+	-v0.1 : Simulate 1-dimensional car movement
 *****************************************************************************/
 #include <math.h>
 #include "car.h"
