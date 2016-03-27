@@ -32,6 +32,10 @@ class Car{
 public:
 	enum Direction{Backward=-1,Still=0,Forward=1};
 
+	Car() :	Mass(0), Friction(0), Resistance(0), Velocity(0),
+			Distance(0), Direction(Still), Period(1), Lag(0),
+			Force(0),MaxSpeed(30), MaxForce(3),MaxPowerOutput(150),
+			NoiseLevelForce(0),NoiseLevelDistance(0), NoiseLevelVelocity(0) {}
 	Car(const float m, const float f, const float r, const float v,
 			const float dis, Direction dir, const float p, std::size_t l) :
 						Mass(m), Friction(f), Resistance(r), Velocity(v),
@@ -48,16 +52,17 @@ public:
 	void setNoise(const float noiseF,const float noiseD,const float noiseV);
 	void setMaxPowerOutput(const float p) { MaxPowerOutput=fabs(p);}
 	void setMaxSpeed(const float s) { MaxSpeed=fabs(s);}
-	float getVelocity() const { return Velocity + (rand() % 200-100)/100.0*NoiseLevelVelocity;}
-	float getDistance() const { return Distance + (rand() % 200-100)/100.0*NoiseLevelDistance;}
-	float getForce()const { return Force;}
-	void  setSystemLag(std::size_t l){ Lag=l; }
-	void  resetOrigin(){
+	void setSystemLag(std::size_t l){ Lag=l; }
+	void resetOrigin(){
 		Velocity=0;
 		Distance=0;
 		std::queue<float> q;
 		std::swap(q,ForceQue);//Clear the force queue
 	}
+	float getVelocity() const { return Velocity + (rand() % 200-100)/100.0*NoiseLevelVelocity;}
+	float getDistance() const { return Distance + (rand() % 200-100)/100.0*NoiseLevelDistance;}
+	float getForce()const { return Force;}
+
 private:
 	float Mass;			//kg
 	float Friction;		//ratio
