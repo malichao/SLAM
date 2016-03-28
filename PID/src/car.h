@@ -1,7 +1,7 @@
 /******************************************************************************
 Author		: Lichao Ma
 Date  		: Mar 19,2016
-version		: v0.2
+Version		: v0.3
 Description :
 	A simplified car model to simulate car motion.Currently only moves in one
 	dimension(horizontal).
@@ -14,35 +14,55 @@ Description :
 	Direction	: Backward,Still,Forward
 	Period		: simulation update period,e.g.,0.1s,0.5s,1s
 	Lag			: simulate the delay of the system
+
+	-v0.3 : Add constrain--Power=Force*Speed
+	-v0.2 : Add system lag
+	-v0.1 : Simulate 1-dimensional car movement
 *****************************************************************************/
 
 #ifndef CAR_H_
 #define CAR_H_
 
 #include <queue>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
 
 class Car{
 public:
 	enum Direction{Backward=-1,Still=0,Forward=1};
 
+	Car() :	Mass(0), Friction(0), Resistance(0), Velocity(0),
+			Distance(0), Direction(Still), Period(1), Lag(0),
+			Force(0),MaxSpeed(30), MaxForce(3),MaxPowerOutput(150),
+			NoiseLevelForce(0),NoiseLevelDistance(0), NoiseLevelVelocity(0) {}
 	Car(const float m, const float f, const float r, const float v,
 			const float dis, Direction dir, const float p, std::size_t l) :
 						Mass(m), Friction(f), Resistance(r), Velocity(v),
-						Distance(dis), Direction(dir), Period(p), Lag(l) {}
+						Distance(dis), Direction(dir), Period(p), Lag(l),
+						Force(0),MaxSpeed(30), MaxForce(3),MaxPowerOutput(150),
+						NoiseLevelForce(0),NoiseLevelDistance(0), NoiseLevelVelocity(0) {}
 	Car(const float m, const float f, const float r, const float p) :
 						Mass(m), Friction(f), Resistance(r), Velocity(0),
-						Distance(0),Direction(Still), Period(p), Lag(0) {}
+						Distance(0),Direction(Still), Period(p), Lag(0),
+						Force(0),MaxSpeed(30), MaxForce(3),MaxPowerOutput(150),
+						NoiseLevelForce(0),NoiseLevelDistance(0), NoiseLevelVelocity(0) {}
 
 	void update(const float force);
-	float getVelocity() const { return Velocity;}
-	float getDistance() const { return Distance;}
-	void  setSystemLag(std::size_t l){ Lag=l; }
-	void  resetOrigin(){
+	void setNoise(const float noiseF,const float noiseD,const float noiseV);
+	void setMaxPowerOutput(const float p) { MaxPowerOutput=fabs(p);}
+	void setMaxSpeed(const float s) { MaxSpeed=fabs(s);}
+	void setSystemLag(std::size_t l){ Lag=l; }
+	void resetOrigin(){
 		Velocity=0;
 		Distance=0;
 		std::queue<float> q;
 		std::swap(q,ForceQue);//Clear the force queue
 	}
+	float getVelocity() const { return Velocity + (rand() % 200-100)/100.0*NoiseLevelVelocity;}
+	float getDistance() const { return Distance + (rand() % 200-100)/100.0*NoiseLevelDistance;}
+	float getForce()const { return Force;}
+
 private:
 	float Mass;			//kg
 	float Friction;		//ratio
@@ -52,8 +72,20 @@ private:
 	Direction Direction;
 	float Period;		//update time
 	std::size_t Lag;
+	float Force;
+	float MaxSpeed;
+	float MaxForce;
+	float MaxPowerOutput;
+	float NoiseLevelForce;
+	float NoiseLevelDistance;
+	float NoiseLevelVelocity;
 	std::queue<float> ForceQue;
-	const static float Epsilon=1E-5;
+	const static float Epsilon;
+
+	void constrain(float &val, const float min, const float max) const{
+		if (val < min) val = min;
+		if (val > max) val = max;
+	}
 };
 
 

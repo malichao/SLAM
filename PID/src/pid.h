@@ -1,9 +1,12 @@
 /******************************************************************************
 Author		: Lichao Ma
 Date  		: Mar 25,2016
-version		: v0.1
+version		: v0.2
 Description :
 	PID controller program for controlling the car
+
+	-v0.2 : Add twiddle() to self optimize the PID coefficient
+	-v0.1 : Basic PID controller
 *****************************************************************************/
 
 #ifndef PID_H_

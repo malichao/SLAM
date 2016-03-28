@@ -21,16 +21,17 @@ int main(){
 	float kP=1;
 	float kI=0;
 	float kD=3;
-	//float kP=19.188;
+	//float kP=4.8;
 	//float kI=0;
-	//float kD=58.473;
+	//float kD=25;
 	vector<float> speed;
 	vector<float> distance;
 	float target=100;
-	size_t simulationTime=200;
+	size_t simulationTime=400;
 
-	Car simpleCar(1,0.1,0.01,0.1);//Mass(1),Friction(0.1),Resistance(0.01),Period(0.1)
+	Car simpleCar(1,0.1,0.01,0.05);//Mass(1),Friction(0.1),Resistance(0.01),Period(0.1)
 	simpleCar.setSystemLag(2);
+	simpleCar.setNoise(0.4,0.7,0.1);	//Force noise,distance and speed reading noise
 	PID pid(kP,kI,kD);
 
 	//////// Testing the PID self optimization algorithm //////
@@ -43,15 +44,23 @@ int main(){
 	printf("P %.3f\t\tI %.3f\t\tD %.3f\n",pid.getP(),pid.getI(),pid.getD());
 
 	////////////// Simulate the car movement ////////////////
-	cout<<"PID simulation:\n";
-	cout<<"time\tVelocity\tDistance\n";
 	simpleCar.resetOrigin();
-	for(size_t i=0;i<simulationTime;i++){
-		//cout<<update(simpleCar,force)<<endl;
-		pid.update(simpleCar,target);
-		printf("%d\t%.3f\t\t%.3f\n",i,simpleCar.getVelocity(),simpleCar.getDistance());
-		speed.push_back(simpleCar.getVelocity());
-		distance.push_back(simpleCar.getDistance());
+	float targetQue[]={30,50,80,150,100,80};
+	size_t queSize=sizeof(targetQue)/sizeof(targetQue[0]);
+	cout<<"Target number = "<<queSize<<endl;
+	cout<<"PID simulation:\n";
+	cout<<"time\tForce\tVelocity\tDistance\n";
+	for(size_t j=0;j<queSize;j++){
+		target=targetQue[j];
+		cout<<"\nTarget position = "<<target<<endl;
+		for(size_t i=0;i<simulationTime/queSize;i++){
+			//cout<<update(simpleCar,force)<<endl;
+			pid.update(simpleCar,target);
+			printf("%d\t%.2f\t%.2f\t\t%.2f\n",
+					i,simpleCar.getForce(),simpleCar.getVelocity(),simpleCar.getDistance());
+			speed.push_back(simpleCar.getVelocity());
+			distance.push_back(simpleCar.getDistance());
+		}
 	}
 
 	///////// Save the result to result.csv for visualizing the data ////////

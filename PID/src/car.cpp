@@ -1,7 +1,7 @@
 /******************************************************************************
 Author		: Lichao Ma
 Date  		: Mar 19,2016
-version		: v0.2
+version		: v0.3
 Description :
 	A simplified car model to simulate car motion.Currently only moves in one
 	dimension(horizontal).
@@ -14,11 +14,23 @@ Description :
 	Direction	: Backward,Still,Forward
 	Period		: simulation update period,e.g.,0.1s,0.5s,1s
 	Lag			: simulate the delay of the system
+
+	-v0.3 : Add constrain--Power=Force*Speed
+	-v0.2 : Add system lag
+	-v0.1 : Simulate 1-dimensional car movement
 *****************************************************************************/
-#include "math.h"
+#include <math.h>
 #include "car.h"
 
+const float Car::Epsilon=1E-5;
 using namespace std;
+
+void Car::setNoise(const float noiseF,const float noiseD,const float noiseV){
+	NoiseLevelForce=noiseF;
+	NoiseLevelDistance=noiseD;
+	NoiseLevelVelocity=noiseV;
+	srand(time(NULL));
+}
 
 //Here's the current simulation process:
 //1. Check the lag of the system
@@ -27,10 +39,13 @@ using namespace std;
 //3. If the car is moving,there will be wind resistance,which is proportional to
 //	 the square of velocity.
 void Car::update(const float f){
-	float force=f;
+	float force=f+(rand() % 200-100)/100.0*NoiseLevelForce;	//Add some random noise to the input
 	float dragForce;
 	float forceDelta;
-
+	float forceLimit= fabs(Velocity)<Epsilon ? MaxForce : MaxPowerOutput/Velocity;
+	constrain(force,-forceLimit,forceLimit);
+	constrain(force,-MaxForce,MaxForce);
+	Force=force;
 	/*
 	 * First we deal with system lag.
 	 * If there is no lag,ideally,then Lag=0,and we update the car every time.
@@ -85,7 +100,7 @@ void Car::update(const float f){
 			Velocity+=forceDelta*Period;
 		}
 	}
-
+	constrain(Velocity,-MaxSpeed,MaxSpeed);
 	Distance+=Velocity*Period;
 }
 
