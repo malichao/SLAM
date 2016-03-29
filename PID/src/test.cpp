@@ -76,9 +76,28 @@ void testSimpleCar(){
 
 void testVehicle(){
 	Vehicle v;
+	vector<double> x;
+	vector<double> y;
 	v.setToStandardVehicle();
-	v.driveWithoutPID(10,0);
+	v.setState(0,0,0,0,1,0);
 
+	size_t simulationTime=200;
+	for(size_t i=0;i<simulationTime;i++){
+		v.driveWithoutPID(3,3.14/180.0*1);
+
+		printf("%.1f\t\t%.1f\t\t%.1f\t\t%.1f\t\t%.1f\n",
+				v.getX(),v.getY(),
+				v.getOrientation(),v.getSpeedLongitudinal(),v.getSpeedYaw());
+		//printf("%.1f\t\t%.1f\t\t%.1f\n",v.getSpeedLongitudinal(),v.getSpeedLateral(),v.getSpeedYaw());
+		x.push_back(v.getX());
+		y.push_back(v.getY());
+	}
+
+	///////// Save the result to result.csv for visualizing the data ////////
+		ofstream file("vehicle result.csv");
+		for(size_t i=0;i<simulationTime;i++)
+			file<<x[i]<<","<<y[i]<<endl;
+		file.close();
 }
 
 

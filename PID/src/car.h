@@ -67,6 +67,7 @@ public:
 	double getDistance() const { return Distance + (rand() % 200-100)/100.0*NoiseLevelDistance;}
 	double getForce()const { return Force;}
 	double getMass() const {return Mass;}
+	double getResistance() const {return Resistance;}
 	double getPeriod() const {return Period;}
 
 private:
