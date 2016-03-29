@@ -31,58 +31,61 @@ Description :
 class Car{
 public:
 	enum Direction{Backward=-1,Still=0,Forward=1};
+	const static double Epsilon;
 
 	Car() :	Mass(0), Friction(0), Resistance(0), Velocity(0),
 			Distance(0), Direction(Still), Period(1), Lag(0),
 			Force(0),MaxSpeed(30), MaxForce(3),MaxPowerOutput(150),
 			NoiseLevelForce(0),NoiseLevelDistance(0), NoiseLevelVelocity(0) {}
-	Car(const float m, const float f, const float r, const float v,
-			const float dis, Direction dir, const float p, std::size_t l) :
+	Car(const double m, const double f, const double r, const double v,
+			const double dis, Direction dir, const double p, std::size_t l) :
 						Mass(m), Friction(f), Resistance(r), Velocity(v),
 						Distance(dis), Direction(dir), Period(p), Lag(l),
 						Force(0),MaxSpeed(30), MaxForce(3),MaxPowerOutput(150),
 						NoiseLevelForce(0),NoiseLevelDistance(0), NoiseLevelVelocity(0) {}
-	Car(const float m, const float f, const float r, const float p) :
+	Car(const double m, const double f, const double r, const double p) :
 						Mass(m), Friction(f), Resistance(r), Velocity(0),
 						Distance(0),Direction(Still), Period(p), Lag(0),
 						Force(0),MaxSpeed(30), MaxForce(3),MaxPowerOutput(150),
 						NoiseLevelForce(0),NoiseLevelDistance(0), NoiseLevelVelocity(0) {}
+	virtual ~Car(){}
 
-	void update(const float force);
-	void setNoise(const float noiseF,const float noiseD,const float noiseV);
-	void setMaxPowerOutput(const float p) { MaxPowerOutput=fabs(p);}
-	void setMaxSpeed(const float s) { MaxSpeed=fabs(s);}
+	virtual void update(const double force);
+	void setNoise(const double noiseF,const double noiseD,const double noiseV);
+	void setMaxPowerOutput(const double p) { MaxPowerOutput=fabs(p);}
+	void setMaxSpeed(const double s) { MaxSpeed=fabs(s);}
 	void setSystemLag(std::size_t l){ Lag=l; }
+	void setToStandardCar();
 	void resetOrigin(){
 		Velocity=0;
 		Distance=0;
-		std::queue<float> q;
+		std::queue<double> q;
 		std::swap(q,ForceQue);//Clear the force queue
 	}
-	float getVelocity() const { return Velocity + (rand() % 200-100)/100.0*NoiseLevelVelocity;}
-	float getDistance() const { return Distance + (rand() % 200-100)/100.0*NoiseLevelDistance;}
-	float getForce()const { return Force;}
+	double getVelocity() const { return Velocity + (rand() % 200-100)/100.0*NoiseLevelVelocity;}
+	double getDistance() const { return Distance + (rand() % 200-100)/100.0*NoiseLevelDistance;}
+	double getForce()const { return Force;}
+	double getMass() const {return Mass;}
 
 private:
-	float Mass;			//kg
-	float Friction;		//ratio
-	float Resistance;	//wind resistance
-	float Velocity;		//m/s
-	float Distance;		//m
+	double Mass;			//kg
+	double Friction;		//ratio
+	double Resistance;	//wind resistance
+	double Velocity;		//m/s
+	double Distance;		//m
 	Direction Direction;
-	float Period;		//update time
+	double Period;		//update time
 	std::size_t Lag;
-	float Force;
-	float MaxSpeed;
-	float MaxForce;
-	float MaxPowerOutput;
-	float NoiseLevelForce;
-	float NoiseLevelDistance;
-	float NoiseLevelVelocity;
-	std::queue<float> ForceQue;
-	const static float Epsilon;
+	double Force;
+	double MaxSpeed;
+	double MaxForce;
+	double MaxPowerOutput;
+	double NoiseLevelForce;
+	double NoiseLevelDistance;
+	double NoiseLevelVelocity;
+	std::queue<double> ForceQue;
 
-	void constrain(float &val, const float min, const float max) const{
+	void constrain(double &val, const double min, const double max) const{
 		if (val < min) val = min;
 		if (val > max) val = max;
 	}

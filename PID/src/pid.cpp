@@ -24,12 +24,12 @@ void PID::update(Car &car, const float target) {
 	error = target - car.getDistance();
 	dError = error - lastError;
 	integral += error;
-	constrain(integral, -100, 100);
+	//constrain(integral, -100, 100);
 	lastError = error;
 
 	float output;
 	output = kP * error + kI * integral + kD * dError;
-	constrain(output, -100, 100);
+	//constrain(output, -100, 100);
 	car.update(output);
 }
 
@@ -62,7 +62,7 @@ bool PID::twiddle(	Car &car,
 
 	float pidBackup[3] = { kP, kI, kD };
 	float pid[3] = { kP, kI, kD };		//put it in array to ease the iteration
-	float deltaPID[3] = { 1, 1, 1 };	//The steps it takes to probe the PID values
+	float deltaPID[3] = { 10, 10, 10 };	//The steps it takes to probe the PID values
 	float bestError = simulate(car, target, simulationTimes);
 
 	//Set maximum trail times to 200 to prevent dead loop

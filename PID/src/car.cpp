@@ -22,14 +22,29 @@ Description :
 #include <math.h>
 #include "car.h"
 
-const float Car::Epsilon=1E-5;
+const double Car::Epsilon=1E-5;
 using namespace std;
 
-void Car::setNoise(const float noiseF,const float noiseD,const float noiseV){
+void Car::setNoise(const double noiseF,const double noiseD,const double noiseV){
 	NoiseLevelForce=noiseF;
 	NoiseLevelDistance=noiseD;
 	NoiseLevelVelocity=noiseV;
 	srand(time(NULL));
+}
+
+// Paramters are based on Tesla Model S
+void Car::setToStandardCar(){
+	Mass=2000;		// Kg
+	Friction=0.05;	// Dry concrete road
+	Resistance=0.05;	// Neglect the wind resistance
+	MaxSpeed= 58;	// 130mph,208 km/h
+	MaxForce= 9793;	//
+	MaxPowerOutput=568000;
+
+	Period=0.1;		// /s
+	resetOrigin();
+	setSystemLag(1);
+	setNoise(0.4,0.7,0.1);	//Force noise,distance and speed reading noise
 }
 
 //Here's the current simulation process:
@@ -38,11 +53,11 @@ void Car::setNoise(const float noiseF,const float noiseD,const float noiseV){
 //	 the car move.
 //3. If the car is moving,there will be wind resistance,which is proportional to
 //	 the square of velocity.
-void Car::update(const float f){
-	float force=f+(rand() % 200-100)/100.0*NoiseLevelForce;	//Add some random noise to the input
-	float dragForce;
-	float forceDelta;
-	float forceLimit= fabs(Velocity)<Epsilon ? MaxForce : MaxPowerOutput/Velocity;
+void Car::update(const double f){
+	double force=f+(rand() % 200-100)/100.0*NoiseLevelForce;	//Add some random noise to the input
+	double dragForce;
+	double forceDelta;
+	double forceLimit= fabs(Velocity)<Epsilon ? MaxForce : MaxPowerOutput/Velocity;
 	constrain(force,-forceLimit,forceLimit);
 	constrain(force,-MaxForce,MaxForce);
 	Force=force;
@@ -51,7 +66,9 @@ void Car::update(const float f){
 	 * If there is no lag,ideally,then Lag=0,and we update the car every time.
 	 * If there is lag,we put the force in the queue and simulate the lag
 	 */
-	if(Lag!=0&&ForceQue.size()==Lag){
+	if(Lag==0)
+		force=f;
+	else if(ForceQue.size()==Lag){
 		force=ForceQue.front();
 		ForceQue.pop();
 		ForceQue.push(f);
@@ -71,8 +88,8 @@ void Car::update(const float f){
 			forceDelta=force+Mass*Friction*10;
 			forceDelta=forceDelta>0 ?0:forceDelta;	
 		}
-		Velocity+=forceDelta*Period;
-		Distance+=Velocity*Period;
+		Velocity+=forceDelta/Mass*Period;
+		//Distance+=Velocity*Period;
 	}else if(Velocity>Epsilon){		//If the car is forward
 		Direction=Forward;
 		dragForce=Mass*Friction*10
@@ -80,11 +97,11 @@ void Car::update(const float f){
 
 		if(fabs(force)<Epsilon){	//If the car is not driven
 			forceDelta= - dragForce;
-			Velocity+=forceDelta*Period;
+			Velocity+=forceDelta/Mass*Period;
 			Velocity=Velocity<0 ? 0 :Velocity;
 		}else{
 			forceDelta=force - dragForce;
-			Velocity+=forceDelta*Period;
+			Velocity+=forceDelta/Mass*Period;
 		}
 	}else if(Velocity<-Epsilon){	//If the car is backward
 		Direction=Backward;
@@ -93,11 +110,11 @@ void Car::update(const float f){
 
 		if(fabs(force)<Epsilon){	//If the car is not driven
 			forceDelta=  dragForce;
-			Velocity+=forceDelta*Period;
+			Velocity+=forceDelta/Mass*Period;
 			Velocity=Velocity<0 ? 0 :Velocity;
 		}else{
 			forceDelta=force + dragForce;
-			Velocity+=forceDelta*Period;
+			Velocity+=forceDelta/Mass*Period;
 		}
 	}
 	constrain(Velocity,-MaxSpeed,MaxSpeed);
