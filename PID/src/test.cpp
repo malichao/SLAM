@@ -18,7 +18,7 @@ Description :
 #include "Vehicle.h"
 using namespace std;
 
-int main(){
+void testSimpleCar(){
 	double kP=55;
 	double kI=1;
 	double kD=100;
@@ -72,8 +72,18 @@ int main(){
 	for(size_t i=0;i<simulationTime;i++)
 		file<<speed[i]<<","<<distance[i]<<endl;
 	file.close();
+}
+
+void testVehicle(){
+	Vehicle v;
+	v.setToStandardVehicle();
+	v.driveWithoutPID(10,0);
+
+}
 
 
-	Vehicle v();
+int main(){
+
+	testVehicle();
 
 }

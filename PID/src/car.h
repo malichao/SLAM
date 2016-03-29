@@ -51,6 +51,7 @@ public:
 	virtual ~Car(){}
 
 	virtual void update(const double force);
+
 	void setNoise(const double noiseF,const double noiseD,const double noiseV);
 	void setMaxPowerOutput(const double p) { MaxPowerOutput=fabs(p);}
 	void setMaxSpeed(const double s) { MaxSpeed=fabs(s);}
