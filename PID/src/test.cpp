@@ -19,9 +19,9 @@ Description :
 using namespace std;
 
 int main(){
-	double kP=40;
-	double kI=0;
-	double kD=0;
+	double kP=55;
+	double kI=1;
+	double kD=100;
 	//double kP=100;
 	//double kI=0;
 	//double kD=0;
@@ -29,20 +29,21 @@ int main(){
 	vector<double> distance;
 	double target=100;
 	size_t simulationTime=400;
+	float simulationPeriod=0.1;
 
-	Car simpleCar(1,0.1,0.01,0.05);//Mass(1),Friction(0.1),Resistance(0.01),Period(0.1)
+	Car simpleCar(1,0.1,0.01,simulationPeriod);//Mass(1),Friction(0.1),Resistance(0.01),Period(0.1)
 	//simpleCar.setSystemLag(2);
 	//simpleCar.setNoise(0.4,0.7,0.1);	//Force noise,distance and speed reading noise
 	simpleCar.setToStandardCar();
-	PID pid(kP,kI,kD);
+	PID pid(kP,kI,kD,simulationPeriod);
 
 	//////// Testing the PID self optimization algorithm //////
 	double twiddleTolerance=0.5;
-	if(pid.twiddle(simpleCar,target,twiddleTolerance,simulationTime)){
-		cout <<"twiddle success\n";
-	}else{
-		cout << "twiddle() runtime exceeded!\n";
-	}
+	//if(pid.twiddle(simpleCar,target,twiddleTolerance,simulationTime)){
+	//	cout <<"twiddle success\n";
+	//}else{
+	//	cout << "twiddle() runtime exceeded!\n";
+	//}
 	printf("P %.3f\t\tI %.3f\t\tD %.3f\n",pid.getP(),pid.getI(),pid.getD());
 
 	////////////// Simulate the car movement ////////////////

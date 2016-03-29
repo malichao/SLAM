@@ -15,21 +15,23 @@ Description :
 
 using namespace std;
 
+const double PID::EpsilonTime=1E-5;
+const double PID::EpsilonError=1E-2;
 
 void PID::update(Car &car, const float target) {
 	float error, dError;
-	static float lastError = 0;
-	static float integral = 0;
 
 	error = target - car.getDistance();
-	dError = error - lastError;
-	integral += error;
-	//constrain(integral, -100, 100);
-	lastError = error;
+	dError = (error - LastError) / Period;
+
+	Integral += error > EpsilonError ? error * Period : 0;
+
+	LastError = error;
 
 	float output;
-	output = kP * error + kI * integral + kD * dError;
-	//constrain(output, -100, 100);
+	output = Kp * error + Ki * Integral + Kd * dError;
+	constrain(output, -OutputMax, OutputMax);
+	Output = output;
 	car.update(output);
 }
 
@@ -60,13 +62,13 @@ bool PID::twiddle(	Car &car,
 					const float tolerance,
 					const unsigned int simulationTimes){
 
-	float pidBackup[3] = { kP, kI, kD };
-	float pid[3] = { kP, kI, kD };		//put it in array to ease the iteration
+	float pidBackup[3] = { Kp, Ki, Kd };
+	float pid[3] = { Kp, Ki, Kd };		//put it in array to ease the iteration
 	float deltaPID[3] = { 10, 10, 10 };	//The steps it takes to probe the PID values
 	float bestError = simulate(car, target, simulationTimes);
 
 	//Set maximum trail times to 200 to prevent dead loop
-	unsigned int watchDog = 200;
+	unsigned int watchDog = 500;
 	bool success = true;
 
 	//Tolerance is the minimal steps to probe the PID coefficient
@@ -79,7 +81,8 @@ bool PID::twiddle(	Car &car,
 				break;
 			}
 			pid[i] += deltaPID[i];			//First,try increasing the PID
-			setPID(pid[0], pid[1], pid[2]);
+			setPIDCoef(pid[0], pid[1], pid[2]);
+			resetPIDCache();
 			error = simulate(car, target, simulationTimes);
 
 			//After simulation,we evaluate the performance of the setting
@@ -88,7 +91,8 @@ bool PID::twiddle(	Car &car,
 				deltaPID[i] *= 1.1;
 			} else {
 				pid[i] -= deltaPID[i] * 2;	//Second,try decreasing the PID
-				setPID(pid[0], pid[1], pid[2]);
+				setPIDCoef(pid[0], pid[1], pid[2]);
+				resetPIDCache();
 				error = simulate(car, target, simulationTimes);
 
 				//After simulation,we evaluate the performance of the setting
@@ -105,10 +109,12 @@ bool PID::twiddle(	Car &car,
 
 	//If optimization succeeded,update the pid coefficient,otherwise restore the values
 	if (success) {
-		setPID(pid[0], pid[1], pid[2]);
+		setPIDCoef(pid[0], pid[1], pid[2]);
+		resetPIDCache();
 		return true;
 	} else {
-		setPID(pidBackup[0], pidBackup[1], pidBackup[2]);
+		setPIDCoef(pidBackup[0], pidBackup[1], pidBackup[2]);
+		resetPIDCache();
 		return false;
 	}
 	return false;

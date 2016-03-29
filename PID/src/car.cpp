@@ -66,9 +66,7 @@ void Car::update(const double f){
 	 * If there is no lag,ideally,then Lag=0,and we update the car every time.
 	 * If there is lag,we put the force in the queue and simulate the lag
 	 */
-	if(Lag==0)
-		force=f;
-	else if(ForceQue.size()==Lag){
+	if(Lag!=0&&ForceQue.size()==Lag){
 		force=ForceQue.front();
 		ForceQue.pop();
 		ForceQue.push(f);

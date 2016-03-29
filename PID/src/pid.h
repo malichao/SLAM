@@ -14,20 +14,31 @@ Description :
 
 class PID{
 public:
-	PID(const float p,const float i,const float d) :
-					kP(p), kI(i), kD(d), output(0) {}
-	void setPID(float p,const float i,const float d){
-		kP=p;
-		kI=i;
-		kD=d;
+	const static double EpsilonTime;
+	const static double EpsilonError;
+
+	PID(const float p,const float i,const float d,float t) :
+					Kp(p), Ki(i), Kd(d),Output(0),OutputMax(10000),
+					LastError(0), Integral(0),Period(t) {}
+	void setPIDCoef(float p,const float i,const float d){
+		Kp=p;
+		Ki=i;
+		Kd=d;
 	}
-	float getP() const { return kP; }
-	float getI() const { return kI; }
-	float getD() const { return kD; }
+	void setPeriod(const float t){ Period=t<EpsilonTime ? EpsilonTime : t;}
+	float getP() const { return Kp; }
+	float getI() const { return Ki; }
+	float getD() const { return Kd; }
 
 	void update(Car &car,const float target);
 
-	float getOutput() const { return output; }
+	void resetPIDCache(){
+		Output=0;
+		LastError=0;
+		Integral=0;
+	}
+
+	float getOutput() const { return Output; }
 
 	//Simply simulate the car motion using PID control and return the average error.
 	//If you want to record the speed and distance of the car at every time step,
@@ -44,10 +55,14 @@ public:
 					const float tolerance,
 					const std::size_t simulationTimes);
 private:
-	float kP;
-	float kI;
-	float kD;
-	float output;
+	float Kp;
+	float Ki;
+	float Kd;
+	float Output;
+	float OutputMax;
+	float LastError;
+	float Integral;
+	float Period;
 
 	//Constrain the output of each term
 	void constrain(float &val, const float min, const float max) const{
