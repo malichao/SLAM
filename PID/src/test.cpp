@@ -35,7 +35,7 @@ int main(){
 	//simpleCar.setSystemLag(2);
 	//simpleCar.setNoise(0.4,0.7,0.1);	//Force noise,distance and speed reading noise
 	simpleCar.setToStandardCar();
-	PID pid(kP,kI,kD,simulationPeriod);
+	PID positionPID(kP,kI,kD,simulationPeriod);
 
 	//////// Testing the PID self optimization algorithm //////
 	double twiddleTolerance=0.5;
@@ -44,7 +44,7 @@ int main(){
 	//}else{
 	//	cout << "twiddle() runtime exceeded!\n";
 	//}
-	printf("P %.3f\t\tI %.3f\t\tD %.3f\n",pid.getP(),pid.getI(),pid.getD());
+	printf("P %.3f\t\tI %.3f\t\tD %.3f\n",positionPID.getP(),positionPID.getI(),positionPID.getD());
 
 	////////////// Simulate the car movement ////////////////
 	simpleCar.resetOrigin();
@@ -58,7 +58,8 @@ int main(){
 		cout<<"\nTarget position = "<<target<<endl;
 		for(size_t i=0;i<simulationTime/queSize;i++){
 			//cout<<update(simpleCar,force)<<endl;
-			pid.update(simpleCar,target);
+			double output=positionPID.calculate(target,simpleCar.getDistance());
+			simpleCar.update(output);
 			printf("%d\t%.1f\t\t%.1f\t\t%.1f\n",
 					i,simpleCar.getForce(),simpleCar.getVelocity(),simpleCar.getDistance());
 			speed.push_back(simpleCar.getVelocity());

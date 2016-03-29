@@ -17,20 +17,20 @@ public:
 	const static double EpsilonTime;
 	const static double EpsilonError;
 
-	PID(const float p,const float i,const float d,float t) :
+	PID(const double p,const double i,const double d,double t) :
 					Kp(p), Ki(i), Kd(d),Output(0),OutputMax(10000),
 					LastError(0), Integral(0),Period(t) {}
-	void setPIDCoef(float p,const float i,const float d){
+	void setPIDCoef(double p,const double i,const double d){
 		Kp=p;
 		Ki=i;
 		Kd=d;
 	}
-	void setPeriod(const float t){ Period=t<EpsilonTime ? EpsilonTime : t;}
-	float getP() const { return Kp; }
-	float getI() const { return Ki; }
-	float getD() const { return Kd; }
+	void setPeriod(const double t){ Period=t<EpsilonTime ? EpsilonTime : t;}
+	double getP() const { return Kp; }
+	double getI() const { return Ki; }
+	double getD() const { return Kd; }
 
-	void update(Car &car,const float target);
+	double calculate(const double target,const double input);
 
 	void resetPIDCache(){
 		Output=0;
@@ -38,12 +38,12 @@ public:
 		Integral=0;
 	}
 
-	float getOutput() const { return Output; }
+	double getOutput() const { return Output; }
 
 	//Simply simulate the car motion using PID control and return the average error.
 	//If you want to record the speed and distance of the car at every time step,
 	//use update() and manually record the speed and distance.
-	float simulate(Car &car,const float target,const std::size_t simulationTime);
+	double simulate(Car &car,const double target,const std::size_t simulationTime);
 
 	//PID parameter self optimizing function,parameter description:
 	//car	: this program use a one-dimensional car as trail example
@@ -51,21 +51,21 @@ public:
 	//tolerance: the minimal steps to probe the PID parameters
 	//simulationTimes: the duration to try out each PID setting
 	bool twiddle(	Car &car,
-					const float target,
-					const float tolerance,
+					const double target,
+					const double tolerance,
 					const std::size_t simulationTimes);
 private:
-	float Kp;
-	float Ki;
-	float Kd;
-	float Output;
-	float OutputMax;
-	float LastError;
-	float Integral;
-	float Period;
+	double Kp;
+	double Ki;
+	double Kd;
+	double Output;
+	double OutputMax;
+	double LastError;
+	double Integral;
+	double Period;
 
 	//Constrain the output of each term
-	void constrain(float &val, const float min, const float max) const{
+	void constrain(double &val, const double min, const double max) const{
 		if (val < min) val = min;
 		if (val > max) val = max;
 	}
