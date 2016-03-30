@@ -19,6 +19,21 @@ using namespace std;
 
 typedef Point<unsigned int> Point_unit;
 
+/*
+ * About the map:
+ *  0 means the obstacles,positive values means the cost each grid.Although
+ *  in Search these values are used but to make a comparison between different
+ *  algorithms,such as A*,Dijkstra shortest path,we need a map that works
+ *  for all these algorithms.
+ *
+ *  Notice about the map coordinate:
+ *  map[x][y]:
+ *  0-------> y
+ *  |
+ *  |
+ *  v
+ *  x
+ */
 class MapSearch{
 public:
 	static const unsigned int Obstacle;	//positive value means the cost of each path
