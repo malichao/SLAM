@@ -4,11 +4,11 @@ Date  		: Mar 30,2016
 Version		: v0.1
 Built		: Eclipse CDT, -std=c++11
 Description :
-	Breadth First Search.
+	Dynamic Programming Searching Algorithm.
 *****************************************************************************/
 
-#ifndef BFS_H_
-#define BFS_H_
+#ifndef DPSEARCH_H_
+#define DPSEARCH_H_
 
 namespace SearchAlgorithms{
 
@@ -16,4 +16,4 @@ namespace SearchAlgorithms{
 
 
 
-#endif /* BFS_H_ */
+#endif /* DPSEARCH_H_ */

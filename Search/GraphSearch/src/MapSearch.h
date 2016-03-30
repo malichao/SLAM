@@ -11,7 +11,8 @@ Description :
 #include <vector>
 
 #include "Point.h"
-#include "BFS.h"
+//#include "BFS.h"
+
 namespace SearchAlgorithms{
 using namespace std;
 class MapSearch{
@@ -20,21 +21,21 @@ public:
 	static const char ObstacleSymbol;
 	static const unsigned int CostMax;//Don't use UINT_MAX,watch out for OVERFLOW
 	MapSearch():Start(0,0),Target(0,0),EffortCount(0){};
-	virtual ~MapSearch();
+	virtual ~MapSearch(){};
 
 	void setStart(const Point<unsigned int> &s){Start.x=s.x; Start.y=s.y;Start.dir=s.dir;}
 	void setTarget(const Point<unsigned int> &t){Target.x=t.x; Target.y=t.y;Target.dir=t.dir;}
 
-	int 	getMinDistance(){return Route.size()-1;}
+	int  getMinDistance(){return Route.size()-1;}
 	void printRoute();
 	void getRoute(vector<Point<unsigned int> > &route);
 	void printRouteOnMap(const vector<vector<unsigned int> > &map);
 	void printGradientOnMap(const vector<vector<unsigned int> > &map);
 
-	virtual bool search( const vector<vector<unsigned int> > &map);
+	virtual bool search( const vector<vector<unsigned int> > &map)  { return false;}
 	virtual bool search( const vector<vector<unsigned int> > &map,
 						const Point<unsigned int> &start,
-						const Point<unsigned int> &target);
+						const Point<unsigned int> &target) 			{ return false;}
 protected:
 	Point<unsigned int> Start;
 	Point<unsigned int> Target;
