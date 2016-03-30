@@ -29,8 +29,9 @@ TEST_CASE( "Testing AStar searching", "[BFS]" ) {
 	unsigned int actionCost[]={100,0,2};
 
 	//BFS tester;
-	//AStar tester;
-	DPSearch tester;
+	AStar tester;
+	//TODO: Add generate route for DPSearch
+	//DPSearch tester;
 	vector<Point_unit> route;
 
 	SECTION("Null input test"){
