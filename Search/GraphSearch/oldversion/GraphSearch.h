@@ -14,7 +14,7 @@
 #include <cmath>
 #include <climits>
 #include <algorithm>    // std::reverse
-#include "Point.h"
+#include "..\src\Point.h"
 using namespace std;
 
 struct AStarPoint{

@@ -9,7 +9,7 @@ Description :
 #define CATCH_CONFIG_MAIN// This tells Catch to provide a main() - only do this in one cpp file
 #include "catch.hpp"
 #include <vector>
-#include "GraphSearch.h"
+#include "../src/GraphSearch.h"
 
 TEST_CASE( "Testing AStar searching", "[AStar]" ) {
 	vector<vector<unsigned int> > map = {
@@ -27,40 +27,43 @@ TEST_CASE( "Testing AStar searching", "[AStar]" ) {
 	vector<Point<unsigned int> > route;
 
 	SECTION("Null input test"){
-		REQUIRE( gs.aStar( 	map,actionCost,
+		REQUIRE( gs.dpSearch( 	map,actionCost,
 							Point<unsigned int>{0,0},
 							Point<unsigned int>{0,0})
 							== false );
-		REQUIRE( gs.aStar(	map,actionCost,
+		REQUIRE( gs.dpSearch(	map,actionCost,
 							Point<unsigned int>{2,2},
 							Point<unsigned int>{2,2})
 							== false );
 	}
 
 	SECTION("Out of range test"){
-		REQUIRE( gs.aStar(	map,actionCost,
+		REQUIRE( gs.dpSearch(	map,actionCost,
 							Point<unsigned int>{10,0},
 							Point<unsigned int>{2,2})
 							== false );
-		REQUIRE( gs.aStar(	map,actionCost,
+		REQUIRE( gs.dpSearch(	map,actionCost,
 							Point<unsigned int>{4,4},
 							Point<unsigned int>{0,10})
 							== false );
 	}
 
 	SECTION("Common cases test"){
-		REQUIRE( gs.aStar(	map,actionCost,
+		REQUIRE( gs.dpSearch(	map,
 							Point<unsigned int>{0,0},
 							Point<unsigned int>{4,4})
-							== false );
-		REQUIRE( gs.aStar(	map,actionCost,
-							Point<unsigned int>{0,0},
-							Point<unsigned int>{4,4})
-							== false );
-		REQUIRE( gs.aStar(	map,actionCost,
-							Point<unsigned int>{0,0},
-							Point<unsigned int>{4,4})
-							== false );
+							== true );
+		gs.printGradientOnMap(map);
+		REQUIRE( gs.dpSearch(	map,
+							Point<unsigned int>{4,4},
+							Point<unsigned int>{0,0})
+							== true );
+		gs.printGradientOnMap(map);
+		REQUIRE( gs.dpSearch(	map,
+							Point<unsigned int>{0,4},
+							Point<unsigned int>{4,0})
+							== true );
+		gs.printGradientOnMap(map);
 	}
 
 }

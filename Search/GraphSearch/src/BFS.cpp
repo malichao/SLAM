@@ -41,7 +41,7 @@ bool BFS::search(const vector<vector<unsigned int> > &map) {
 
 	if (!isLegal(map, Target) || !isLegal(map, Start))
 		return false;
-	if(Start==Target) return false;
+	if(Start==Target) return true;
 
 	queue<Point<unsigned int> > que;
 	que.push(Target);

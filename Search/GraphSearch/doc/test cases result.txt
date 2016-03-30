@@ -1,0 +1,113 @@
+===========Testing Map 1===========
+{1, 0, 1, 1, 1},
+{1, 1, 1, 0, 1},
+{1, 1, 0, 0, 1},
+{1, 1, 2, 3, 1},
+{1, 0, 6, 5, 1},};
+
+Start :(0,0)
+Target:(4,4)
+Search effort: 193
+Shortest path:8
+V # . . . 
+V . . # . 
+V . # # . 
+> > V . . 
+. # > > T 
+
+Start :(4,4)
+Target:(0,0)
+Search effort: 145
+Shortest path:8
+T # . . . 
+^ . . # . 
+^ . # # . 
+^ < < . . 
+. # ^ < < 
+
+Start :(0,2)
+Target:(4,3)
+Search effort: 153
+Shortest path:7
+. # V . . 
+. V < # . 
+. V # # . 
+. > V . . 
+. # > T . 
+
+Start :(4,0)
+Target:(0,4)
+Search effort: 109
+Shortest path:8
+. # > > T 
+> > ^ # . 
+^ . # # . 
+^ . . . . 
+^ # . . . 
+
+Start :(0,0)
+Target:(4,4)
+Search effort: 193
+Shortest path:8
+(0,0)-> (1,0)-> (2,0)-> (3,0)-> (3,1)-> (3,2)-> (4,2)-> (4,3)-> (4,4)-> T
+
+Start :(4,4)
+Target:(0,0)
+Search effort: 145
+Shortest path:8
+(4,4)-> (4,3)-> (4,2)-> (3,2)-> (3,1)-> (3,0)-> (2,0)-> (1,0)-> (0,0)-> T
+
+Start :(0,2)
+Target:(4,3)
+Search effort: 153
+Shortest path:7
+(0,2)-> (1,2)-> (1,1)-> (2,1)-> (3,1)-> (3,2)-> (4,2)-> (4,3)-> T
+
+Start :(4,0)
+Target:(0,4)
+Search effort: 109
+Shortest path:8
+(4,0)-> (3,0)-> (2,0)-> (1,0)-> (1,1)-> (1,2)-> (0,2)-> (0,3)-> (0,4)-> T
+
+
+===========Testing Map 2===========
+{1, 0, 0, 1, 1},
+{1, 1, 0, 1, 1},
+{1, 1, 0, 1, 1},
+{1, 1, 0, 3, 1},
+{1, 0, 0, 5, 1},};
+
+Start :(0,1)
+Target:(4,4)
+No route!
+
+Start :(0,1)
+Target:(0,3)
+No route!
+
+Start :(4,0)
+Target:(4,1)
+No route.
+
+Start :(0,4)
+Target:(4,1)
+No route.
+
+Start :(0,0)
+Target:(4,4)
+No route!
+
+Start :(4,4)
+Target:(0,0)
+No route!
+
+Start :(2,0)
+Target:(2,4)
+No route.
+
+Start :(0,4)
+Target:(4,0)
+No route.
+
+===============================================================================
+All tests passed (20 assertions in 1 test case)

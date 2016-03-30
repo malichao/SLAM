@@ -77,6 +77,14 @@ void GraphSearch::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 }
 
 void GraphSearch::printGradientOnMap(const vector<vector<unsigned int> > &map) {
+	//Test:output the cost map
+		for(size_t i=0;i<CostMap.size();i++){
+			for(size_t j=0;j<CostMap[i].size();j++){
+			cout<<CostMap[i][j]<<"\t";
+			}
+			cout<<endl;
+		}
+	return;
 	if (CostMap.size()==0) {
 		cout << "'costMap' data needed.\n";
 		return;
@@ -652,10 +660,10 @@ bool GraphSearch::dpSearch(const vector<vector<unsigned int> > &map,
 /*
 vector<vector<unsigned int> > map = {
 		{1, 0, 1, 1, 1},
-		{1, 0, 1, 0, 1},
-		{1, 1, 1, 1, 1},
-		{0, 0, 1, 0, 0},
-		{0, 0, 1, 0, 0},};
+		{1, 1, 1, 0, 1},
+		{1, 1, 0, 0, 1},
+		{1, 1, 2, 3, 1},
+		{1, 0, 6, 5, 1},};
 
 //Define the cost for each action,left turn is expensive in real life
 //[0]:Left turn	[1]:Forward	[2]:Right turn
@@ -684,8 +692,8 @@ unsigned int actionCost[]={1,0,50};
  */
 /*
 int main(void) {
-   //Point<unsigned int> start(0,0),target(2,2);
-   Point<unsigned int> start(8,13),target(2,2);
+   Point<unsigned int> start(0,0),target(4,4);
+   //Point<unsigned int> start(8,13),target(2,2);
    Point<unsigned int> dummy;
    GraphSearch b;
 
@@ -708,8 +716,8 @@ int main(void) {
 	} else {
 		cout << "Search failed.\n";
 	}
-*/
-/*
+
+
    Point<unsigned int> start1(0,0,dummy.Down),target1(4,2);
    if (b.aStar(map,actionCost,start1,target1)) {
    		b.printRouteOnMap(map);
