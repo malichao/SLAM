@@ -27,33 +27,40 @@ TEST_CASE( "Testing AStar searching", "[AStar]" ) {
 	vector<Point<unsigned int> > route;
 
 	SECTION("Null input test"){
-		Point<unsigned int> start(0,0),target(0,0);
-		REQUIRE(gs.aStar(map,actionCost,start,target)==false);
-	}
-
-	SECTION("Null input test"){
-		Point<unsigned int> start(2,2),target(2,2);
-		REQUIRE(gs.aStar(map,actionCost,start,target)==false);
-	}
-
-	SECTION("Out of range test"){
-		Point<unsigned int> start(0,0),target(10,0);
-		REQUIRE(gs.aStar(map,actionCost,start,target)==false);
+		REQUIRE( gs.aStar( 	map,actionCost,
+							Point<unsigned int>{0,0},
+							Point<unsigned int>{0,0})
+							== false );
+		REQUIRE( gs.aStar(	map,actionCost,
+							Point<unsigned int>{2,2},
+							Point<unsigned int>{2,2})
+							== false );
 	}
 
 	SECTION("Out of range test"){
-		Point<unsigned int> start(0,0),target(0,10);
-		REQUIRE(gs.aStar(map,actionCost,start,target)==false);
+		REQUIRE( gs.aStar(	map,actionCost,
+							Point<unsigned int>{10,0},
+							Point<unsigned int>{2,2})
+							== false );
+		REQUIRE( gs.aStar(	map,actionCost,
+							Point<unsigned int>{4,4},
+							Point<unsigned int>{0,10})
+							== false );
 	}
 
-	SECTION("Common case test"){
-		Point<unsigned int> start(0,0),target(4,4);
-		REQUIRE(gs.aStar(map,actionCost,start,target)==true);
-	}
-
-	SECTION("Common case test"){
-		Point<unsigned int> start(4,4),target(0,0);
-		REQUIRE(gs.aStar(map,actionCost,start,target)==true);
+	SECTION("Common cases test"){
+		REQUIRE( gs.aStar(	map,actionCost,
+							Point<unsigned int>{0,0},
+							Point<unsigned int>{4,4})
+							== false );
+		REQUIRE( gs.aStar(	map,actionCost,
+							Point<unsigned int>{0,0},
+							Point<unsigned int>{4,4})
+							== false );
+		REQUIRE( gs.aStar(	map,actionCost,
+							Point<unsigned int>{0,0},
+							Point<unsigned int>{4,4})
+							== false );
 	}
 
 }

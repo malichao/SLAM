@@ -1,3 +1,10 @@
+/******************************************************************************
+Author		: Lichao Ma
+Date  		: Mar 29,2016
+version		: v0.1
+Description :
+	Test file for testing the graph search algorithms
+*****************************************************************************/
 #include "GraphSearch.h"
 using namespace std;
 using namespace pnt;//Point<unsigned int> operation
