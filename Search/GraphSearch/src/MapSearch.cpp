@@ -43,9 +43,10 @@ void MapSearch::printRoute() {
 	cout << "\nShortest path:" << getMinDistance() << endl;
 	size_t i=0;
 	for (auto r : Route) {
-		cout << "(" << r.x << "," << r.y << ")" << endl;
-		if(i++%5==0) cout<<endl;	// Print on next line
+		cout << "(" << r.x << "," << r.y << ")" << "-> ";
+		if(++i%10==0) cout<<endl;	// Print on next line
 	}
+	cout<<"T"<<endl<<endl;
 }
 
 void MapSearch::printRouteOnMap(const vector<vector<unsigned int> > &map) {
