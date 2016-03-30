@@ -1,34 +1,34 @@
 /******************************************************************************
-Author		: Lichao Ma
-Date  		: Mar 29,2016
-version		: v0.1
-Description :
-	Map searching algorithms.
-*****************************************************************************/
+ Author		: Lichao Ma
+ Date  		: Mar 29,2016
+ version		: v0.1
+ Description :
+ Map searching algorithms.
+ *****************************************************************************/
 #include "iostream"
 #include "MapSearch.h"
 
-namespace SearchAlgorithms{
+namespace SearchAlgorithms {
 
 using namespace std;
 
-const unsigned int 	MapSearch::	CostMax = 999;//Don't use UINT_MAX,watch out for OVERFLOW
-const unsigned int 	MapSearch::	Obstacle = 0;	//positive value means the cost of each path
-const char 			MapSearch::	ObstacleSymbol = '#';
+const unsigned int MapSearch::CostMax = 999; //Don't use UINT_MAX,watch out for OVERFLOW
+const unsigned int MapSearch::Obstacle = 0;	//positive value means the cost of each path
+const char MapSearch::ObstacleSymbol = '#';
 
 //const unsigned int NoneDirection = 4;
 const int MapSearch::Move[5][2] = {
-	   {-1,0},	// x-1,y
-	   { 0,1},	// x,y+1
-	   { 1,0},	// x+1,y
-	   {0,-1},	// x,y-1
-	   {0, 0}};	// x,y
-const char MapSearch::DirSymbol[5]={'^','>','V','<',' '};
+		{ -1, 0 },	// x-1,y
+		{ 0, 1 },	// x,y+1
+		{ 1, 0 },	// x+1,y
+		{ 0, -1 },	// x,y-1
+		{ 0, 0 } };	// x,y
+const char MapSearch::DirSymbol[5] = { '^', '>', 'V', '<', ' ' };
 
-void MapSearch::getRoute(vector<Point<unsigned int> > &route){
-	if(Route.size()==0)
+void MapSearch::getRoute(vector<Point<unsigned int> > &route) {
+	if (Route.size() == 0)
 		return;
-	route=Route;
+	route = Route;
 }
 
 void MapSearch::printRoute() {
@@ -54,30 +54,28 @@ void MapSearch::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 	for (size_t i = 0; i < map.size(); i++) {
 		vector<char> row(map[i].size());
 		for (size_t j = 0; j < map[i].size(); j++) {
-			row[j] = map[i][j]==0 ? ObstacleSymbol: '.';
+			row[j] = map[i][j] == 0 ? ObstacleSymbol : '.';
 		}
 		charMap.push_back(row);
 	}
 
-	char dirSymbol[3][3]={
-			{' ','^',' '},
-			{'<',' ','>'},
-			{' ','V',' '},};
+	char dirSymbol[3][3] = { { ' ', '^', ' ' }, { '<', ' ', '>' }, { ' ', 'V',
+			' ' }, };
 
 	for (size_t i = 0; i + 1 < Route.size(); i++) {
-		int dX = Route[i + 1].x - Route[i].x;	//dX = -1 or 1
-		int dY = Route[i + 1].y - Route[i].y;	//dY = -1 or 1
-		if(charMap[Route[i].x][Route[i].y]=='^'||	//This predicate is to solve the route overlap problem,
-			charMap[Route[i].x][Route[i].y]=='>'||	//if this grid is already a route,then we use '+' to
-			charMap[Route[i].x][Route[i].y]=='V'||	//indicate overlap
-			charMap[Route[i].x][Route[i].y]=='V')
-			charMap[Route[i].x][Route[i].y]='+';
+		int dX = Route[i + 1].x - Route[i].x;				//dX = -1 or 1
+		int dY = Route[i + 1].y - Route[i].y;				//dY = -1 or 1
+		if (charMap[Route[i].x][Route[i].y] == '^' ||		//This predicate is to solve the route overlap problem,
+				charMap[Route[i].x][Route[i].y] == '>' ||	//if this grid is already a route,then we use '+' to
+				charMap[Route[i].x][Route[i].y] == 'V' ||	//indicate overlap
+				charMap[Route[i].x][Route[i].y] == 'V')
+			charMap[Route[i].x][Route[i].y] = '+';
 		else
-			charMap[Route[i].x][Route[i].y]=dirSymbol[1+dX][1+dY];
+			charMap[Route[i].x][Route[i].y] = dirSymbol[1 + dX][1 + dY];
 	}
 
 	//charMap[Route[0].x][Route[0].y] = 'S';	//Mark the start point
-	charMap[Route[Route.size() - 1].x][Route[Route.size() - 1].y] = 'T';	//And the target point
+	charMap[Route[Route.size() - 1].x][Route[Route.size() - 1].y] = 'T';//And the target point
 
 	cout << "Search effort: " << EffortCount;
 	cout << "\nShortest path:" << getMinDistance() << endl;
@@ -90,7 +88,7 @@ void MapSearch::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 }
 
 void MapSearch::printGradientOnMap(const vector<vector<unsigned int> > &map) {
-	if (CostMap.size()==0) {
+	if (CostMap.size() == 0) {
 		cout << "'costMap' data needed.\n";
 		return;
 	}
@@ -100,11 +98,10 @@ void MapSearch::printGradientOnMap(const vector<vector<unsigned int> > &map) {
 	for (size_t i = 0; i < map.size(); i++) {
 		vector<char> row(map[i].size());
 		for (size_t j = 0; j < map[i].size(); j++) {
-			row[j] = map[i][j]==0 ? ObstacleSymbol: map[i][j] + '0';
+			row[j] = map[i][j] == 0 ? ObstacleSymbol : map[i][j] + '0';
 		}
 		charMap.push_back(row);
 	}
-
 
 	//charMap[Start.x][Start.y] = 'S';	//Mark the start point
 	charMap[Target.x][Target.y] = 'T';	//And the target point
@@ -120,28 +117,28 @@ void MapSearch::printGradientOnMap(const vector<vector<unsigned int> > &map) {
 }
 
 //Generate a route using the direction info
-void MapSearch::generateRoute(){
-	if(Gradient.size()==0)
+void MapSearch::generateRoute() {
+	if (Gradient.size() == 0)
 		return;
-    Point<unsigned int> curPos=Start;
-    do{
-       Route.push_back(curPos);
-       curPos=Gradient[curPos.x][curPos.y];
-    }while(curPos!=Target);
-    Route.push_back(Target);
+	Point<unsigned int> curPos = Start;
+	do {
+		Route.push_back(curPos);
+		curPos = Gradient[curPos.x][curPos.y];
+	} while (curPos != Target);
+	Route.push_back(Target);
 }
 
-bool MapSearch::isLegal(const vector<vector<unsigned int> > &map,const Point<unsigned int> &p){
+bool MapSearch::isLegal(const vector<vector<unsigned int> > &map,
+		const Point<unsigned int> &p) {
 	EffortCount++;
-	if(p.x<0||p.y<0||p.x>=map.size()||p.y>=map[0].size())		//x and y are int
-	  return false;
-	if(Checked[p.x][p.y])   	//Current position has been searched
-	  return false;
-	if(map[p.x][p.y]==Obstacle)		//Don't hit the wall
-	  return false;
+	if (p.x >= map.size() || p.y >= map[0].size())	//x and y are unsigned int
+		return false;
+	if (Checked[p.x][p.y])   	//Current position has been searched
+		return false;
+	if (map[p.x][p.y] == Obstacle)		//Don't hit the wall
+		return false;
 	return true;
 }
 
-
-}//End namespace SearchAlgorithms
+}		//End namespace SearchAlgorithms
 
