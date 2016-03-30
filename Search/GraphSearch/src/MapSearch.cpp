@@ -6,6 +6,7 @@
  Map searching algorithms.
  *****************************************************************************/
 #include "iostream"
+#include "stdio.h"
 #include "MapSearch.h"
 
 namespace SearchAlgorithms {
@@ -32,20 +33,26 @@ void MapSearch::getRoute(vector<Point<unsigned int> > &route) {
 }
 
 void MapSearch::printRoute() {
+	printf("Start :(%u,%u)\n",Start.x,Start.y);
+	printf("Target:(%u,%u)\n",Target.x,Target.y);
 	if (Route.size() == 0) {
-		cout << "No route.\n";
+		cout << "No route.\n\n";
 		return;
 	}
 	cout << "Search effort: " << EffortCount;
 	cout << "\nShortest path:" << getMinDistance() << endl;
+	size_t i=0;
 	for (auto r : Route) {
 		cout << "(" << r.x << "," << r.y << ")" << endl;
+		if(i++%5==0) cout<<endl;	// Print on next line
 	}
 }
 
 void MapSearch::printRouteOnMap(const vector<vector<unsigned int> > &map) {
+	printf("Start :(%u,%u)\n",Start.x,Start.y);
+	printf("Target:(%u,%u)\n",Target.x,Target.y);
 	if (Route.size() == 0) {
-		cout << "No route.\n";
+		cout << "No route!\n\n";
 		return;
 	}
 	//the original map is unsigned int type,to print route on the map
@@ -85,6 +92,7 @@ void MapSearch::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 		}
 		cout << endl;
 	}
+	cout << endl;
 }
 
 void MapSearch::printGradientOnMap(const vector<vector<unsigned int> > &map) {
