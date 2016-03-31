@@ -5,15 +5,16 @@
  Description :
  Map searching algorithms.
  *****************************************************************************/
-#include "iostream"
-#include "stdio.h"
+#include <limits.h>	//INT_MAX
+#include <iostream>
+#include <stdio.h>
 #include "MapSearch.h"
 
 namespace SearchAlgorithms {
 
 using namespace std;
 
-const unsigned int MapSearch::CostMax = 999; //Don't use UINT_MAX,watch out for OVERFLOW
+const unsigned int MapSearch::CostMax = INT_MAX; //Don't use UINT_MAX,watch out for OVERFLOW
 const unsigned int MapSearch::Obstacle = 0;	//positive value means the cost of each path
 const char MapSearch::ObstacleSymbol = '#';
 
