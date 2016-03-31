@@ -19,11 +19,11 @@ const char MapSearch::ObstacleSymbol = '#';
 
 //const unsigned int NoneDirection = 4;
 const int MapSearch::Move[5][2] = {
-		{ -1, 0 },	// x-1,y
-		{ 0, 1 },	// x,y+1
-		{ 1, 0 },	// x+1,y
-		{ 0, -1 },	// x,y-1
-		{ 0, 0 } };	// x,y
+		{ -1,  0 },	// x-1,y
+		{  0,  1 },	// x,y+1
+		{  1,  0 },	// x+1,y
+		{  0, -1 },	// x,y-1
+		{  0,  0 } };	// x,y
 const char MapSearch::DirSymbol[5] = { '^', '>', 'V', '<', ' ' };
 
 void MapSearch::getRoute(vector<Point<unsigned int> > &route) {
@@ -67,16 +67,18 @@ void MapSearch::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 		charMap.push_back(row);
 	}
 
-	char dirSymbol[3][3] = { { ' ', '^', ' ' }, { '<', ' ', '>' }, { ' ', 'V',
-			' ' }, };
+	char dirSymbol[3][3] = {
+			{ ' ', '^', ' ' },
+			{ '<', ' ', '>' },
+			{ ' ', 'V',' ' }, };
 
 	for (size_t i = 0; i + 1 < Route.size(); i++) {
 		int dX = Route[i + 1].x - Route[i].x;				//dX = -1 or 1
 		int dY = Route[i + 1].y - Route[i].y;				//dY = -1 or 1
 		if (charMap[Route[i].x][Route[i].y] == '^' ||		//This predicate is to solve the route overlap problem,
-				charMap[Route[i].x][Route[i].y] == '>' ||	//if this grid is already a route,then we use '+' to
-				charMap[Route[i].x][Route[i].y] == 'V' ||	//indicate overlap
-				charMap[Route[i].x][Route[i].y] == 'V')
+			charMap[Route[i].x][Route[i].y] == '>' ||		//if this grid is already a route,then we use '+' to
+			charMap[Route[i].x][Route[i].y] == 'V' ||		//indicate overlap
+			charMap[Route[i].x][Route[i].y] == 'V')
 			charMap[Route[i].x][Route[i].y] = '+';
 		else
 			charMap[Route[i].x][Route[i].y] = dirSymbol[1 + dX][1 + dY];
