@@ -17,7 +17,7 @@ namespace SearchAlgorithms{
 
 using namespace std;
 
-typedef Point<unsigned int> Point_unit;
+typedef Point<unsigned int> Point_uint;
 
 /*
  * About the map:
@@ -42,46 +42,46 @@ public:
 	MapSearch():Start(0,0),Target(0,0),EffortCount(0){};
 	virtual ~MapSearch(){};
 
-	void setStart(const Point_unit &s){Start.x=s.x; Start.y=s.y;Start.dir=s.dir;}
-	void setTarget(const Point_unit &t){Target.x=t.x; Target.y=t.y;Target.dir=t.dir;}
+	void setStart(const Point_uint &s){Start.x=s.x; Start.y=s.y;Start.dir=s.dir;}
+	void setTarget(const Point_uint &t){Target.x=t.x; Target.y=t.y;Target.dir=t.dir;}
 
 	int  getMinDistance(){return Route.size()-1;}
 	void printRoute();
-	void getRoute(vector<Point_unit > &route);
+	void getRoute(vector<Point_uint > &route);
 	void printRouteOnMap(const vector<vector<unsigned int> > &map);
 	void printGradientOnMap(const vector<vector<unsigned int> > &map);
 
 	virtual bool search( const vector<vector<unsigned int> > &map)  { return false;}
 	virtual bool search( const vector<vector<unsigned int> > &map,
-						const Point_unit &start,
-						const Point_unit &target) 			{ return false;}
+						const Point_uint &start,
+						const Point_uint &target) 			{ return false;}
 protected:
-	Point_unit Start;
-	Point_unit Target;
+	Point_uint Start;
+	Point_uint Target;
 	unsigned int EffortCount;
 
-	vector<Point_unit > Route;
+	vector<Point_uint > Route;
 	vector<vector<bool> > Checked;
-	vector<vector<Point_unit > > Gradient;
+	vector<vector<Point_uint > > Gradient;
 	vector<vector<unsigned int> > CostMap;
 
 	void generateRoute();
 	void generateRoute(const vector<vector<unsigned int> > &map);
-	void generateRoute(const vector<vector<vector<Point_unit > > > &Gradient);
-	unsigned int abs(Point_unit &a, Point_unit &b);
+	void generateRoute(const vector<vector<vector<Point_uint > > > &Gradient);
+	unsigned int abs(Point_uint &a, Point_uint &b);
 	bool isLegal(const vector<vector<unsigned int> > &map,
-				 const Point_unit &p);
+				 const Point_uint &p);
 	bool isLegal(const vector<vector<unsigned int> > &map,
 				 const unsigned int* const moveCost,
-				 const Point_unit &p);
+				 const Point_uint &p);
 	unsigned int minCost(const vector<vector<unsigned int> > &map,
-						const Point_unit &p,
-						Point_unit &move);
+						const Point_uint &p,
+						Point_uint &move);
 
 	unsigned int minCost(const vector<vector<unsigned int> > &map,
 						 const unsigned int* const moveCost,
-						 const Point_unit &point,
-						 Point_unit &move);
+						 const Point_uint &point,
+						 Point_uint &move);
 
 	//const unsigned int NoneDirection = 4;
 	static const int Move[5][2];

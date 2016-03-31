@@ -7,35 +7,11 @@ Description :
 	Rapidly-Exploring Random Tree Searching Algorithm.
 *****************************************************************************/
 
-#ifndef DPSEARCH_H_
-#define DPSEARCH_H_
 
-#include "MapSearch.h"
+#include "RRT.h"
 
 namespace SearchAlgorithms{
 using namespace std;
 
-class DPSearch: public MapSearch{
-public:
-	struct DPPoint{
-		Point<unsigned int> point;
-		int cost;
-		DPPoint(const Point<unsigned int> &p,unsigned int cost):
-			point(p),cost(cost){};
-	};
-
-	bool search( const vector<vector<unsigned int> > &map);
-	bool search( const vector<vector<unsigned int> > &map,
-				 const Point<unsigned int> &start,
-				 const Point<unsigned int> &target);
-
-	void printGradientOnMap(const vector<vector<unsigned int> > &map);
-private:
-	void generateRoute();
-	unsigned int minCost(const vector<vector<unsigned int> > &map,
-	   						const Point<unsigned int> &p,
-							Point<unsigned int> &move);
-
-};
 
 }// End of namespace SearchAlgorithms

@@ -19,12 +19,6 @@ using namespace std;
 
 class RRTSearch: public MapSearch{
 public:
-	struct DPPoint{
-		Point<unsigned int> point;
-		int cost;
-		DPPoint(const Point<unsigned int> &p,unsigned int cost):
-			point(p),cost(cost){};
-	};
 
 	bool search( const vector<vector<unsigned int> > &map);
 	bool search( const vector<vector<unsigned int> > &map,
