@@ -22,10 +22,8 @@ public:
 
 	bool search( const vector<vector<unsigned int> > &map);
 	bool search( const vector<vector<unsigned int> > &map,
-				 const Point<unsigned int> &start,
-				 const Point<unsigned int> &target);
-
-	void printGradientOnMap(const vector<vector<unsigned int> > &map);
+				 const Point_uint &start,
+				 const Point_uint &target);
 private:
 	void generateRoute();
 	unsigned int minCost(const vector<vector<unsigned int> > &map,

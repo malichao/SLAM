@@ -26,6 +26,22 @@ const int MapSearch::Move[5][2] = {
 		{  0,  0 } };	// x,y
 const char MapSearch::DirSymbol[5] = { '^', '>', 'V', '<', ' ' };
 
+void MapSearch::initData(const vector<vector<unsigned int> > &map){
+	Gradient.clear();
+	for (size_t i = 0; i < map.size(); i++) {			//Init the direction map
+		vector<Point<unsigned int> > zero(map[i].size(), Point<unsigned int>(0, 0));
+		Gradient.push_back(zero);
+	}
+	Checked.clear();
+	for (size_t i = 0; i < map.size(); i++) {			//Init the checked set
+		vector<bool> temp(map[i].size(), false);
+		Checked.push_back(temp);
+	}
+
+	EffortCount = 1;	//Reset the EffortCount to count the search effort
+	Route.clear();		//Clear the previous route
+}
+
 void MapSearch::getRoute(vector<Point<unsigned int> > &route) {
 	if (Route.size() == 0)
 		return;

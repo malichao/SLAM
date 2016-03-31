@@ -40,20 +40,9 @@ bool AStar::search(const vector<vector<unsigned int> > &map,
  * -When searching is done,iterate the direction vector to generate the route
  */
 bool AStar::search(const vector<vector<unsigned int> > &map) {
-	Gradient.clear();
-	for (size_t i = 0; i < map.size(); i++) {			//Init the direction map
-		vector<Point<unsigned int> > zero(map[i].size(), Point<unsigned int>(0, 0));
-		Gradient.push_back(zero);
-	}
-	Checked.clear();
-	for (size_t i = 0; i < map.size(); i++) {			//Init the checked set
-		vector<bool> temp(map[i].size(), false);
-		Checked.push_back(temp);
-	}
+	MapSearch::initData(map);	//Clear previous search result and init the data
 
-	if (!isLegal(map, Target) || !isLegal(map, Start))
-		return false;
-
+	if (!isLegal(map, Target) || !isLegal(map, Start)) return false;
 	if(Start==Target) return true;
 
 	//Similar to BFS,but we use minimal priority queue instead
@@ -61,8 +50,7 @@ bool AStar::search(const vector<vector<unsigned int> > &map) {
 	pQue.push(AStarPoint(Target, map[Target.x][Target.y], pnt::abs(Target, Start)));
 	Checked[Target.x][Target.y] = true;
 	bool success = false;
-	EffortCount = 1;			//Reset the EffortCount to count the search effort
-	Route.clear();		//Clear the previous route
+
 	while (!pQue.empty()) {
 		AStarPoint curPos = pQue.top();
 		Point<unsigned int> p = curPos.point;

@@ -68,7 +68,11 @@ protected:
 	void generateRoute();
 	void generateRoute(const vector<vector<unsigned int> > &map);
 	void generateRoute(const vector<vector<vector<Point_uint > > > &Gradient);
+
 	unsigned int abs(Point_uint &a, Point_uint &b);
+
+	void initData(const vector<vector<unsigned int> > &map);
+
 	bool isLegal(const vector<vector<unsigned int> > &map,
 				 const Point_uint &p);
 	bool isLegal(const vector<vector<unsigned int> > &map,
