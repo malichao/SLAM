@@ -7,18 +7,27 @@
 
 #ifndef POINT_H_
 #define POINT_H_
+#include <cstddef>	//std::size_t
+
+//Only used as base class,for declaring the static const variables
+struct PointBase{
+   static const std::size_t DirectionSize;
+   //Must define these values in clockwise/counter-clockwise manner
+   static const int Up;
+   static const int Right;
+   static const int Down;
+   static const int Left;
+
+   PointBase(){}
+   ~PointBase(){}
+};
 
 //Define Point as template because in GraphSearch cases,map coordinate are positive
 //integers.But in smooth algorithm,these points will be converted to float to make
 //the path smooth.
 template<class T>
-struct Point {
-   static const int DirectionSize=4;
-   //Must define these values in clockwise/counter-clockwise manner
-   static const int Up=0;
-   static const int Right=1;
-   static const int Down=2;
-   static const int Left=3;
+struct Point:public PointBase {
+
 
    T x;
    T y;

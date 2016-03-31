@@ -6,6 +6,13 @@
  */
 #include "Point.h"
 
+const std::size_t PointBase::DirectionSize=4;
+//Must define these values in clockwise/counter-clockwise manner
+const int PointBase::Up=0;
+const int PointBase::Right=1;
+const int PointBase::Down=2;
+const int PointBase::Left=3;
+
 namespace pnt{
 int abs(Point<unsigned int> &a,Point<unsigned int> &b){
 	int x = a.x > b.x ? a.x - b.x : b.x - a.x;
