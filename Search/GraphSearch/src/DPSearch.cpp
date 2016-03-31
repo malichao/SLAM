@@ -15,9 +15,9 @@ namespace SearchAlgorithms{
 
 //Todo:rewrite this function to make it clear
 //Find the minimal cost of the four direction from visited points
-unsigned int DPSearch::minCost(const vector<vector<unsigned int> > &map,
-							 const Point<unsigned int> &point,
-							 Point<unsigned int> &nextMove) {
+unsigned int DPSearch::minCost(  const vector<vector<unsigned int> > &map,
+								 const Point<unsigned int> &point,
+								 Point<unsigned int> &nextMove) {
 	nextMove=point;	//0:Up	1:Down	2:Left	3:Right	4:None
 	if(point==Target)
 		return 0;
@@ -47,7 +47,8 @@ struct lessCost{
 };
 
 bool DPSearch::search(const vector<vector<unsigned int> > &map,
-					  const Point<unsigned int> &start,const Point<unsigned int> &target) {
+					  const Point<unsigned int> &start,
+					  const Point<unsigned int> &target) {
 	setTarget(target);
 	setStart(start);
 	return search(map);
@@ -136,7 +137,7 @@ void DPSearch::generateRoute() {
 }
 
 void DPSearch::printGradientOnMap(const vector<vector<unsigned int> > &map) {
-	if (CostMap.size()==0) {
+	if (CostMap.size() == 0) {
 		cout << "'costMap' data needed.\n";
 		return;
 	}
@@ -146,12 +147,20 @@ void DPSearch::printGradientOnMap(const vector<vector<unsigned int> > &map) {
 	for (size_t i = 0; i < map.size(); i++) {
 		vector<char> row(map[i].size());
 		for (size_t j = 0; j < map[i].size(); j++) {
-			row[j] = map[i][j]==0 ? ObstacleSymbol: map[i][j] + '0';
+			row[j] = map[i][j] == 0 ? ObstacleSymbol : map[i][j] + '0';
 		}
 
 		charMap.push_back(row);
 	}
 
+	for (size_t i = 0; i < charMap.size(); i++)
+		for (size_t j = 0; j < charMap[i].size(); j++) {
+			if (Checked[i][j]) {
+				Point<unsigned int> move;
+				minCost(map, Point<unsigned int>(i, j), move);
+				charMap[i][j] = DirSymbol[move.dir];
+			}
+		}
 
 	//charMap[Start.x][Start.y] = 'S';	//Mark the start point
 	charMap[Target.x][Target.y] = 'T';	//And the target point
