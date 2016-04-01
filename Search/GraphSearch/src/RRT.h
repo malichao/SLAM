@@ -20,12 +20,12 @@ using namespace std;
 class RRTSearch: public MapSearch{
 public:
 	struct Line{
-		Line(Point_uint &s,Point_uint &e):start(s),end(e){}
+		Line(Point<int> &s,Point<int> &e):start(s),end(e){}
 
-		Point_uint start;
-		Point_uint end;
+		Point<int> start;
+		Point<int> end;
 	};
-	RRTSearch(): MaxSearchTime(1000),Epsilon(50){}
+	RRTSearch(): MaxSearchTime(1000),Epsilon(10){}
 
 	void demo(size_t width,size_t height,size_t SearhTime);
 
@@ -40,15 +40,15 @@ public:
 	Line getLine(size_t i) const {return Lines[i];}
 	Line getLineAt(size_t i) const { return Lines.at(i);}
 private:
-	vector<Point_uint> Nodes;
+	vector<Point<int> > Nodes;
 	size_t MaxSearchTime;
 	unsigned int Epsilon;
 
 	vector<Line> Lines;
 
-	Point_uint stepFromTo(Point_uint &a,Point_uint &b);
+	Point<int> stepFromTo(Point<int> &a,Point<int> &b);
 
-	void generateRoute(vector<Point_uint> &route);
+	void generateRoute(vector<Point<int> > &route);
 
 };
 

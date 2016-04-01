@@ -7,6 +7,7 @@
 	-v0.2	Use template to extend the application,e.g.,float point
 	-v0.1	Pointer class for occupancy grid map
  *****************************************************************************/
+#include "math.h"
 #include "Point.h"
 
 const std::size_t PointBase::DirectionSize=4;
@@ -25,7 +26,13 @@ int abs(Point<unsigned int> &a,Point<unsigned int> &b){
 int dis(Point<unsigned int> &a,Point<unsigned int> &b){
 	int x = a.x > b.x ? a.x - b.x : b.x - a.x;
 	int y = a.y > b.y ? a.y - b.y : b.y - a.y;
-	return x*x+y*y;
+	return sqrt(x*x+y*y);
+}
+
+int dis(Point<int> &a,Point<int> &b){
+	int x =a.x - b.x;
+	int y =a.y - b.y;
+	return sqrt(x*x+y*y);
 }
 
 float abs(Point<float> &a,Point<float> &b){
@@ -36,6 +43,6 @@ float abs(Point<float> &a,Point<float> &b){
 float dis(Point<float> &a,Point<float> &b){
 	int x = a.x > b.x ? a.x - b.x : b.x - a.x;
 	int y = a.y > b.y ? a.y - b.y : b.y - a.y;
-	return x*x+y*y;
+	return sqrt(x*x+y*y);
 }
 }
