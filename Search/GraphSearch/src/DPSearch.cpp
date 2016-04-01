@@ -25,13 +25,14 @@ struct lessCost{
 
 bool DPSearch::search(const vector<vector<unsigned int> > &map,
 					  const Point<unsigned int> &start,
-					  const Point<unsigned int> &target) {
+					  const Point<unsigned int> &target,
+					  vector<Point_uint> &route) {
 	setTarget(target);
 	setStart(start);
-	return search(map);
+	return search(map,route);
 }
 
-bool DPSearch::search(const vector<vector<unsigned int> > &map) {
+bool DPSearch::search(const vector<vector<unsigned int> > &map,vector<Point_uint> &route) {
 	MapSearch::initData(map);	//Clear previous search result and init the data
 
 	if (!isLegal(map, Target) || !isLegal(map, Start)) return false;
@@ -79,7 +80,11 @@ bool DPSearch::search(const vector<vector<unsigned int> > &map) {
 	//		cout<<endl;
 	//	}
 
-	return success;
+	if(success){
+		generateRoute(route);
+		return true;
+	}
+	return false;
 }
 
 //Generate a route using the direction info

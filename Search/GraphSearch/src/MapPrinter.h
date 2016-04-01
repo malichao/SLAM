@@ -21,22 +21,14 @@ namespace SearchAlgorithms{
 class MapPrinter:public MapSearch{
 public:
 
-	void printRoute();
-	void printRouteOnMap(const vector<vector<unsigned int> > &map);
+	void printRoute(const vector<Point_uint> &route);
+	void printRouteOnMap(const vector<vector<unsigned int> > &map,
+						 const vector<Point_uint> &route);
 	void printGradientOnMap(const vector<vector<unsigned int> > &map);
 
-	void getRoute(vector<Point<unsigned int> > &route) {
-		if (Route.size() == 0)
-			return;
-		route = Route;
-	}
-
 private:
-	//const unsigned int NoneDirection = 4;
 
 	static const char DirSymbol[5];
-
-	vector<Point_uint > Route;
 
 };
 

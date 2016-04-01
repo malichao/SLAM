@@ -18,27 +18,28 @@ namespace SearchAlgorithms{
 
 const char MapPrinter::DirSymbol[5] = { '^', '>', 'V', '<', ' ' };
 
-void MapPrinter::printRoute() {
+void MapPrinter::printRoute(const vector<Point_uint> &route) {
 	printf("Start :(%u,%u)\n",Start.x,Start.y);
 	printf("Target:(%u,%u)\n",Target.x,Target.y);
-	if (Route.size() == 0) {
+	if (route.size() == 0) {
 		cout << "No route.\n\n";
 		return;
 	}
 	cout << "Search effort: " << EffortCount;
-	cout << "\nShortest path:" << Route.size() << endl;
+	cout << "\nShortest path:" << route.size() << endl;
 	size_t i=0;
-	for (auto r : Route) {
+	for (auto r : route) {
 		cout << "(" << r.x << "," << r.y << ")" << "-> ";
 		if(++i%10==0) cout<<endl;	// Print on next line
 	}
 	cout<<"T"<<endl<<endl;
 }
 
-void MapPrinter::printRouteOnMap(const vector<vector<unsigned int> > &map) {
+void MapPrinter::printRouteOnMap(const vector<vector<unsigned int> > &map,
+								 const vector<Point_uint> &route) {
 	printf("Start :(%u,%u)\n",Start.x,Start.y);
 	printf("Target:(%u,%u)\n",Target.x,Target.y);
-	if (Route.size() == 0) {
+	if (route.size() == 0) {
 		cout << "No route!\n\n";
 		return;
 	}
@@ -59,24 +60,24 @@ void MapPrinter::printRouteOnMap(const vector<vector<unsigned int> > &map) {
 			{ ' ', 'V',' ' }, };
 
 	//TODO: the four-line judging code could be replaced by string function
-	for (size_t i = 0; i + 1 < Route.size(); i++) {
-		int dX = Route[i + 1].x - Route[i].x;				//dX = -1 or 1
-		int dY = Route[i + 1].y - Route[i].y;				//dY = -1 or 1
-		if (charMap[Route[i].x][Route[i].y] == '^' ||		//This predicate is to solve the route overlap problem,
-			charMap[Route[i].x][Route[i].y] == '>' ||		//if this grid is already a route,then we use '+' to
-			charMap[Route[i].x][Route[i].y] == 'V' ||		//indicate overlap
-			charMap[Route[i].x][Route[i].y] == 'V')
+	for (size_t i = 0; i + 1 < route.size(); i++) {
+		int dX = route[i + 1].x - route[i].x;				//dX = -1 or 1
+		int dY = route[i + 1].y - route[i].y;				//dY = -1 or 1
+		if (charMap[route[i].x][route[i].y] == '^' ||		//This predicate is to solve the route overlap problem,
+			charMap[route[i].x][route[i].y] == '>' ||		//if this grid is already a route,then we use '+' to
+			charMap[route[i].x][route[i].y] == 'V' ||		//indicate overlap
+			charMap[route[i].x][route[i].y] == 'V')
 
-			charMap[Route[i].x][Route[i].y] = '+';			// Set to '+'
+			charMap[route[i].x][route[i].y] = '+';			// Set to '+'
 		else
-			charMap[Route[i].x][Route[i].y] = dirSymbol[1 + dX][1 + dY];
+			charMap[route[i].x][route[i].y] = dirSymbol[1 + dX][1 + dY];
 	}
 
-	//charMap[Route[0].x][Route[0].y] = 'S';	//Mark the start point
-	charMap[Route[Route.size() - 1].x][Route[Route.size() - 1].y] = 'T';//And the target point
+	//charMap[route[0].x][route[0].y] = 'S';	//Mark the start point
+	charMap[route[route.size() - 1].x][route[route.size() - 1].y] = 'T';//And the target point
 
 	cout << "Search effort: " << EffortCount;
-	cout << "\nShortest path:" << Route.size() << endl;
+	cout << "\nShortest path:" << route.size() << endl;
 	for (size_t i = 0; i < charMap.size(); i++) {
 		for (size_t j = 0; j < charMap[i].size(); j++) {
 			cout << charMap[i][j] << " ";
@@ -116,7 +117,6 @@ void MapPrinter::printGradientOnMap(const vector<vector<unsigned int> > &map) {
 	charMap[Target.x][Target.y] = 'T';	//And the target point
 
 	cout << "Search effort: " << EffortCount;
-	cout << "\nShortest path:" << Route.size() << endl;
 	for (size_t i = 0; i < charMap.size(); i++) {
 		for (size_t j = 0; j < charMap[i].size(); j++) {
 			cout << charMap[i][j] << " ";

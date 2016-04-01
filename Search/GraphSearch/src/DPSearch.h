@@ -24,10 +24,12 @@ public:
 			point(p),cost(cost){};
 	};
 
-	bool search( const vector<vector<unsigned int> > &map);
+	bool search( const vector<vector<unsigned int> > &map,
+				 vector<Point_uint> &route);
 	bool search( const vector<vector<unsigned int> > &map,
 				 const Point<unsigned int> &start,
-				 const Point<unsigned int> &target);
+				 const Point<unsigned int> &target,
+				 vector<Point_uint> &route);
 
 	void printGradientOnMap(const vector<vector<unsigned int> > &map);
 private:

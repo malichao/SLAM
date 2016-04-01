@@ -12,10 +12,12 @@ Description :
 namespace SearchAlgorithms{
 
 bool BFS::search(const vector<vector<unsigned int> > &map,
-				 const Point<unsigned int> &start,const Point<unsigned int> &target){
+				 const Point<unsigned int> &start,
+				 const Point<unsigned int> &target,
+				 vector<Point_uint> &route){
    setTarget(target);
    setStart(start);
-   return search(map);
+   return search(map,route);
 }
 
 /*
@@ -26,7 +28,7 @@ bool BFS::search(const vector<vector<unsigned int> > &map,
  * -Read grids from the queue and check if the start grid is reached
  * -When searching is done,iterate the direction vector to generate the route
  */
-bool BFS::search(const vector<vector<unsigned int> > &map) {
+bool BFS::search(const vector<vector<unsigned int> > &map,vector<Point_uint> &route) {
 	MapSearch::initData(map);	//Clear previous search result and init the data
 
 	if (!isLegal(map, Target) || !isLegal(map, Start)) return false;
@@ -56,7 +58,11 @@ bool BFS::search(const vector<vector<unsigned int> > &map) {
 		}
 	}
 
-	return success;
+	if(success){
+		generateRoute(route);
+		return true;
+	}
+	return false;
 }
 
 }// End of namespace SearchAlgorithms

@@ -5,7 +5,7 @@ version		: v0.1
 Description :
 	Test file for testing the graph search algorithms
 *****************************************************************************/
-/*
+
 #define CATCH_CONFIG_MAIN// This tells Catch to provide a main() - only do this in one cpp file
 #include "..\include\catch.hpp"
 
@@ -35,45 +35,45 @@ TEST_CASE( "Testing AStar searching", "[BFS]" ) {
 	vector<Point_uint> route;
 
 	SECTION("Null input test"){
-		REQUIRE( tester.search(map,Point_uint {0,0},Point_uint {0,0})== true );
-		REQUIRE( tester.search(map,Point_uint {4,4},Point_uint {4,4})== true );
+		REQUIRE( tester.search(map,route,Point_uint {0,0},Point_uint {0,0})== true );
+		REQUIRE( tester.search(map,route,Point_uint {4,4},Point_uint {4,4})== true );
 	}
 
 	SECTION("Out of range test"){
-		REQUIRE( tester.search(map,Point_uint {10,0},Point_uint {0,0})== false );
-		REQUIRE( tester.search(map,Point_uint {0,0},Point_uint {0,10})== false );
+		REQUIRE( tester.search(map,route,Point_uint {10,0},Point_uint {0,0})== false );
+		REQUIRE( tester.search(map,route,Point_uint {0,0},Point_uint {0,10})== false );
 	}
 
 	SECTION("Common successful cases test(Search & print on map)"){
-		REQUIRE( tester.search(map,Point_uint {0,0},Point_uint {4,4})== true );
+		REQUIRE( tester.search(map,route,Point_uint {0,0},Point_uint {4,4})== true );
 		tester.printRouteOnMap(map);
-		REQUIRE( tester.search(map,Point_uint {4,4},Point_uint {0,0})== true );
+		REQUIRE( tester.search(map,route,Point_uint {4,4},Point_uint {0,0})== true );
 		tester.printRouteOnMap(map);
-		REQUIRE( tester.search(map,Point_uint {0,2},Point_uint {4,3})== true );
+		REQUIRE( tester.search(map,route,Point_uint {0,2},Point_uint {4,3})== true );
 		tester.printRouteOnMap(map);
-		REQUIRE( tester.search(map,Point_uint {4,0},Point_uint {0,4})== true );
+		REQUIRE( tester.search(map,route,Point_uint {4,0},Point_uint {0,4})== true );
 		tester.printRouteOnMap(map);
 	}
 
 	SECTION("Common successful cases test(Search & print routes)"){
-		REQUIRE( tester.search(map,Point_uint {0,0},Point_uint {4,4})== true );
+		REQUIRE( tester.search(map,route,Point_uint {0,0},Point_uint {4,4})== true );
 		tester.printRoute();
-		REQUIRE( tester.search(map,Point_uint {4,4},Point_uint {0,0})== true );
+		REQUIRE( tester.search(map,route,Point_uint {4,4},Point_uint {0,0})== true );
 		tester.printRoute();
-		REQUIRE( tester.search(map,Point_uint {0,2},Point_uint {4,3})== true );
+		REQUIRE( tester.search(map,route,Point_uint {0,2},Point_uint {4,3})== true );
 		tester.printRoute();
-		REQUIRE( tester.search(map,Point_uint {4,0},Point_uint {0,4})== true );
+		REQUIRE( tester.search(map,route,Point_uint {4,0},Point_uint {0,4})== true );
 		tester.printRoute();
 	}
 
 	SECTION("Common failure cases test(obstacle grids as setpoint)"){
-		REQUIRE( tester.search(map,Point_uint {0,1},Point_uint {4,4})== false );
+		REQUIRE( tester.search(map,route,Point_uint {0,1},Point_uint {4,4})== false );
 		tester.printRouteOnMap(map);
-		REQUIRE( tester.search(map,Point_uint {0,1},Point_uint {0,3})== false );
+		REQUIRE( tester.search(map,route,Point_uint {0,1},Point_uint {0,3})== false );
 		tester.printRouteOnMap(map);
-		REQUIRE( tester.search(map,Point_uint {4,0},Point_uint {4,1})== false );
+		REQUIRE( tester.search(map,route,Point_uint {4,0},Point_uint {4,1})== false );
 		tester.printRoute();
-		REQUIRE( tester.search(map,Point_uint {0,4},Point_uint {4,1})== false );
+		REQUIRE( tester.search(map,route,Point_uint {0,4},Point_uint {4,1})== false );
 		tester.printRoute();
 	}
 
@@ -85,15 +85,15 @@ TEST_CASE( "Testing AStar searching", "[BFS]" ) {
 			{1, 0, 0, 5, 1},};
 
 	SECTION("Common failure cases test(no available route)"){
-		REQUIRE( tester.search(map,Point_uint {0,0},Point_uint {4,4})== false );
+		REQUIRE( tester.search(map,route,Point_uint {0,0},Point_uint {4,4})== false );
 		tester.printRouteOnMap(map);
-		REQUIRE( tester.search(map,Point_uint {4,4},Point_uint {0,0})== false );
+		REQUIRE( tester.search(map,route,Point_uint {4,4},Point_uint {0,0})== false );
 		tester.printRouteOnMap(map);
-		REQUIRE( tester.search(map,Point_uint {2,0},Point_uint {2,4})== false );
+		REQUIRE( tester.search(map,route,Point_uint {2,0},Point_uint {2,4})== false );
 		tester.printRoute();
-		REQUIRE( tester.search(map,Point_uint {0,4},Point_uint {4,0})== false );
+		REQUIRE( tester.search(map,route,Point_uint {0,4},Point_uint {4,0})== false );
 		tester.printRoute();
 	}
 
 }
-*/
+
