@@ -8,7 +8,6 @@ Description :
 *****************************************************************************/
 #include <queue>
 #include <algorithm> // std::reverse()
-#include <iostream>
 #include "DPSearch.h"
 
 namespace SearchAlgorithms{

@@ -6,8 +6,7 @@
  Map searching algorithms.
  *****************************************************************************/
 #include <limits.h>	//INT_MAX
-#include <iostream>
-#include <stdio.h>
+
 #include "MapSearch.h"
 
 namespace SearchAlgorithms {

@@ -11,9 +11,6 @@ Description :
 #ifndef MAPPRINTER_H_
 #define MAPPRINTER_H_
 
-#include <queue>
-#include <algorithm> // std::reverse()
-#include <iostream>
 #include "DPSearch.h"
 
 namespace SearchAlgorithms{
