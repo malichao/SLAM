@@ -27,7 +27,7 @@ public:
 	};
 	RRTSearch(): MaxSearchTime(1000),Epsilon(10){}
 
-	void demo(size_t width,size_t height,size_t SearhTime);
+	void demo(size_t width,size_t height,size_t searhTime,size_t epsilon);
 
 	bool search( const vector<vector<unsigned int> > &map,
 				 vector<Point_uint> &route);

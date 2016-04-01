@@ -14,19 +14,19 @@ using namespace std;
 using namespace SearchAlgorithms;
 int main(){
 	size_t width=1000,height=1000;
-	size_t penWidth=1;
-	bitmap_image image(height+penWidth*2,width+penWidth*2);
+	size_t penWidth=2;
+	bitmap_image image(height,width);
 	image_drawer draw(image);
 
 	RRTSearch tester;
-	tester.demo(width,height,1000);
+	tester.demo(width,height,500,500);
 
 	draw.pen_width(penWidth);
 	draw.pen_color(255,255,255);
 	for(size_t i=0;i<tester.getLineSize();i++){
 		RRTSearch::Line l=tester.getLine(i);
 		Point<int> start(l.start),end(l.end);
-		printf("(%u,%u)->(%u,%u)\n",start.x,start.y,end.x,end.y);
+		//printf("(%u,%u)->(%u,%u)\n",start.x,start.y,end.x,end.y);
 		draw.line_segment(start.x,start.y,end.x,end.y);
 	}
 

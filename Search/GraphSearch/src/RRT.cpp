@@ -31,12 +31,14 @@ bool RRTSearch::search(const vector<vector<unsigned int> > &map,
 	//return search(map,route);
 }
 
-void RRTSearch::demo(size_t width,size_t height,size_t SearhTime) {
+void RRTSearch::demo(size_t width,size_t height,size_t searhTime,size_t epsilon) {
 	srand(time(NULL));
 	Nodes.clear();
 	Nodes.push_back(Point<int>(height/2, width/2));
 
-	for(size_t i=0;i<SearhTime;i++){
+	Epsilon=epsilon;
+
+	for(size_t i=0;i<searhTime;i++){
 		Point<int> randPoint(rand()%height,rand()%width);
 
 		Point<int> shortestPoint=Nodes[0];
