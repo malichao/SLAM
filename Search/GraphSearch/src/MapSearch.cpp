@@ -41,6 +41,30 @@ void MapSearch::initData(const vector<vector<unsigned int> > &map){
 	EffortCount = 1;	//Reset the EffortCount to count the search effort
 }
 
+//Todo:rewrite this function to make it clear
+//Find the minimal cost of the four direction from visited points
+unsigned int MapSearch::minCost(  const vector<vector<unsigned int> > &map,
+								 const Point<unsigned int> &point,
+								 Point<unsigned int> &nextMove) {
+	nextMove=point;	//0:Up	1:Down	2:Left	3:Right	4:None
+	if(point==Target)
+		return 0;
+	unsigned int min = CostMax;		//Don't use UINT_MAX otherwise it will overflow later on
+	for(size_t k=0;k<4;k++){		//Iterate Up,Down,Left,Right 4 direction
+		Point<unsigned int> p(point.x+Move[k][0],point.y+Move[k][1],k);
+
+		//In the predicate,must check the bounding first.We don't use isLegal() because we're
+		//going to find the minimal cost point in previously visited points
+		if ((p.x>=0 && p.y>=0 && p.x < map.size() &&p.y < map[0].size())&& Checked[p.x][p.y]
+					&& map[p.x][p.y] != Obstacle){
+			if(CostMap[p.x][p.y] < min){
+				min=CostMap[p.x][p.y];
+				nextMove=p;
+			}
+		}
+	}
+	return min;
+}
 
 //Generate a route using the direction info
 void MapSearch::generateRoute(vector<Point_uint> &route) {
