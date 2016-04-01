@@ -102,64 +102,22 @@ bool DPSearch::search(const vector<vector<unsigned int> > &map) {
 	//		cout<<endl;
 	//	}
 
-	//Searching is done,if target is found then save the route
-	if (success) {
-		generateRoute();
-		return true;
-	}
-	return false;
+	return success;
 }
 
 //Generate a route using the direction info
-void DPSearch::generateRoute() {
+void DPSearch::generateRoute(vector<Point_uint> &route) {
 	if (Gradient.size() == 0)
 		return;
 	Point<unsigned int> curPos = Target;
 	do {
-		Route.push_back(curPos);
+		route.push_back(curPos);
 		curPos = Gradient[curPos.x][curPos.y];
 	} while (curPos != Start);
-	Route.push_back(Start);
-	std::reverse(Route.begin(),Route.end());
+	route.push_back(Start);
+	std::reverse(route.begin(),route.end());
 }
 
-void DPSearch::printGradientOnMap(const vector<vector<unsigned int> > &map) {
-	if (CostMap.size() == 0) {
-		cout << "'costMap' data needed.\n";
-		return;
-	}
-	//the original map is unsigned int type,to print route on the map
-	//we need to convert it to char
-	vector<vector<char> > charMap;
-	for (size_t i = 0; i < map.size(); i++) {
-		vector<char> row(map[i].size());
-		for (size_t j = 0; j < map[i].size(); j++) {
-			row[j] = map[i][j] == 0 ? ObstacleSymbol : map[i][j] + '0';
-		}
 
-		charMap.push_back(row);
-	}
-
-	for (size_t i = 0; i < charMap.size(); i++)
-		for (size_t j = 0; j < charMap[i].size(); j++) {
-			if (Checked[i][j]) {
-				Point<unsigned int> move;
-				minCost(map, Point<unsigned int>(i, j), move);
-				charMap[i][j] = DirSymbol[move.dir];
-			}
-		}
-
-	//charMap[Start.x][Start.y] = 'S';	//Mark the start point
-	charMap[Target.x][Target.y] = 'T';	//And the target point
-
-	cout << "Search effort: " << EffortCount;
-	cout << "\nShortest path:" << getMinDistance() << endl;
-	for (size_t i = 0; i < charMap.size(); i++) {
-		for (size_t j = 0; j < charMap[i].size(); j++) {
-			cout << charMap[i][j] << " ";
-		}
-		cout << endl;
-	}
-}
 
 }// End of namespace SearchAlgorithms

@@ -73,10 +73,7 @@ bool AStar::search(const vector<vector<unsigned int> > &map) {
 		  }
 		}
 	}
-	if (success) {
-		generateRoute();
-		return true;
-	}
-	return false;
+
+	return success;
 }
 }// End of namespace SearchAlgorithms

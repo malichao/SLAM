@@ -45,11 +45,7 @@ public:
 	void setStart(const Point_uint &s){Start.x=s.x; Start.y=s.y;Start.dir=s.dir;}
 	void setTarget(const Point_uint &t){Target.x=t.x; Target.y=t.y;Target.dir=t.dir;}
 
-	int  getMinDistance(){return Route.size()-1;}
-	void printRoute();
 	void getRoute(vector<Point_uint > &route);
-	void printRouteOnMap(const vector<vector<unsigned int> > &map);
-	void printGradientOnMap(const vector<vector<unsigned int> > &map);
 
 	virtual bool search( const vector<vector<unsigned int> > &map)  { return false;}
 	virtual bool search( const vector<vector<unsigned int> > &map,
@@ -60,12 +56,13 @@ protected:
 	Point_uint Target;
 	unsigned int EffortCount;
 
-	vector<Point_uint > Route;
 	vector<vector<bool> > Checked;
 	vector<vector<Point_uint > > Gradient;
 	vector<vector<unsigned int> > CostMap;
 
-	void generateRoute();
+	static const int Move[5][2];
+
+	void generateRoute(vector<Point_uint> &route);
 	void generateRoute(const vector<vector<unsigned int> > &map);
 	void generateRoute(const vector<vector<vector<Point_uint > > > &Gradient);
 
@@ -86,11 +83,6 @@ protected:
 						 const unsigned int* const moveCost,
 						 const Point_uint &point,
 						 Point_uint &move);
-
-	//const unsigned int NoneDirection = 4;
-	static const int Move[5][2];
-	static const char DirSymbol[5];
-
 };
 
 }

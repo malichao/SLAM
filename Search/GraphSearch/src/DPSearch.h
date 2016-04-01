@@ -31,7 +31,7 @@ public:
 
 	void printGradientOnMap(const vector<vector<unsigned int> > &map);
 private:
-	void generateRoute();
+	void generateRoute(vector<Point_uint> &route);
 	unsigned int minCost(const vector<vector<unsigned int> > &map,
 	   						const Point<unsigned int> &p,
 							Point<unsigned int> &move);

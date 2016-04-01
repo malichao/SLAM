@@ -56,12 +56,7 @@ bool BFS::search(const vector<vector<unsigned int> > &map) {
 		}
 	}
 
-	//Searching is done,if target is found then save the route
-	if (success) {
-		generateRoute();
-		return true;
-	}
-	return false;
+	return success;
 }
 
 }// End of namespace SearchAlgorithms
