@@ -1,9 +1,10 @@
 /******************************************************************************
  Author		: Lichao Ma
  Date  		: Mar 29,2016
- version		: v0.1
+ Version	: v0.2
  Description :
- Map searching algorithms.
+	-v0.2	Remove print functions so that this class is more portable.
+	-v0.1	Map searching algorithms base class.Provides basic function calls.
  *****************************************************************************/
 #include <limits.h>	//INT_MAX
 

@@ -1,9 +1,12 @@
-/*
- * Point.cpp
- *
- *  Created on: Mar 19, 2016
- *      Author: Lichao
- */
+/******************************************************************************
+ Author		: Lichao Ma
+ Date  		: Mar 19,2016
+ Version	: v0.3
+ Description :
+	-v0.3	Create a base class for static variables reference
+	-v0.2	Use template to extend the application,e.g.,float point
+	-v0.1	Pointer class for occupancy grid map
+ *****************************************************************************/
 #include "Point.h"
 
 const std::size_t PointBase::DirectionSize=4;

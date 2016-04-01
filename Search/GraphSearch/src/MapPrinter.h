@@ -20,12 +20,13 @@ public:
 
 	void printRoute(const MapSearch &searcher,
 					const vector<Point_uint> &route);
+
 	void printRouteOnMap(const MapSearch &searcher,
 						 const vector<vector<unsigned int> > &map,
 						 const vector<Point_uint> &route);
+
 	void printGradientOnMap(const MapSearch &searcher,
 							const vector<vector<unsigned int> > &map);
-
 private:
 
 	static const char DirSymbol[5];

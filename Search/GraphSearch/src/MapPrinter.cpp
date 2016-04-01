@@ -4,7 +4,7 @@ Date  		: Mar 31,2016
 Version		: v0.1
 Built		: Eclipse CDT, -std=c++11
 Description :
-	A class to print out the search result on screen
+	-v0.1	A class to print out the character-based search result on console
 *****************************************************************************/
 
 #include <queue>
