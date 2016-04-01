@@ -27,7 +27,7 @@ void test1(){
 	draw.pen_color(255,255,255);
 	for(size_t i=0;i<tester.getLineSize();i++){
 		RRTSearch::Line l=tester.getLine(i);
-		Point<int> start(l.start),end(l.end);
+		Point_uint start(l.start),end(l.end);
 		//printf("(%u,%u)->(%u,%u)\n",start.x,start.y,end.x,end.y);
 		draw.line_segment(start.x,start.y,end.x,end.y);
 	}

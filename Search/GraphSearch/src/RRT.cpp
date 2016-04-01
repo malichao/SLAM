@@ -15,40 +15,40 @@ Description :
 namespace SearchAlgorithms{
 using namespace std;
 
-Point<int> RRTSearch::stepFromTo(Point<int> &a,Point<int> &b){
+Point_uint RRTSearch::stepFromTo(Point_uint &a,Point_uint &b){
 	if((unsigned int)pnt::dis(a,b)<Epsilon)
 		return b;
 	double theta=atan2(double(b.y)-double(a.y),double(b.x)-double(a.x));
-	return Point<int>(a.x+Epsilon*cos(theta),a.y+Epsilon*sin(theta));
+	return Point_uint(a.x+Epsilon*cos(theta),a.y+Epsilon*sin(theta));
 }
 
 bool RRTSearch::search(const vector<vector<bool> > &map,
 				   const Point<unsigned int> &start,
 				   const Point<unsigned int> &target,
-				   vector<Point<int>> &route) {
+				   vector<Point_uint> &route) {
 	setTarget(target);
 	setStart(start);
 	return search(map,route);
 }
 
-bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point<int> > &route) {
+bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &route) {
 	srand(time(NULL));
 	Nodes.clear();
-	//Nodes.push_back(Start);
+	Nodes.push_back(Start);
 
 	Epsilon=10;
 	size_t searchTime=1000;
 
 	for(size_t i=0;i<searchTime;i++){
-		Point<int> randPoint(rand()%map.size(),rand()%map[0].size());
+		Point_uint randPoint(rand()%map.size(),rand()%map[0].size());
 
-		Point<int> shortestPoint=Nodes[0];
+		Point_uint shortestPoint=Nodes[0];
 		for(auto n:Nodes){
 			if(pnt::dis(randPoint,n)<pnt::dis(randPoint,shortestPoint))
 				shortestPoint=n;
 		}
 
-		Point<int> newNode = stepFromTo(shortestPoint,randPoint);
+		Point_uint newNode = stepFromTo(shortestPoint,randPoint);
 		if(newNode.x>1000||newNode.y>1000)
 		{
 			int x=1;
@@ -63,20 +63,20 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point<int> > &rou
 void RRTSearch::demo(size_t width,size_t height,size_t searchTime,size_t epsilon) {
 	srand(time(NULL));
 	Nodes.clear();
-	Nodes.push_back(Point<int>(height/2, width/2));
+	Nodes.push_back(Point_uint(height/2, width/2));
 
 	Epsilon=epsilon;
 
 	for(size_t i=0;i<searchTime;i++){
-		Point<int> randPoint(rand()%height,rand()%width);
+		Point_uint randPoint(rand()%height,rand()%width);
 
-		Point<int> shortestPoint=Nodes[0];
+		Point_uint shortestPoint=Nodes[0];
 		for(auto n:Nodes){
 			if(pnt::dis(randPoint,n)<pnt::dis(randPoint,shortestPoint))
 				shortestPoint=n;
 		}
 
-		Point<int> newNode = stepFromTo(shortestPoint,randPoint);
+		Point_uint newNode = stepFromTo(shortestPoint,randPoint);
 		if(newNode.x>1000||newNode.y>1000)
 		{
 			int x=1;

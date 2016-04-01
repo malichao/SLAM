@@ -20,35 +20,35 @@ using namespace std;
 class RRTSearch: public MapSearch{
 public:
 	struct Line{
-		Line(Point<int> &s,Point<int> &e):start(s),end(e){}
+		Line(Point_uint &s,Point_uint &e):start(s),end(e){}
 
-		Point<int> start;
-		Point<int> end;
+		Point_uint start;
+		Point_uint end;
 	};
 	RRTSearch(): MaxSearchTime(1000),Epsilon(10){}
 
 	void demo(size_t width,size_t height,size_t searchTime,size_t epsilon);
 
 	bool search( const vector<vector<bool> > &map,
-				 vector<Point<int>> &route);
+				 vector<Point_uint> &route);
 	bool search( const vector<vector<bool> > &map,
 				 const Point<unsigned int> &start,
 				 const Point<unsigned int> &target,
-				 vector<Point<int>> &route);
+				 vector<Point_uint> &route);
 
 	size_t getLineSize() const { return Lines.size();}
 	Line getLine(size_t i) const {return Lines[i];}
 	Line getLineAt(size_t i) const { return Lines.at(i);}
 private:
-	vector<Point<int> > Nodes;
+	vector<Point_uint > Nodes;
 	size_t MaxSearchTime;
 	unsigned int Epsilon;
 
 	vector<Line> Lines;
 
-	Point<int> stepFromTo(Point<int> &a,Point<int> &b);
+	Point_uint stepFromTo(Point_uint &a,Point_uint &b);
 
-	void generateRoute(vector<Point<int> > &route);
+	void generateRoute(vector<Point_uint > &route);
 
 };
 
