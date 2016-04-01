@@ -16,7 +16,7 @@ using namespace SearchAlgorithms;
 // Test RTT demo function
 void test1(){
 	size_t width=1000,height=1000;
-	size_t penWidth=2;
+	size_t penWidth=1;
 	bitmap_image image(height,width);
 	image_drawer draw(image);
 
