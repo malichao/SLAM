@@ -49,11 +49,6 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 		}
 
 		Point_uint newNode = stepFromTo(shortestPoint,randPoint);
-		if(newNode.x>1000||newNode.y>1000)
-		{
-			int x=1;
-			newNode = stepFromTo(shortestPoint,randPoint);
-		}
 		Nodes.push_back(newNode);
 		Lines.push_back(Line(shortestPoint, newNode));
 
@@ -77,11 +72,6 @@ void RRTSearch::demo(size_t width,size_t height,size_t searchTime,size_t epsilon
 		}
 
 		Point_uint newNode = stepFromTo(shortestPoint,randPoint);
-		if(newNode.x>1000||newNode.y>1000)
-		{
-			int x=1;
-			newNode = stepFromTo(shortestPoint,randPoint);
-		}
 		Nodes.push_back(newNode);
 		Lines.push_back(Line(shortestPoint, newNode));
 
