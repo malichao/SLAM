@@ -33,12 +33,14 @@ void test1(){
 	}
 
 
-	string fileName("\test\RRT_Test.bmp");
+	string fileName("RRT_Test.bmp");
 	image.save_image(fileName);
 	cout<<"image saved\n";
 }
 
-// Test Reading image and extract grids info
+// Test Reading image and extract grids info.
+// Convert white(255,255,255) pixels to true,which means free zone,
+// and black(0,0,0) to false,which means obstacles.
 void test2(){
 	string fileName("reading_test1.bmp");
 	bitmap_image image(fileName);
@@ -66,5 +68,5 @@ void test2(){
 }
 
 int main(){
-	test2();
+	test1();
 }
