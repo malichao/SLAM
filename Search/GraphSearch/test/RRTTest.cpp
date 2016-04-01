@@ -12,7 +12,9 @@
 
 using namespace std;
 using namespace SearchAlgorithms;
-int main(){
+
+// Test RTT demo function
+void test1(){
 	size_t width=1000,height=1000;
 	size_t penWidth=2;
 	bitmap_image image(height,width);
@@ -31,7 +33,38 @@ int main(){
 	}
 
 
-	string fileName("RRT_Test.bmp");
+	string fileName("\test\RRT_Test.bmp");
 	image.save_image(fileName);
 	cout<<"image saved\n";
+}
+
+// Test Reading image and extract grids info
+void test2(){
+	string fileName("reading_test1.bmp");
+	bitmap_image image(fileName);
+
+	if(!image){
+		return;
+	}
+	vector<vector<bool> > map(image.height(),vector<bool>(image.width(),true));
+	unsigned char r,g,b;
+	for(size_t i=0;i<image.height();i++)
+		for(size_t j=0;j<image.width();j++){
+			image.get_pixel(j,i,r,g,b);	//black 0 white 255
+			map[i][j]= r+g+b==255*3 ? true:false;
+		}
+
+	bitmap_image image1(image.width(),image.height());
+	for(size_t i=0;i<image.height();i++)
+		for(size_t j=0;j<image.width();j++){
+			if(map[i][j])
+				image1.set_pixel(j,i,255,255,255);
+			else
+				image1.set_pixel(j,i,0,0,0);
+		}
+	image1.save_image("reading_test1-result.bmp");
+}
+
+int main(){
+	test2();
 }
