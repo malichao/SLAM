@@ -57,55 +57,55 @@ TEST_CASE( "Testing AStar searching", "[BFS]" ) {
 	SECTION("Common successful cases test(Search & print on map)"){
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {0,0},Point_uint {4,4},route)== true );
-		printer.printRouteOnMap(map,route);
+		printer.printRouteOnMap(tester,map,route);
 
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {4,4},Point_uint {0,0},route)== true );
-		printer.printRouteOnMap(map,route);
+		printer.printRouteOnMap(tester,map,route);
 
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {0,2},Point_uint {4,3},route)== true );
-		printer.printRouteOnMap(map,route);
+		printer.printRouteOnMap(tester,map,route);
 
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {4,0},Point_uint {0,4},route)== true );
-		printer.printRouteOnMap(map,route);
+		printer.printRouteOnMap(tester,map,route);
 	}
 
 	SECTION("Common successful cases test(Search & print routes)"){
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {0,0},Point_uint {4,4},route)== true );
-		printer.printRoute(route);
+		printer.printRoute(tester,route);
 
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {4,4},Point_uint {0,0},route)== true );
-		printer.printRoute(route);
+		printer.printRoute(tester,route);
 
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {0,2},Point_uint {4,3},route)== true );
-		printer.printRoute(route);
+		printer.printRoute(tester,route);
 
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {4,0},Point_uint {0,4},route)== true );
-		printer.printRoute(route);
+		printer.printRoute(tester,route);
 	}
 
 	SECTION("Common failure cases test(obstacle grids as setpoint)"){
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {0,1},Point_uint {4,4},route)== false );
-		printer.printRouteOnMap(map,route);
+		printer.printRouteOnMap(tester,map,route);
 
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {0,1},Point_uint {0,3},route)== false );
-		printer.printRouteOnMap(map,route);
+		printer.printRouteOnMap(tester,map,route);
 
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {4,0},Point_uint {4,1},route)== false );
-		printer.printRoute(route);
+		printer.printRoute(tester,route);
 
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {0,4},Point_uint {4,1},route)== false );
-		printer.printRoute(route);
+		printer.printRoute(tester,route);
 	}
 
 	// Build a map with a wall in the middle
@@ -118,19 +118,19 @@ TEST_CASE( "Testing AStar searching", "[BFS]" ) {
 	SECTION("Common failure cases test(no available route)"){
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {0,0},Point_uint {4,4},route)== false );
-		printer.printRouteOnMap(map,route);
+		printer.printRouteOnMap(tester,map,route);
 
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {4,4},Point_uint {0,0},route)== false );
-		printer.printRouteOnMap(map,route);
+		printer.printRouteOnMap(tester,map,route);
 
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {2,0},Point_uint {2,4},route)== false );
-		printer.printRoute(route);
+		printer.printRoute(tester,route);
 
 		route.clear();
 		REQUIRE( tester.search(map,Point_uint {0,4},Point_uint {4,0},route)== false );
-		printer.printRoute(route);
+		printer.printRoute(tester,route);
 	}
 
 }

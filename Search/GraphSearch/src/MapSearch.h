@@ -45,12 +45,22 @@ public:
 	void setStart(const Point_uint &s){Start.x=s.x; Start.y=s.y;Start.dir=s.dir;}
 	void setTarget(const Point_uint &t){Target.x=t.x; Target.y=t.y;Target.dir=t.dir;}
 
+	Point_uint getStart()  const { return Start;}
+	Point_uint getTarget() const { return Target;}
+	unsigned int getSearchEffort() const { return EffortCount;}
+	unsigned int getCostMapSize()  const { return CostMap.size();}
+	bool isChecked(const size_t i,const size_t j) const {return Checked[i][j];}
 	void getRoute(vector<Point_uint > &route);
 
 	virtual bool search( const vector<vector<unsigned int> > &map)  { return false;}
 	virtual bool search( const vector<vector<unsigned int> > &map,
 						const Point_uint &start,
-						const Point_uint &target) 			{ return false;}
+						const Point_uint &target)
+			{ return false;}
+
+	unsigned int minCost(const vector<vector<unsigned int> > &map,
+						 const Point_uint &p,
+						 Point_uint &move) const;
 protected:
 	Point_uint Start;
 	Point_uint Target;
@@ -75,14 +85,11 @@ protected:
 	bool isLegal(const vector<vector<unsigned int> > &map,
 				 const unsigned int* const moveCost,
 				 const Point_uint &p);
-	unsigned int minCost(const vector<vector<unsigned int> > &map,
-						const Point_uint &p,
-						Point_uint &move);
 
-	unsigned int minCost(const vector<vector<unsigned int> > &map,
-						 const unsigned int* const moveCost,
-						 const Point_uint &point,
-						 Point_uint &move);
+	//unsigned int minCost(const vector<vector<unsigned int> > &map,
+	//					 const unsigned int* const moveCost,
+	//					 const Point_uint &point,
+	//					 Point_uint &move);
 };
 
 }

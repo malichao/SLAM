@@ -11,17 +11,20 @@ Description :
 #ifndef MAPPRINTER_H_
 #define MAPPRINTER_H_
 
-#include "DPSearch.h"
+#include "MapSearch.h"
 
 namespace SearchAlgorithms{
 
-class MapPrinter:public MapSearch{
+class MapPrinter{
 public:
 
-	void printRoute(const vector<Point_uint> &route);
-	void printRouteOnMap(const vector<vector<unsigned int> > &map,
+	void printRoute(const MapSearch &searcher,
+					const vector<Point_uint> &route);
+	void printRouteOnMap(const MapSearch &searcher,
+						 const vector<vector<unsigned int> > &map,
 						 const vector<Point_uint> &route);
-	void printGradientOnMap(const vector<vector<unsigned int> > &map);
+	void printGradientOnMap(const MapSearch &searcher,
+							const vector<vector<unsigned int> > &map);
 
 private:
 

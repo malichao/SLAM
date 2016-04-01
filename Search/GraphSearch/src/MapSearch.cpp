@@ -44,7 +44,7 @@ void MapSearch::initData(const vector<vector<unsigned int> > &map){
 //Find the minimal cost of the four direction from visited points
 unsigned int MapSearch::minCost(  const vector<vector<unsigned int> > &map,
 								 const Point<unsigned int> &point,
-								 Point<unsigned int> &nextMove) {
+								 Point<unsigned int> &nextMove) const{
 	nextMove=point;	//0:Up	1:Down	2:Left	3:Right	4:None
 	if(point==Target)
 		return 0;

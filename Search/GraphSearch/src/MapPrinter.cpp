@@ -11,7 +11,6 @@ Description :
 #include <algorithm> // std::reverse()
 #include <iostream>
 #include <stdio.h>
-
 #include "MapPrinter.h"
 
 namespace SearchAlgorithms{
@@ -19,14 +18,15 @@ namespace SearchAlgorithms{
 
 const char MapPrinter::DirSymbol[5] = { '^', '>', 'V', '<', ' ' };
 
-void MapPrinter::printRoute(const vector<Point_uint> &route) {
-	printf("Start :(%u,%u)\n",Start.x,Start.y);
-	printf("Target:(%u,%u)\n",Target.x,Target.y);
+void MapPrinter::printRoute(const MapSearch &searcher,
+							const vector<Point_uint> &route) {
+	printf("Start :(%u,%u)\n",searcher.getStart().x,searcher.getStart().y);
+	printf("Target:(%u,%u)\n",searcher.getTarget().x,searcher.getTarget().y);
 	if (route.size() == 0) {
 		cout << "No route.\n\n";
 		return;
 	}
-	cout << "Search effort: " << EffortCount;
+	cout << "Search effort: " << searcher.getSearchEffort();
 	cout << "\nShortest path:" << route.size() << endl;
 	size_t i=0;
 	for (auto r : route) {
@@ -36,10 +36,11 @@ void MapPrinter::printRoute(const vector<Point_uint> &route) {
 	cout<<"T"<<endl<<endl;
 }
 
-void MapPrinter::printRouteOnMap(const vector<vector<unsigned int> > &map,
+void MapPrinter::printRouteOnMap(const MapSearch &searcher,
+								 const vector<vector<unsigned int> > &map,
 								 const vector<Point_uint> &route) {
-	printf("Start :(%u,%u)\n",Start.x,Start.y);
-	printf("Target:(%u,%u)\n",Target.x,Target.y);
+	printf("Start :(%u,%u)\n",searcher.getStart().x,searcher.getStart().y);
+	printf("Target:(%u,%u)\n",searcher.getTarget().x,searcher.getTarget().y);
 	if (route.size() == 0) {
 		cout << "No route!\n\n";
 		return;
@@ -50,7 +51,7 @@ void MapPrinter::printRouteOnMap(const vector<vector<unsigned int> > &map,
 	for (size_t i = 0; i < map.size(); i++) {
 		vector<char> row(map[i].size());
 		for (size_t j = 0; j < map[i].size(); j++) {
-			row[j] = map[i][j] == 0 ? ObstacleSymbol : '.';
+			row[j] = map[i][j] == 0 ? MapSearch::ObstacleSymbol : '.';
 		}
 		charMap.push_back(row);
 	}
@@ -58,7 +59,7 @@ void MapPrinter::printRouteOnMap(const vector<vector<unsigned int> > &map,
 	char dirSymbol[3][3] = {
 			{ ' ', '^', ' ' },
 			{ '<', ' ', '>' },
-			{ ' ', 'V',' ' }, };
+			{ ' ', 'V', ' ' }, };
 
 	//TODO: the four-line judging code could be replaced by string function
 	for (size_t i = 0; i + 1 < route.size(); i++) {
@@ -77,7 +78,7 @@ void MapPrinter::printRouteOnMap(const vector<vector<unsigned int> > &map,
 	//charMap[route[0].x][route[0].y] = 'S';	//Mark the start point
 	charMap[route[route.size() - 1].x][route[route.size() - 1].y] = 'T';//And the target point
 
-	cout << "Search effort: " << EffortCount;
+	cout << "Search effort: " << searcher.getSearchEffort();
 	cout << "\nShortest path:" << route.size() << endl;
 	for (size_t i = 0; i < charMap.size(); i++) {
 		for (size_t j = 0; j < charMap[i].size(); j++) {
@@ -88,8 +89,9 @@ void MapPrinter::printRouteOnMap(const vector<vector<unsigned int> > &map,
 	cout << endl;
 }
 
-void MapPrinter::printGradientOnMap(const vector<vector<unsigned int> > &map) {
-	if (CostMap.size() == 0) {
+void MapPrinter::printGradientOnMap(const MapSearch &searcher,
+									const vector<vector<unsigned int> > &map) {
+	if (searcher.getCostMapSize() == 0) {
 		cout << "'costMap' data needed.\n";
 		return;
 	}
@@ -99,7 +101,7 @@ void MapPrinter::printGradientOnMap(const vector<vector<unsigned int> > &map) {
 	for (size_t i = 0; i < map.size(); i++) {
 		vector<char> row(map[i].size());
 		for (size_t j = 0; j < map[i].size(); j++) {
-			row[j] = map[i][j] == 0 ? ObstacleSymbol : map[i][j] + '0';
+			row[j] = map[i][j] == 0 ? MapSearch::ObstacleSymbol : map[i][j] + '0';
 		}
 
 		charMap.push_back(row);
@@ -107,17 +109,17 @@ void MapPrinter::printGradientOnMap(const vector<vector<unsigned int> > &map) {
 
 	for (size_t i = 0; i < charMap.size(); i++)
 		for (size_t j = 0; j < charMap[i].size(); j++) {
-			if (Checked[i][j]) {
+			if (searcher.isChecked(i,j)) {
 				Point<unsigned int> move;
-				minCost(map, Point<unsigned int>(i, j), move);
+				searcher.minCost(map,Point<unsigned int> (i,j),move);
 				charMap[i][j] = DirSymbol[move.dir];
 			}
 		}
 
 	//charMap[Start.x][Start.y] = 'S';	//Mark the start point
-	charMap[Target.x][Target.y] = 'T';	//And the target point
+	charMap[searcher.getTarget().x][searcher.getTarget().y] = 'T';	//And the target point
 
-	cout << "Search effort: " << EffortCount;
+	cout << "Search effort: " << searcher.getSearchEffort();
 	for (size_t i = 0; i < charMap.size(); i++) {
 		for (size_t j = 0; j < charMap[i].size(); j++) {
 			cout << charMap[i][j] << " ";
