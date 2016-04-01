@@ -7,18 +7,19 @@ Description :
 	-v0.1	A class to print out the character-based search result on console
 *****************************************************************************/
 
+#include "PrintCharMap.h"
+
 #include <queue>
 #include <algorithm> // std::reverse()
 #include <iostream>
 #include <stdio.h>
-#include "MapPrinter.h"
 
 namespace SearchAlgorithms{
 
 
-const char MapPrinter::DirSymbol[5] = { '^', '>', 'V', '<', ' ' };
+const char PrintCharMap::DirSymbol[5] = { '^', '>', 'V', '<', ' ' };
 
-void MapPrinter::printRoute(const MapSearch &searcher,
+void PrintCharMap::printRoute(const MapSearch &searcher,
 							const vector<Point_uint> &route) {
 	printf("Start :(%u,%u)\n",searcher.getStart().x,searcher.getStart().y);
 	printf("Target:(%u,%u)\n",searcher.getTarget().x,searcher.getTarget().y);
@@ -36,7 +37,7 @@ void MapPrinter::printRoute(const MapSearch &searcher,
 	cout<<"T"<<endl<<endl;
 }
 
-void MapPrinter::printRouteOnMap(const MapSearch &searcher,
+void PrintCharMap::printRouteOnMap(const MapSearch &searcher,
 								 const vector<vector<unsigned int> > &map,
 								 const vector<Point_uint> &route) {
 	printf("Start :(%u,%u)\n",searcher.getStart().x,searcher.getStart().y);
@@ -89,7 +90,7 @@ void MapPrinter::printRouteOnMap(const MapSearch &searcher,
 	cout << endl;
 }
 
-void MapPrinter::printGradientOnMap(const MapSearch &searcher,
+void PrintCharMap::printGradientOnMap(const MapSearch &searcher,
 									const vector<vector<unsigned int> > &map) {
 	if (searcher.getCostMapSize() == 0) {
 		cout << "'costMap' data needed.\n";

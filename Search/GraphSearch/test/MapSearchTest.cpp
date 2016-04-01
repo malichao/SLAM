@@ -13,7 +13,7 @@ Description :
 #include "..\src\BFS.h"
 #include "..\src\AStar.h"
 #include "..\src\DPSearch.h"
-#include "..\src\MapPrinter.h"
+#include "../src/PrintCharMap.h"
 
 using namespace std;
 using namespace SearchAlgorithms;
@@ -36,7 +36,7 @@ TEST_CASE( "Testing AStar searching", "[BFS]" ) {
 
 	// route won't be clear in search function,must do it manually
 	vector<Point_uint> route;
-	MapPrinter printer;
+	PrintCharMap printer;
 
 	SECTION("Null input test"){
 		route.clear();
