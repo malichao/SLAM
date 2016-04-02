@@ -33,7 +33,7 @@ bool RRTSearch::search(const vector<vector<bool> > &map,
 	return search(map,route);
 }
 
-Point_uint RRTSearch::randomConfig(const vector<vector<bool> > &map){
+Point_uint RRTSearch::randomPoint(const vector<vector<bool> > &map){
 	unsigned int x,y;
 	do{
 		x=rand()%map.size();
@@ -88,7 +88,7 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 	size_t searchTime=500;
 
 	for(size_t i=0;i<searchTime;i++){
-		Point_uint randPoint=randomConfig(map);
+		Point_uint randPoint=randomPoint(map);
 		Node shortestNode;
 		int prev=findShortestNode(randPoint,shortestNode);
 		Point_uint newPoint=stepFromTo(shortestNode.val,randPoint);
@@ -143,6 +143,44 @@ void RRTSearch::demo(size_t width,size_t height,size_t searchTime,size_t epsilon
 
 	}
 }
+bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
+									 const Point<unsigned int> &start,
+									 const Point<unsigned int> &target,
+									 vector<Point_uint> &route){
+	setTarget(target);
+	setStart(start);
 
+	Vehicle v;
+	v.setToStandardVehicle();
+
+	MapSearch::EffortCount=0;
+	srand(time(NULL));
+	Nodes.clear();
+	Nodes.push_back(Node(Start,0));
+
+	Epsilon=2000;
+	size_t searchTime=500;
+
+	for(size_t i=0;i<searchTime;i++){
+		Point_uint randPoint=randomPoint(map);
+		Node shortestNode;
+		int prev=findShortestNode(randPoint,shortestNode);
+		Point_uint newPoint=stepFromTo(shortestNode.val,randPoint);
+		Node newNode(newPoint,prev);
+	    if(!checkCollision(map,shortestNode,newNode)){
+			Nodes.push_back(newNode);
+			Lines.push_back(Line(shortestNode.val, newNode.val));
+			if(pnt::dis(Target,newNode.val)<10){
+				generateRoute(route,newNode);
+				return true;
+			}
+	    }
+	}
+	Node shortest;
+	findShortestNode(Target,shortest);
+	generateRoute(route,shortest);
+
+	return false;
+}
 
 }// End of namespace SearchAlgorithms

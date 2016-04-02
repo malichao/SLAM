@@ -41,6 +41,10 @@ public:
 				 const Point<unsigned int> &start,
 				 const Point<unsigned int> &target,
 				 vector<Point_uint> &route);
+	bool searchUsingVehicle( const vector<vector<bool> > &map,
+							 const Point<unsigned int> &start,
+							 const Point<unsigned int> &target,
+							 vector<Point_uint> &route);
 
 	size_t getLineSize() const { return Lines.size();}
 	Line getLine(size_t i) const {return Lines[i];}
@@ -54,7 +58,7 @@ private:
 	vector<Line> Lines;
 
 	Point_uint stepFromTo(Point_uint &a,Point_uint &b);
-	Point_uint randomConfig(const vector<vector<bool> > &map);
+	Point_uint randomPoint(const vector<vector<bool> > &map);
 	size_t findShortestNode(Point_uint &n,Node &shortest);
 	bool checkCollision(const vector<vector<bool> > &map,Node &a,Node &b);
 
