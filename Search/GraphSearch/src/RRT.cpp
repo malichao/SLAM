@@ -10,6 +10,7 @@ Description :
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <algorithm>	//reverse()
 #include "RRT.h"
 
 namespace SearchAlgorithms{
@@ -41,22 +42,35 @@ Point_uint RRTSearch::randomConfig(const vector<vector<bool> > &map){
 	return Point_uint(x,y);
 }
 
+void RRTSearch::findShortestNode(Node &n,Node &shortest){
+	shortest=Nodes[0];
+	for(size_t i=0;i<Nodes.size();i++){
+		if(pnt::dis(n.val,Nodes[i].val)<pnt::dis(n.val,shortest.val)){
+			shortest=Nodes[i];
+		}
+		MapSearch::EffortCount++;
+	}
+}
+
 bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &route) {
 	MapSearch::EffortCount=0;
 	srand(time(NULL));
 	Nodes.clear();
-	Nodes.push_back(Start);
+	Nodes.push_back(Node(Start,0));
 
 	Epsilon=2000;
-	size_t searchTime=200;
+	size_t searchTime=500;
 
 	for(size_t i=0;i<searchTime;i++){
 		Point_uint randPoint=randomConfig(map);
 
-		Point_uint shortestPoint=Nodes[0];
-		for(auto n:Nodes){
-			if(pnt::dis(randPoint,n)<pnt::dis(randPoint,shortestPoint))
-				shortestPoint=n;
+		Point_uint shortestPoint=Nodes[0].val;
+		size_t prev=0;
+		for(size_t i=0;i<Nodes.size();i++){
+			if(pnt::dis(randPoint,Nodes[i].val)<pnt::dis(randPoint,shortestPoint)){
+				shortestPoint=Nodes[i].val;
+				prev=i;
+			}
 			MapSearch::EffortCount++;
 		}
 
@@ -80,33 +94,47 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 	    	MapSearch::EffortCount++;
 	    }
 	    if(!collision){
-			Nodes.push_back(newNode);
+	    	Node temp(newNode,prev);
+			Nodes.push_back(temp);
 			Lines.push_back(Line(shortestPoint, newNode));
-			if(newNode==Target)
-			return true;
+			if(newNode==Target){
+				generateRoute(route,temp);
+				return true;
+			}
 	    }
 	}
 	return false;
 }
 
+void RRTSearch::generateRoute(vector<Point_uint> &route,Node n){
+	auto it=route.end()-1;
+	do{
+		route.push_back(n.val);
+		n=Nodes[n.prev];
+	}while(n.prev!=0);
+	route.push_back(n.val);	//Start point;
+	std::reverse(it,route.end());
+}
+
 void RRTSearch::demo(size_t width,size_t height,size_t searchTime,size_t epsilon) {
 	srand(time(NULL));
 	Nodes.clear();
-	Nodes.push_back(Point_uint(height/2, width/2));
+	Point_uint x(height/2, width/2);
+	Nodes.push_back(Node(x,0));
 
 	Epsilon=epsilon;
 
 	for(size_t i=0;i<searchTime;i++){
 		Point_uint randPoint(rand()%height,rand()%width);
 
-		Point_uint shortestPoint=Nodes[0];
+		Point_uint shortestPoint=Nodes[0].val;
 		for(auto n:Nodes){
-			if(pnt::dis(randPoint,n)<pnt::dis(randPoint,shortestPoint))
-				shortestPoint=n;
+			if(pnt::dis(randPoint,n.val)<pnt::dis(randPoint,shortestPoint))
+				shortestPoint=n.val;
 		}
 
 		Point_uint newNode = stepFromTo(shortestPoint,randPoint);
-		Nodes.push_back(newNode);
+		Nodes.push_back(Node(newNode,0));
 		Lines.push_back(Line(shortestPoint, newNode));
 
 	}

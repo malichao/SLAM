@@ -109,6 +109,16 @@ void test3(){
 		draw.line_segment(start.y,start.x,end.y,end.x);
 	}
 
+	if(!route.empty()){
+		draw.pen_width(1);
+		draw.pen_color(34,177,76);
+		Point_uint prev=route[0];
+		for(size_t i=1;i<route.size();i++){
+			draw.line_segment(prev.y,prev.x,route[i].y,route[i].x);
+			prev=route[i];
+		}
+	}
+
 
 	image.save_image("search_test1-result.bmp");
 	cout<<"image saved\n";

@@ -25,6 +25,11 @@ public:
 		Point_uint start;
 		Point_uint end;
 	};
+	struct Node{
+		Node(Point_uint &v,size_t p):val(v),prev(p){}
+		Point_uint val;
+		size_t prev;
+	};
 	RRTSearch(): MaxSearchTime(1000),Epsilon(10){}
 
 	void demo(size_t width,size_t height,size_t searchTime,size_t epsilon);
@@ -40,7 +45,7 @@ public:
 	Line getLine(size_t i) const {return Lines[i];}
 	Line getLineAt(size_t i) const { return Lines.at(i);}
 private:
-	vector<Point_uint > Nodes;
+	vector<Node> Nodes;
 	size_t MaxSearchTime;
 	unsigned int Epsilon;
 
@@ -48,8 +53,9 @@ private:
 
 	Point_uint stepFromTo(Point_uint &a,Point_uint &b);
 	Point_uint randomConfig(const vector<vector<bool> > &map);
+	void findShortestNode(Node &n,Node &shortest);
 
-	void generateRoute(vector<Point_uint > &route);
+	void generateRoute(vector<Point_uint> &route,Node n);
 
 };
 
