@@ -45,8 +45,8 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 	Nodes.clear();
 	Nodes.push_back(Start);
 
-	Epsilon=10;
-	size_t searchTime=2000;
+	Epsilon=2000;
+	size_t searchTime=200;
 
 	for(size_t i=0;i<searchTime;i++){
 		Point_uint randPoint=randomConfig(map);

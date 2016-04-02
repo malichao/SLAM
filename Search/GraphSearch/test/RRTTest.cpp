@@ -90,10 +90,12 @@ void test3(){
 	vector<Point_uint> route;
 	tester.search(map,start,target,route);
 
+	// Look at the parameter of draw.circle(),first time it's (x,y),second time (y,x)
+	// Pretty sure it's the bitmap_image library bug.
 	cout<<"printing on image\n";
 	draw.pen_width(3);
 	draw.pen_color(255,0,0);
-	draw.circle(start.x,start.y,6);
+	draw.circle(start.y,start.x,6);
 	draw.pen_color(255,127,39);
 	draw.circle(target.x,target.y,6);
 
