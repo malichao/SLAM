@@ -42,11 +42,14 @@ Point_uint RRTSearch::randomConfig(const vector<vector<bool> > &map){
 	return Point_uint(x,y);
 }
 
-void RRTSearch::findShortestNode(Node &n,Node &shortest){
+// Notice: the prev in shortest is not its previous point but the position of
+// the shortest in the Nodes.
+void RRTSearch::findShortestNode(Point_uint &p,Node &shortest){
 	shortest=Nodes[0];
 	for(size_t i=0;i<Nodes.size();i++){
-		if(pnt::dis(n.val,Nodes[i].val)<pnt::dis(n.val,shortest.val)){
+		if(pnt::dis(p,Nodes[i].val)<pnt::dis(p,shortest.val)){
 			shortest=Nodes[i];
+			shortest.prev=i;
 		}
 		MapSearch::EffortCount++;
 	}
@@ -63,30 +66,22 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 
 	for(size_t i=0;i<searchTime;i++){
 		Point_uint randPoint=randomConfig(map);
+		Node shortestNode;
+		findShortestNode(randPoint,shortestNode);
 
-		Point_uint shortestPoint=Nodes[0].val;
-		size_t prev=0;
-		for(size_t i=0;i<Nodes.size();i++){
-			if(pnt::dis(randPoint,Nodes[i].val)<pnt::dis(randPoint,shortestPoint)){
-				shortestPoint=Nodes[i].val;
-				prev=i;
-			}
-			MapSearch::EffortCount++;
-		}
+		Point_uint newPoint = stepFromTo(shortestNode.val,randPoint);
 
-		Point_uint newNode = stepFromTo(shortestPoint,randPoint);
-
-	    int length=pnt::dis(shortestPoint,newNode);
+	    int length=pnt::dis(shortestNode.val,newPoint);
 	    if(length==0)
 	    	continue;
 
-	    int lengthX=newNode.x-shortestPoint.x;
-	    int lengthY=newNode.y-shortestPoint.y;
+	    int lengthX=newPoint.x-shortestNode.val.x;
+	    int lengthY=newPoint.y-shortestNode.val.y;
 	    bool collision=false;
 
 	    for(int i=0;i<length;i++){
-	    	int x=(int)shortestPoint.x+i*lengthX/length;
-	    	int y=(int)shortestPoint.y+i*lengthY/length;
+	    	int x=(int)shortestNode.val.x+i*lengthX/length;
+	    	int y=(int)shortestNode.val.y+i*lengthY/length;
 	    	if(map[x][y]==false){
 	    		collision=true;
 	    		break;
@@ -94,15 +89,27 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 	    	MapSearch::EffortCount++;
 	    }
 	    if(!collision){
-	    	Node temp(newNode,prev);
+	    	Node temp(newPoint,shortestNode.prev);
 			Nodes.push_back(temp);
-			Lines.push_back(Line(shortestPoint, newNode));
-			if(newNode==Target){
+			Lines.push_back(Line(shortestNode.val, newPoint));
+			if(pnt::dis(Target,temp.val)<10){
 				generateRoute(route,temp);
 				return true;
 			}
 	    }
 	}
+	Node shortest;
+	shortest=Nodes[0];
+	printf("(%u,%u)\t %d\n",shortest.val.x,shortest.val.y,pnt::dis(Target,Nodes[0].val));
+	for(size_t i=0;i<Nodes.size();i++){
+		if(pnt::dis(Target,Nodes[i].val)<pnt::dis(Target,shortest.val)){
+			shortest=Nodes[i];
+			printf("(%u,%u)\t %d***\n",shortest.val.x,shortest.val.y,pnt::dis(Target,shortest.val));
+		}
+		printf("(%u,%u)\t %d\n",Nodes[i].val.x,Nodes[i].val.y,pnt::dis(Target,Nodes[i].val));
+	}
+	generateRoute(route,shortest);
+
 	return false;
 }
 
@@ -112,7 +119,8 @@ void RRTSearch::generateRoute(vector<Point_uint> &route,Node n){
 		route.push_back(n.val);
 		n=Nodes[n.prev];
 	}while(n.prev!=0);
-	route.push_back(n.val);	//Start point;
+	route.push_back(n.val);	// n.prev->Start;
+	route.push_back(Start);
 	std::reverse(it,route.end());
 }
 

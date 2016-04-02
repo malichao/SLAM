@@ -86,7 +86,7 @@ void test3(){
 	image_drawer draw(image);
 
 	RRTSearch tester;
-	Point_uint start(85,70),target(850,500);
+	Point_uint start(85,70),target(500,850);
 	vector<Point_uint> route;
 	tester.search(map,start,target,route);
 
@@ -98,7 +98,7 @@ void test3(){
 	draw.pen_color(255,0,0);
 	draw.circle(start.y,start.x,6);
 	draw.pen_color(255,127,39);
-	draw.circle(target.x,target.y,6);
+	draw.circle(target.y,target.x,6);
 
 	draw.pen_width(1);
 	draw.pen_color(0,162,232);
@@ -110,7 +110,7 @@ void test3(){
 	}
 
 	if(!route.empty()){
-		draw.pen_width(1);
+		draw.pen_width(2);
 		draw.pen_color(34,177,76);
 		Point_uint prev=route[0];
 		for(size_t i=1;i<route.size();i++){
