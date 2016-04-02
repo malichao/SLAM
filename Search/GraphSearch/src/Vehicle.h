@@ -20,7 +20,15 @@ public:
 	};
 	struct VehicleAttribute{
 		double mass;
-		double re
+		double length;
+		double beta;	//slip angle;
+		double tireCoefFront;
+		double tireCoefRear;
+	};
+	struct VehicleInput{
+		double speed;
+		double steerAngle;
+		double period;
 	};
 	Vehicle():  Length(1),Width(1),X(0),Y(0),Orientation(0),SpeedLateral(Car::Epsilon),SpeedYaw(0),
 				SpeedLongitudinal(0),SteeringAngle(0),Thrust(0),
