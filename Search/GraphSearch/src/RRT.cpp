@@ -59,10 +59,10 @@ void RRTSearch::stepFromTo(  Vehicle &v,
 	double minDis=DBL_MAX ;
 	double bestAngle=0;
 	// -45~45 degree,0.5 tolerance
-	for(double angle=-45.0/180*3.14;angle<45.0/180*3.14;angle+=0.5){
-		vi.steerAngle=angle;
+	for(double angle=-45.0;angle<45.0;angle+=0.5){
+		vi.steerAngle=angle/180*3.14;
 		v.calculateVehicleState(vi,a,next);
-		double length=pnt::dis(b.x,b.y,next.x,next.y)*Scale;
+		double length=pnt::dis(b.x,b.y,next.x,next.y);
 		if(length<minDis){
 			minDis=length;
 			bestAngle=angle;
@@ -185,6 +185,9 @@ bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
 	Vehicle::VehicleState startState;
 	startState.x=start.x/Scale;
 	startState.y=start.y/Scale;
+	startState.orientation=0;
+	startState.speedLongitudinal=1;
+	startState.speedYaw=0;
 
 	MapSearch::EffortCount=0;
 	srand(time(NULL));
