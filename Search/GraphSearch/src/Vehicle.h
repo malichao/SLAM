@@ -54,7 +54,9 @@ public:
 	double getSpeedLateral() const { return SpeedLateral; }
 	double getSpeedLongitudinal() const { return SpeedLongitudinal; }
 
-
+	void calculateVehicleState(  const Vehicle::VehicleInput &vi,
+								 const Vehicle::VehicleState &vs,
+								 Vehicle::VehicleState &vsNew);
 
 private:
 	double Length;

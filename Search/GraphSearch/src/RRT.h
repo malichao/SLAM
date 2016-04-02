@@ -11,8 +11,8 @@ Description :
 #define RRT_H_
 
 #include <vector>
-
 #include "MapSearch.h"
+#include "vehicle.h"
 
 namespace SearchAlgorithms{
 using namespace std;
@@ -45,6 +45,7 @@ public:
 	size_t getLineSize() const { return Lines.size();}
 	Line getLine(size_t i) const {return Lines[i];}
 	Line getLineAt(size_t i) const { return Lines.at(i);}
+
 private:
 	vector<Node> Nodes;
 	size_t MaxSearchTime;
@@ -58,6 +59,7 @@ private:
 	bool checkCollision(const vector<vector<bool> > &map,Node &a,Node &b);
 
 	void generateRoute(vector<Point_uint> &route,Node n);
+
 
 };
 

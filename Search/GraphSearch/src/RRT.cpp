@@ -12,7 +12,7 @@ Description :
 #include <math.h>
 #include <algorithm>	//reverse()
 #include "RRT.h"
-#include "vehicle.h"
+
 
 namespace SearchAlgorithms{
 using namespace std;
@@ -143,4 +143,6 @@ void RRTSearch::demo(size_t width,size_t height,size_t searchTime,size_t epsilon
 
 	}
 }
+
+
 }// End of namespace SearchAlgorithms

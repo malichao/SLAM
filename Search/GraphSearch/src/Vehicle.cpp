@@ -185,23 +185,25 @@ void Vehicle::updateDynamic(const double speed,const double steeringAngle){
       y[2] = x[2];
   }
 
-void calculateVehicleState( const Vehicle::VehicleAttribute &va,
-							const Vehicle::VehicleState &vs,
-							const Vehicle::VehicleInput &vi,
-							Vehicle::VehicleState &vsNew){
+void Vehicle::calculateVehicleState( const Vehicle::VehicleInput &vi,
+									 const Vehicle::VehicleState &vs,
+									 Vehicle::VehicleState &vsNew){
 
 	vsNew.speedLongitudinal =
-		fabs(vs.speedLongitudinal) < Car::Epsilon ?
-			Car::Epsilon : vs.speedLongitudinal;
+			fabs(vs.speedLongitudinal) < Car::Epsilon ?
+					Car::Epsilon : vs.speedLongitudinal;
 
-	double v = vsNew.speedLongitudinal / cos(va.beta);
-	float a11 = -(va.tireCoefFront + va.tireCoefRear) / (va.mass * v);
-	float a12 = (va.tireCoefRear - va.tireCoefFront) / va.length / 2.0 / (va.mass * v * v);
-	float b11 = va.tireCoefFront / (va.mass * v);
+	float mass=Car::getMass();
+	float beta=3.14/180.0*3;
 
-	float xDot = v * cos(vs.orientation + va.beta);
-	float yDot = v * sin(vs.orientation + va.beta);
-	float SpeedYawDot = a11 * va.beta + a12 * vs.speedYaw + b11 * vi.steerAngle;
+	double v=vs.speedLongitudinal/cos(beta);
+	float a11=-(TireCoefFront+TireCoefRear)/(mass*v);
+	float a12=(TireCoefRear-TireCoefFront)/Length/2.0/(mass*v*v);
+	float b11 = TireCoefFront / (mass * v);
+
+	float xDot = v * cos(vs.orientation + beta);
+	float yDot = v * sin(vs.orientation + beta);
+	float SpeedYawDot = a11 * beta + a12 * vs.speedYaw + b11 * vi.steerAngle;
 
 	vsNew.x = vs.x+xDot * vi.period;
 	vsNew.y = vs.y+yDot * vi.period;
