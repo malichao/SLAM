@@ -201,8 +201,8 @@ void Vehicle::calculateVehicleState( const Vehicle::VehicleInput &vi,
 	float a12=(TireCoefRear-TireCoefFront)/Length/2.0/(mass*v*v);
 	float b11 = TireCoefFront / (mass * v);
 
-	float xDot = v * cos(vs.orientation + beta);
-	float yDot = v * sin(vs.orientation + beta);
+	float xDot = v * cos(vsNew.orientation + beta);
+	float yDot = v * sin(vsNew.orientation + beta);
 	float SpeedYawDot = a11 * beta + a12 * vs.speedYaw + b11 * vi.steerAngle;
 
 	vsNew.x = vs.x+xDot * vi.period;

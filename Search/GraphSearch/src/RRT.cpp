@@ -59,13 +59,13 @@ void RRTSearch::stepFromTo(  Vehicle &v,
 	double minDis=DBL_MAX ;
 	double bestAngle=0;
 	// -45~45 degree,0.5 tolerance
-	for(double angle=-45.0;angle<45.0;angle+=0.5){
+	for(double angle=-45.0;angle<45.0;angle+=1){
 		vi.steerAngle=angle/180*3.14;
 		v.calculateVehicleState(vi,a,next);
 		double length=pnt::dis(b.x,b.y,next.x,next.y);
 		if(length<minDis){
 			minDis=length;
-			bestAngle=angle;
+			bestAngle=angle/180*3.14;;
 		}
 	}
 	vi.steerAngle=bestAngle;
