@@ -12,6 +12,7 @@ Description :
 #include <math.h>
 #include <algorithm>	//reverse()
 #include "RRT.h"
+#include "vehicle.h"
 
 namespace SearchAlgorithms{
 using namespace std;
