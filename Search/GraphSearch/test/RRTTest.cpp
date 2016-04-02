@@ -193,7 +193,7 @@ void test4(){
 	}
 
 
-	image.save_image("search_test1-result.bmp");
+	image.save_image("RRT_Vehicle_Search_Result.bmp");
 	cout<<"image saved\n";
 }
 

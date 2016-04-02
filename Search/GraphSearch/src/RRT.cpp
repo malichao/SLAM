@@ -86,6 +86,8 @@ size_t RRTSearch::findShortestNode(Point_uint &p,Node &shortest){
 }
 
 bool RRTSearch::checkCollision(const vector<vector<bool> > &map,Node &a,Node &b){
+	if(a.val.x>map.size()||a.val.y>map[0].size()) return true;
+	if(b.val.x>map.size()||b.val.y>map[0].size()) return true;
 	int length=pnt::dis(a.val,b.val);
 	if(length==0)
 		return false;
@@ -175,7 +177,7 @@ bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
 									 const Point_uint &start,
 									 const Point_uint &target,
 									 vector<Point_uint> &route){
-	Scale =22.0;	// 22 pixels/meter
+	Scale =60.0;	// 22 pixels/meter
 
 	setTarget(target);
 	setStart(start);
@@ -195,7 +197,7 @@ bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
 	Nodes.push_back(Node(start,0,startState));
 
 	Epsilon=2000;
-	size_t searchTime=15000;
+	size_t searchTime=5000;
 
 	for(size_t i=0;i<searchTime;i++){
 		Point_uint randPoint=randomPoint(map);
