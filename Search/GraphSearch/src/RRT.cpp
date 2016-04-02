@@ -53,13 +53,13 @@ void RRTSearch::stepFromTo(  Vehicle &v,
 							 const Vehicle::VehicleState &b,
 							 Vehicle::VehicleState &next){
 	Vehicle::VehicleInput vi;
-	vi.period=0.2;
-	vi.speed=1;
+	vi.period=0.1;
+	vi.speed=4;
 
 	double minDis=DBL_MAX ;
 	double bestAngle=0;
 	// -45~45 degree,0.5 tolerance
-	for(double angle=-45.0;angle<45.0;angle+=1){
+	for(double angle=-45.0;angle<45.0;angle+=5){
 		vi.steerAngle=angle/180*3.14;
 		v.calculateVehicleState(vi,a,next);
 		double length=pnt::dis(b.x,b.y,next.x,next.y);
@@ -195,7 +195,7 @@ bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
 	Nodes.push_back(Node(start,0,startState));
 
 	Epsilon=2000;
-	size_t searchTime=500;
+	size_t searchTime=15000;
 
 	for(size_t i=0;i<searchTime;i++){
 		Point_uint randPoint=randomPoint(map);
@@ -209,8 +209,9 @@ bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
 		randomState.x=randPoint.x/Scale;
 		randomState.y=randPoint.y/Scale;
 		Vehicle::VehicleState newState;
+
 		stepFromTo(v,shortestNode.state,randomState,newState);
-		Point_uint temp(randomState.x*Scale,randomState.y*Scale);
+		Point_uint temp(newState.x*Scale,newState.y*Scale);
 		Node newNode(temp,prev,newState);
 
 	    if(!checkCollision(map,shortestNode,newNode)){
