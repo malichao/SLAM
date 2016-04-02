@@ -126,7 +126,7 @@ void test3(){
 				smoothRoute.push_back(p);
 		}
 		Smooth sm;
-		sm.set(0.1,0.4,0.1,1);
+		sm.set(0.05,0.48,0.1,1);
 		sm.smooth(smoothRoute,1);
 		cout<<"========smooth end========\n";
 

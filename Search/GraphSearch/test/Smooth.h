@@ -31,6 +31,7 @@ public:
 	void set(float wD,float wS,float t,float s);
 	void smooth(vector<Point<float> > &route);
 	void smooth(vector<Point<float> > &route,const size_t s);
+	void smooth(vector<vector<bool> > &map,vector<Point<float> > &route,const size_t s);
 };
 
 
