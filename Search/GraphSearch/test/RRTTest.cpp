@@ -86,19 +86,19 @@ void test3(){
 	image_drawer draw(image);
 
 	RRTSearch tester;
-	Point_uint start(85,70),target(850,560);
+	Point_uint start(85,70),target(850,500);
 	vector<Point_uint> route;
 	tester.search(map,start,target,route);
 
 	cout<<"printing on image\n";
-	draw.pen_width(5);
-	draw.pen_color(0,0,255);
-	draw.plot_pixel(start.x,start.y);
+	draw.pen_width(3);
 	draw.pen_color(255,0,0);
-	draw.plot_pixel(target.x,target.y);
+	draw.circle(start.x,start.y,6);
+	draw.pen_color(255,127,39);
+	draw.circle(target.x,target.y,6);
 
 	draw.pen_width(1);
-	draw.pen_color(0,0,0);
+	draw.pen_color(0,162,232);
 	for(size_t i=0;i<tester.getLineSize();i++){
 		RRTSearch::Line l=tester.getLine(i);
 		Point_uint start(l.start),end(l.end);
