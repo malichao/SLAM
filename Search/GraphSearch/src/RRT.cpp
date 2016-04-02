@@ -56,6 +56,27 @@ size_t RRTSearch::findShortestNode(Point_uint &p,Node &shortest){
 	return prev;
 }
 
+bool RRTSearch::checkCollision(const vector<vector<bool> > &map,Node &a,Node &b){
+	int length=pnt::dis(a.val,b.val);
+	if(length==0)
+		return false;
+
+	int lengthX=b.val.x-a.val.x;
+	int lengthY=b.val.y-a.val.y;
+	bool collision=false;
+
+	for(int i=0;i<length;i++){
+		int x=(int)a.val.x+i*lengthX/length;
+		int y=(int)a.val.y+i*lengthY/length;
+		if(map[x][y]==false){
+			collision=true;
+			break;
+		}
+		MapSearch::EffortCount++;
+	}
+	return collision;
+}
+
 bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &route) {
 	MapSearch::EffortCount=0;
 	srand(time(NULL));
@@ -69,32 +90,13 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 		Point_uint randPoint=randomConfig(map);
 		Node shortestNode;
 		int prev=findShortestNode(randPoint,shortestNode);
-
-		Point_uint newPoint = stepFromTo(shortestNode.val,randPoint);
-
-	    int length=pnt::dis(shortestNode.val,newPoint);
-	    if(length==0)
-	    	continue;
-
-	    int lengthX=newPoint.x-shortestNode.val.x;
-	    int lengthY=newPoint.y-shortestNode.val.y;
-	    bool collision=false;
-
-	    for(int i=0;i<length;i++){
-	    	int x=(int)shortestNode.val.x+i*lengthX/length;
-	    	int y=(int)shortestNode.val.y+i*lengthY/length;
-	    	if(map[x][y]==false){
-	    		collision=true;
-	    		break;
-	    	}
-	    	MapSearch::EffortCount++;
-	    }
-	    if(!collision){
-	    	Node temp(newPoint,prev);
-			Nodes.push_back(temp);
-			Lines.push_back(Line(shortestNode.val, newPoint));
-			if(pnt::dis(Target,temp.val)<10){
-				generateRoute(route,temp);
+		Point_uint newPoint=stepFromTo(shortestNode.val,randPoint);
+		Node newNode(newPoint,prev);
+	    if(!checkCollision(map,shortestNode,newNode)){
+			Nodes.push_back(newNode);
+			Lines.push_back(Line(shortestNode.val, newNode.val));
+			if(pnt::dis(Target,newNode.val)<10){
+				generateRoute(route,newNode);
 				return true;
 			}
 	    }

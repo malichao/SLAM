@@ -55,6 +55,7 @@ private:
 	Point_uint stepFromTo(Point_uint &a,Point_uint &b);
 	Point_uint randomConfig(const vector<vector<bool> > &map);
 	size_t findShortestNode(Point_uint &n,Node &shortest);
+	bool checkCollision(const vector<vector<bool> > &map,Node &a,Node &b);
 
 	void generateRoute(vector<Point_uint> &route,Node n);
 
