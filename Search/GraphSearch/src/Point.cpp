@@ -45,4 +45,9 @@ float dis(Point<float> &a,Point<float> &b){
 	int y = a.y > b.y ? a.y - b.y : b.y - a.y;
 	return sqrt(x*x+y*y);
 }
+double dis(float x1,float y1,float x2,float y2){
+	double x = x2-x1;
+	double y = y2-y1;
+	return sqrt(x*x+y*y);
+}
 }

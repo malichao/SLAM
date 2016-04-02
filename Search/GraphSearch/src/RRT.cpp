@@ -24,6 +24,8 @@ Point_uint RRTSearch::stepFromTo(Point_uint &a,Point_uint &b){
 	return Point_uint(a.x+Epsilon*cos(theta),a.y+Epsilon*sin(theta));
 }
 
+
+
 bool RRTSearch::search(const vector<vector<bool> > &map,
 				   const Point<unsigned int> &start,
 				   const Point<unsigned int> &target,
@@ -43,6 +45,24 @@ Point_uint RRTSearch::randomPoint(const vector<vector<bool> > &map){
 	return Point_uint(x,y);
 }
 
+
+void RRTSearch::stepFromTo(  Vehicle &v,
+							 Vehicle::VehicleState &a,
+							 Vehicle::VehicleState &b,
+							 Vehicle::VehicleState &next){
+	Vehicle::VehicleState backup=a;
+	Vehicle::VehicleInput vi;
+	vi.period=0.2;
+	vi.speed=1;
+	vi.steerAngle=(rand()%180/2.0-45.0)*3.14/180.0;	// -45~45 degree,0.5 tolerance
+
+	v.calculateVehicleState(vi,a,next);
+
+	if((unsigned int)pnt::dis(a,b)<Epsilon)
+		return b;
+	double theta=atan2(double(b.y)-double(a.y),double(b.x)-double(a.x));
+	return Point_uint(a.x+Epsilon*cos(theta),a.y+Epsilon*sin(theta));
+}
 
 size_t RRTSearch::findShortestNode(Point_uint &p,Node &shortest){
 	shortest=Nodes[0];
@@ -144,19 +164,19 @@ void RRTSearch::demo(size_t width,size_t height,size_t searchTime,size_t epsilon
 	}
 }
 bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
-									 const Point<unsigned int> &start,
-									 const Point<unsigned int> &target,
+									 const Vehicle::VehicleState &start,
+									 const Vehicle::VehicleState &target,
 									 vector<Point_uint> &route){
-	setTarget(target);
-	setStart(start);
+	double scale =22.0;	// 22 pixels/meter
 
 	Vehicle v;
 	v.setToStandardVehicle();
 
+
 	MapSearch::EffortCount=0;
 	srand(time(NULL));
 	Nodes.clear();
-	Nodes.push_back(Node(Start,0));
+	Nodes.push_back(Node(Start,0,start));
 
 	Epsilon=2000;
 	size_t searchTime=500;
@@ -165,7 +185,12 @@ bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
 		Point_uint randPoint=randomPoint(map);
 		Node shortestNode;
 		int prev=findShortestNode(randPoint,shortestNode);
+
+		// Calculate the new vehicle state
 		Point_uint newPoint=stepFromTo(shortestNode.val,randPoint);
+
+
+
 		Node newNode(newPoint,prev);
 	    if(!checkCollision(map,shortestNode,newNode)){
 			Nodes.push_back(newNode);
