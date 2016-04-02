@@ -47,6 +47,7 @@ private:
 	vector<Line> Lines;
 
 	Point_uint stepFromTo(Point_uint &a,Point_uint &b);
+	Point_uint randomConfig(const vector<vector<bool> > &map);
 
 	void generateRoute(vector<Point_uint > &route);
 
