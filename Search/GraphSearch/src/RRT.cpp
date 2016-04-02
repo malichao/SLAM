@@ -172,20 +172,24 @@ void RRTSearch::demo(size_t width,size_t height,size_t searchTime,size_t epsilon
 	}
 }
 bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
-									 const Vehicle::VehicleState &start,
-									 const Vehicle::VehicleState &target,
+									 const Point_uint &start,
+									 const Point_uint &target,
 									 vector<Point_uint> &route){
 	Scale =22.0;	// 22 pixels/meter
 
+	setTarget(target);
+	setStart(start);
+
 	Vehicle v;
 	v.setToStandardVehicle();
-
+	Vehicle::VehicleState startState;
+	startState.x=start.x/Scale;
+	startState.y=start.y/Scale;
 
 	MapSearch::EffortCount=0;
 	srand(time(NULL));
 	Nodes.clear();
-	Point_uint temp(start.x,start.y);
-	Nodes.push_back(Node(temp,0,start));
+	Nodes.push_back(Node(start,0,startState));
 
 	Epsilon=2000;
 	size_t searchTime=500;

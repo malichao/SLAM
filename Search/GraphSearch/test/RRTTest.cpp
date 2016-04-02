@@ -143,6 +143,60 @@ void test3(){
 	cout<<"image saved\n";
 }
 
+void test4(){
+	string fileName("search_test1.bmp");
+	bitmap_image image(fileName);
+
+	if(!image){
+		return;
+	}
+	vector<vector<bool> > map(image.height(),vector<bool>(image.width(),true));
+	unsigned char r,g,b;
+	for(size_t i=0;i<image.height();i++)
+		for(size_t j=0;j<image.width();j++){
+			image.get_pixel(j,i,r,g,b);	//black 0 white 255
+			map[i][j]= r+g+b==255*3 ? true:false;
+		}
+
+	image_drawer draw(image);
+
+	RRTSearch tester;
+	Point_uint start(85,70),target(500,850);
+	vector<Point_uint> route;
+	tester.searchUsingVehicle(map,start,target,route);
+
+	cout<<"Search Effort: "<<tester.getSearchEffort()<<endl;
+	cout<<"printing on image\n";
+	draw.pen_width(3);
+	draw.pen_color(255,0,0);
+	draw.circle(start.y,start.x,6);
+	draw.pen_color(255,127,39);
+	draw.circle(target.y,target.x,6);
+
+	draw.pen_width(1);
+	draw.pen_color(0,162,232);
+	for(size_t i=0;i<tester.getLineSize();i++){
+		RRTSearch::Line l=tester.getLine(i);
+		Point_uint start(l.start),end(l.end);
+		//printf("(%u,%u)->(%u,%u)\n",start.x,start.y,end.x,end.y);
+		draw.line_segment(start.y,start.x,end.y,end.x);
+	}
+
+	if(!route.empty()){
+		draw.pen_width(2);
+		draw.pen_color(163,73,164);
+		Point_uint prev=route[0];
+		for(size_t i=1;i<route.size();i++){
+			draw.line_segment(prev.y,prev.x,route[i].y,route[i].x);
+			prev=route[i];
+		}
+	}
+
+
+	image.save_image("search_test1-result.bmp");
+	cout<<"image saved\n";
+}
+
 int main(){
-	test3();
+	test4();
 }

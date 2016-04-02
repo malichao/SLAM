@@ -28,7 +28,7 @@ public:
 	struct Node{
 		Node():val(Point_uint(0,0)),prev(0){}
 		Node(Point_uint &v,size_t p):val(v),prev(p){}
-		Node(Point_uint &v,size_t p,const Vehicle::VehicleState &vs):val(v),prev(p),state(vs){}
+		Node(const Point_uint &v,size_t p,const Vehicle::VehicleState &vs):val(v),prev(p),state(vs){}
 		Point_uint val;
 		size_t prev;
 
@@ -45,8 +45,8 @@ public:
 				 const Point<unsigned int> &target,
 				 vector<Point_uint> &route);
 	bool searchUsingVehicle( const vector<vector<bool> > &map,
-							 const Vehicle::VehicleState &start,
-							 const Vehicle::VehicleState &target,
+							 const Point_uint &start,
+							 const Point_uint &target,
 							 vector<Point_uint> &route);
 
 	size_t getLineSize() const { return Lines.size();}
