@@ -28,8 +28,11 @@ public:
 	struct Node{
 		Node():val(Point_uint(0,0)),prev(0){}
 		Node(Point_uint &v,size_t p):val(v),prev(p){}
+		Node(Point_uint &v,size_t p,const Vehicle::VehicleState &vs):val(v),prev(p),state(vs){}
 		Point_uint val;
 		size_t prev;
+
+		Vehicle::VehicleState state;
 	};
 	RRTSearch(): MaxSearchTime(1000),Epsilon(10){}
 
@@ -50,17 +53,21 @@ public:
 	Line getLine(size_t i) const {return Lines[i];}
 	Line getLineAt(size_t i) const { return Lines.at(i);}
 
+	double getScale() const {return Scale;}
+	void setScale(const double s) { Scale=s;}
+
 private:
 	vector<Node> Nodes;
 	size_t MaxSearchTime;
 	unsigned int Epsilon;
+	double Scale;	// pixels/meter
 
 	vector<Line> Lines;
 
 	Point_uint stepFromTo(Point_uint &a,Point_uint &b);
 	void stepFromTo( Vehicle &v,
-					 Vehicle::VehicleState &a,
-					 Vehicle::VehicleState &b,
+					 const Vehicle::VehicleState &a,
+					 const Vehicle::VehicleState &b,
 					 Vehicle::VehicleState &next);
 
 	Point_uint randomPoint(const vector<vector<bool> > &map);

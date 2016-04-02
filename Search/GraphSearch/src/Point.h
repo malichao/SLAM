@@ -95,6 +95,7 @@ int dis(Point<int> &a,Point<int> &b);
 
 float abs(Point<float> &a,Point<float> &b);
 float dis(Point<float> &a,Point<float> &b);
+double dis(double x1,double y1,double x2,double y2);
 }
 
 #endif /* POINT_H_ */

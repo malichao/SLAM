@@ -10,6 +10,7 @@ Description :
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <float.h>
 #include <algorithm>	//reverse()
 #include "RRT.h"
 
@@ -45,23 +46,30 @@ Point_uint RRTSearch::randomPoint(const vector<vector<bool> > &map){
 	return Point_uint(x,y);
 }
 
-
+// According to the target state,generate a best steering angle to
+// get closest to it,assume speed is constant.
 void RRTSearch::stepFromTo(  Vehicle &v,
-							 Vehicle::VehicleState &a,
-							 Vehicle::VehicleState &b,
+							 const Vehicle::VehicleState &a,
+							 const Vehicle::VehicleState &b,
 							 Vehicle::VehicleState &next){
-	Vehicle::VehicleState backup=a;
 	Vehicle::VehicleInput vi;
 	vi.period=0.2;
 	vi.speed=1;
-	vi.steerAngle=(rand()%180/2.0-45.0)*3.14/180.0;	// -45~45 degree,0.5 tolerance
 
+	double minDis=DBL_MAX ;
+	double bestAngle=0;
+	// -45~45 degree,0.5 tolerance
+	for(double angle=-45.0/180*3.14;angle<45.0/180*3.14;angle+=0.5){
+		vi.steerAngle=angle;
+		v.calculateVehicleState(vi,a,next);
+		double length=pnt::dis(b.x,b.y,next.x,next.y)*Scale;
+		if(length<minDis){
+			minDis=length;
+			bestAngle=angle;
+		}
+	}
+	vi.steerAngle=bestAngle;
 	v.calculateVehicleState(vi,a,next);
-
-	if((unsigned int)pnt::dis(a,b)<Epsilon)
-		return b;
-	double theta=atan2(double(b.y)-double(a.y),double(b.x)-double(a.x));
-	return Point_uint(a.x+Epsilon*cos(theta),a.y+Epsilon*sin(theta));
 }
 
 size_t RRTSearch::findShortestNode(Point_uint &p,Node &shortest){
@@ -167,7 +175,7 @@ bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
 									 const Vehicle::VehicleState &start,
 									 const Vehicle::VehicleState &target,
 									 vector<Point_uint> &route){
-	double scale =22.0;	// 22 pixels/meter
+	Scale =22.0;	// 22 pixels/meter
 
 	Vehicle v;
 	v.setToStandardVehicle();
@@ -176,7 +184,8 @@ bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
 	MapSearch::EffortCount=0;
 	srand(time(NULL));
 	Nodes.clear();
-	Nodes.push_back(Node(Start,0,start));
+	Point_uint temp(start.x,start.y);
+	Nodes.push_back(Node(temp,0,start));
 
 	Epsilon=2000;
 	size_t searchTime=500;
@@ -187,11 +196,16 @@ bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
 		int prev=findShortestNode(randPoint,shortestNode);
 
 		// Calculate the new vehicle state
-		Point_uint newPoint=stepFromTo(shortestNode.val,randPoint);
+		Node randomNode(randPoint,prev,shortestNode.state);
 
+		Vehicle::VehicleState randomState;
+		randomState.x=randPoint.x/Scale;
+		randomState.y=randPoint.y/Scale;
+		Vehicle::VehicleState newState;
+		stepFromTo(v,shortestNode.state,randomState,newState);
+		Point_uint temp(randomState.x*Scale,randomState.y*Scale);
+		Node newNode(temp,prev,newState);
 
-
-		Node newNode(newPoint,prev);
 	    if(!checkCollision(map,shortestNode,newNode)){
 			Nodes.push_back(newNode);
 			Lines.push_back(Line(shortestNode.val, newNode.val));
