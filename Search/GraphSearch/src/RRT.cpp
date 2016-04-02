@@ -42,8 +42,7 @@ Point_uint RRTSearch::randomConfig(const vector<vector<bool> > &map){
 	return Point_uint(x,y);
 }
 
-// Notice: the prev in shortest is not its previous point but the position of
-// the shortest in the Nodes.
+
 size_t RRTSearch::findShortestNode(Point_uint &p,Node &shortest){
 	shortest=Nodes[0];
 	size_t prev=0;

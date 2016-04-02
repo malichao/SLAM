@@ -91,8 +91,6 @@ void test3(){
 	vector<Point_uint> route;
 	tester.search(map,start,target,route);
 
-	// Look at the parameter of draw.circle(),first time it's (x,y),second time (y,x)
-	// Pretty sure it's the bitmap_image library bug.
 	cout<<"Search Effort: "<<tester.getSearchEffort()<<endl;
 	cout<<"printing on image\n";
 	draw.pen_width(3);
@@ -127,7 +125,7 @@ void test3(){
 		}
 		Smooth sm;
 		sm.set(0.05,0.48,0.1,1);
-		sm.smooth(smoothRoute,1);
+		sm.smooth(map,smoothRoute,1);
 		cout<<"========smooth end========\n";
 
 		draw.pen_width(3);
