@@ -86,10 +86,11 @@ void test3(){
 	image_drawer draw(image);
 
 	RRTSearch tester;
-	Point_uint start(85,70),target(1000,560);
+	Point_uint start(85,70),target(850,560);
 	vector<Point_uint> route;
 	tester.search(map,start,target,route);
 
+	cout<<"printing on image\n";
 	draw.pen_width(5);
 	draw.pen_color(0,0,255);
 	draw.plot_pixel(start.x,start.y);

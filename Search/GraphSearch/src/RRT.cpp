@@ -46,7 +46,7 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 	Nodes.push_back(Start);
 
 	Epsilon=10;
-	size_t searchTime=1000;
+	size_t searchTime=2000;
 
 	for(size_t i=0;i<searchTime;i++){
 		Point_uint randPoint=randomConfig(map);
@@ -58,11 +58,29 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 		}
 
 		Point_uint newNode = stepFromTo(shortestPoint,randPoint);
-		Nodes.push_back(newNode);
-		Lines.push_back(Line(shortestPoint, newNode));
 
-		if(newNode==Target)
+	    int length=pnt::dis(shortestPoint,newNode);
+	    if(length==0)
+	    	continue;
+
+	    int lengthX=newNode.x-shortestPoint.x;
+	    int lengthY=newNode.y-shortestPoint.y;
+	    bool collision=false;
+
+	    for(int i=0;i<length;i++){
+	    	int x=(int)shortestPoint.x+i*lengthX/length;
+	    	int y=(int)shortestPoint.y+i*lengthY/length;
+	    	if(map[x][y]==false){
+	    		collision=true;
+	    		break;
+	      }
+	    }
+	    if(!collision){
+			Nodes.push_back(newNode);
+			Lines.push_back(Line(shortestPoint, newNode));
+			if(newNode==Target)
 			return true;
+	    }
 	}
 	return false;
 }
