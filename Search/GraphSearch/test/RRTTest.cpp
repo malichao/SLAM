@@ -92,6 +92,7 @@ void test3(){
 
 	// Look at the parameter of draw.circle(),first time it's (x,y),second time (y,x)
 	// Pretty sure it's the bitmap_image library bug.
+	cout<<"Search Effort: "<<tester.getSearchEffort()<<endl;
 	cout<<"printing on image\n";
 	draw.pen_width(3);
 	draw.pen_color(255,0,0);

@@ -36,11 +36,13 @@ Point_uint RRTSearch::randomConfig(const vector<vector<bool> > &map){
 	do{
 		x=rand()%map.size();
 		y=rand()%map[0].size();
+		MapSearch::EffortCount++;
 	}while(map[x][y]==false);
 	return Point_uint(x,y);
 }
 
 bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &route) {
+	MapSearch::EffortCount=0;
 	srand(time(NULL));
 	Nodes.clear();
 	Nodes.push_back(Start);
@@ -55,6 +57,7 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 		for(auto n:Nodes){
 			if(pnt::dis(randPoint,n)<pnt::dis(randPoint,shortestPoint))
 				shortestPoint=n;
+			MapSearch::EffortCount++;
 		}
 
 		Point_uint newNode = stepFromTo(shortestPoint,randPoint);
@@ -73,7 +76,8 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 	    	if(map[x][y]==false){
 	    		collision=true;
 	    		break;
-	      }
+	    	}
+	    	MapSearch::EffortCount++;
 	    }
 	    if(!collision){
 			Nodes.push_back(newNode);
