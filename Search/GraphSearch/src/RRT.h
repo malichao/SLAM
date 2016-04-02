@@ -54,7 +54,7 @@ private:
 
 	Point_uint stepFromTo(Point_uint &a,Point_uint &b);
 	Point_uint randomConfig(const vector<vector<bool> > &map);
-	void findShortestNode(Point_uint &n,Node &shortest);
+	size_t findShortestNode(Point_uint &n,Node &shortest);
 
 	void generateRoute(vector<Point_uint> &route,Node n);
 

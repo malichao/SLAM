@@ -44,15 +44,17 @@ Point_uint RRTSearch::randomConfig(const vector<vector<bool> > &map){
 
 // Notice: the prev in shortest is not its previous point but the position of
 // the shortest in the Nodes.
-void RRTSearch::findShortestNode(Point_uint &p,Node &shortest){
+size_t RRTSearch::findShortestNode(Point_uint &p,Node &shortest){
 	shortest=Nodes[0];
+	size_t prev=0;
 	for(size_t i=0;i<Nodes.size();i++){
 		if(pnt::dis(p,Nodes[i].val)<pnt::dis(p,shortest.val)){
 			shortest=Nodes[i];
-			shortest.prev=i;
+			prev=i;
 		}
 		MapSearch::EffortCount++;
 	}
+	return prev;
 }
 
 bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &route) {
@@ -67,7 +69,7 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 	for(size_t i=0;i<searchTime;i++){
 		Point_uint randPoint=randomConfig(map);
 		Node shortestNode;
-		findShortestNode(randPoint,shortestNode);
+		int prev=findShortestNode(randPoint,shortestNode);
 
 		Point_uint newPoint = stepFromTo(shortestNode.val,randPoint);
 
@@ -89,7 +91,7 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 	    	MapSearch::EffortCount++;
 	    }
 	    if(!collision){
-	    	Node temp(newPoint,shortestNode.prev);
+	    	Node temp(newPoint,prev);
 			Nodes.push_back(temp);
 			Lines.push_back(Line(shortestNode.val, newPoint));
 			if(pnt::dis(Target,temp.val)<10){
@@ -99,15 +101,7 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 	    }
 	}
 	Node shortest;
-	shortest=Nodes[0];
-	printf("(%u,%u)\t %d\n",shortest.val.x,shortest.val.y,pnt::dis(Target,Nodes[0].val));
-	for(size_t i=0;i<Nodes.size();i++){
-		if(pnt::dis(Target,Nodes[i].val)<pnt::dis(Target,shortest.val)){
-			shortest=Nodes[i];
-			printf("(%u,%u)\t %d***\n",shortest.val.x,shortest.val.y,pnt::dis(Target,shortest.val));
-		}
-		printf("(%u,%u)\t %d\n",Nodes[i].val.x,Nodes[i].val.y,pnt::dis(Target,Nodes[i].val));
-	}
+	findShortestNode(Target,shortest);
 	generateRoute(route,shortest);
 
 	return false;
