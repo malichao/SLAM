@@ -9,6 +9,7 @@
 #include <string>
 #include "../src/RRT.h"
 #include "../include/bitmap_image.hpp"
+#include "smooth.h"
 
 using namespace std;
 using namespace SearchAlgorithms;
@@ -111,11 +112,31 @@ void test3(){
 
 	if(!route.empty()){
 		draw.pen_width(2);
-		draw.pen_color(34,177,76);
+		draw.pen_color(163,73,164);
 		Point_uint prev=route[0];
 		for(size_t i=1;i<route.size();i++){
 			draw.line_segment(prev.y,prev.x,route[i].y,route[i].x);
 			prev=route[i];
+		}
+
+		vector<Point<float> > smoothRoute;
+		for(auto r:route){
+			Point<float> p(r.x,r.y,r.dir);
+			for(size_t i=0;i<10;i++)
+				smoothRoute.push_back(p);
+		}
+		Smooth sm;
+		sm.set(0.1,0.4,0.1,1);
+		sm.smooth(smoothRoute,1);
+		cout<<"========smooth end========\n";
+
+		draw.pen_width(3);
+		draw.pen_color(34,177,76);
+		prev=Point_uint(smoothRoute[0].x,smoothRoute[0].y);
+		for(size_t i=1;i<smoothRoute.size();i++){
+			draw.line_segment(prev.y,prev.x,smoothRoute[i].y,smoothRoute[i].x);
+			prev=Point_uint(smoothRoute[i].x,smoothRoute[i].y);
+			printf("(%.1f,%.1f)\n",smoothRoute[i].x,smoothRoute[i].y);
 		}
 	}
 
