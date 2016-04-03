@@ -12,6 +12,8 @@ Description :
 #include <math.h>
 #include <float.h>
 #include <algorithm>	//reverse()
+#include <exception>
+#include <iostream>
 #include "RRT.h"
 
 
@@ -53,7 +55,7 @@ void RRTSearch::stepFromTo(  Vehicle &v,
 							 const Vehicle::VehicleState &b,
 							 Vehicle::VehicleState &next){
 	Vehicle::VehicleInput vi;
-	vi.period=0.1;
+	vi.period=0.05;
 	vi.speed=4;
 
 	double minDis=DBL_MAX ;
@@ -84,19 +86,19 @@ size_t RRTSearch::findShortestNode(Point_uint &p,Node &shortest){
 	}
 	return prev;
 }
-
 bool RRTSearch::checkCollision(const vector<vector<bool> > &map,Node &a,Node &b){
-	if(a.val.x>map.size()||a.val.y>map[0].size()) return true;
-	if(b.val.x>map.size()||b.val.y>map[0].size()) return true;
+	// Cautious!! Notice the bound! it's '>=' !
+	if(a.val.x>=map.size()||a.val.y>=map[0].size()) return true;
+	if(b.val.x>=map.size()||b.val.y>=map[0].size()) return true;
 	int length=pnt::dis(a.val,b.val);
 	if(length==0)
 		return false;
 
-	int lengthX=b.val.x-a.val.x;
-	int lengthY=b.val.y-a.val.y;
+	int lengthX=(int)b.val.x-(int)a.val.x;
+	int lengthY=(int)b.val.y-(int)a.val.y;
 	bool collision=false;
 
-	for(int i=0;i<length;i++){
+	for(int i=0;i<length-1;i++){
 		int x=(int)a.val.x+i*lengthX/length;
 		int y=(int)a.val.y+i*lengthY/length;
 		if(map[x][y]==false){
@@ -177,7 +179,7 @@ bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
 									 const Point_uint &start,
 									 const Point_uint &target,
 									 vector<Point_uint> &route){
-	Scale =500.0;	// 22 pixels/meter
+	Scale =300.0;	// 22 pixels/meter
 
 	setTarget(target);
 	setStart(start);
