@@ -18,17 +18,17 @@ Here's the main features:
 -Showing how many point data are valid on status bar  
 -Showing all the text data with format 0 - 360   : speed /rpm | point1  point2  point3  point4  
 
-![alt tag](snapshots/2016%20Feb%2004%20-4.jpg)   
+![alt tag](LIDAR/snapshots/2016%20Feb%2004%20-4.jpg)   
 
-![alt tag](snapshots/2016%20Feb%2004%20-5.jpg)   
+![alt tag](LIDAR/snapshots/2016%20Feb%2004%20-5.jpg)   
   
   ===
 ###Kalman Filter  
 Implemented a highly portable Kalman filter module in C.Here are some experiments of fusing gyroscope and accelerometer data.As we can see,Kalman filter does a good job fusing the sensors data and getting rid of gyro drifting.But it can not filter out the accelerometer spike noise.  
 Notice that at the beginning of the red curve there’s a bump,which is caused by gyro drift and filtered out by Kalman filter later on.  
-![alt text](doc/1-s.png)  
-![alt text](doc/2-s.png)  
-![alt text](doc/3-s.png)  
+![alt text](KalmanFilter/doc/1-s.png)  
+![alt text](KalmanFilter/doc/2-s.png)  
+![alt text](KalmanFilter/doc/3-s.png)  
   
   ===
 ###Searching Algorithms
@@ -59,17 +59,17 @@ Where
 '#' is obstacle  
 "^,>,V,<" are trajectories  
 '+' is an overlap of trajectories  
-![alt text](doc/comparison-s.jpg)  
+![alt text](Search/GraphSearch/doc/comparison-s.jpg)  
   
 ##RRT
 RRT Searching with Smooth Path and Obstacle Avoidance  
-![alt text](doc/RTT%20and%20Smooth/search_test1-result-smooth-avoid obstacle.bmp)  
+![alt text](Search/GraphSearch/doc/RTT%20and%20Smooth/search_test1-result-smooth-avoid obstacle.bmp)  
   
 RRT Searching Using Vehicle Dynamic Model  
-![alt text](doc/RTT%20Vehicle/RRT_Vehicle_Search_Result-7.bmp)  
+![alt text](Search/GraphSearch/doc/RTT%20Vehicle/RRT_Vehicle_Search_Result-7.bmp)  
   
   
-![alt text](doc/RTT%20Vehicle%20Maze%20Test/RRT_Vehicle_Search_Result1.bmp)  
+![alt text](Search/GraphSearch/doc/RTT%20Vehicle%20Maze%20Test/RRT_Vehicle_Search_Result1.bmp)  
     
     ===
 #### ● Smooth algorithm  
@@ -89,12 +89,12 @@ Here's what have been done in this project:
   
 Here are some test results:  
 ##PID Control  
-![alt text](doc/pid1-s.png)  
+![alt text](PID/doc/pid1-s.png)  
   
 ##PID Coefficient Self Optimization  
-![alt text](doc/twiddle%20result.jpg)  
+![alt text](PID/doc/twiddle%20result.jpg)  
   
 ##2D Vehicle Simulation  
 A vehicle steering at a fixed angle and fixed speed,whose trajectory is exactly a circle.  
-![alt text](doc/vehicle%20simulation.jpg)  
+![alt text](PID/doc/vehicle%20simulation.jpg)  
   
