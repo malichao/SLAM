@@ -44,5 +44,5 @@ Here is another example of trajectories smooth algorithm:
    
 #### ● PID simulator(one dimension) 
 Here is an one dimensional PID controller example,in which a car is trying to reach at 100m position. The following three curves show the result of different PID coefficients.  
-![alt text](https://github.com/malichao/SLAM/blob/master/PID/pid1-s.png)   
+![alt text](https://github.com/malichao/SLAM/blob/master/PID/doc/pid1-s.png)   
   
