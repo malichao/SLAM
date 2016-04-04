@@ -13,7 +13,7 @@ Here are the test results.
 ##RRT
 Basic RRT  
 ![alt text](doc/RTT/search_test2-result.jpg)  
-![alt text](doc/RRT/search_test4-result.jpg)  
+![alt text](doc/RRT/search_test2-result.jpg)  
   
 RRT Searching with Smooth Path     
 ![alt text](doc/RTT%20and%20Smooth/search_test1-result-smooth1.bmp)  
