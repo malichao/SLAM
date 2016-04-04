@@ -1,10 +1,12 @@
 # SLAM
 Robotics Simultaneous Localization and Mapping  
 ### Current Progress:  
-#### [● LIDAR sensor data acquisition and visulization](https://github.com/malichao/SLAM/tree/master/LIDAR)  
-#### [● Map search algorithm comparison(BFS, A* ,Dynamic programming,3-dimensional A* )](https://github.com/malichao/SLAM/tree/master/SLAM)  
-#### [● Smooth algorithm](https://github.com/malichao/SLAM/tree/master/SLAM)  
-#### [● PID simulator(one dimension)](https://github.com/malichao/SLAM/tree/master/PID)  
+#### [- LIDAR Sensor Data Acquisition and Visulization](https://github.com/malichao/SLAM/tree/master/LIDAR)  
+#### [- Kalman Filter](/KalmanFilter)  
+#### [- Map Search Algorithm Comparison(BFS, A* ,Dynamic Programming,RRT)](/Search/GraphSearch)  
+#### [- Smooth Algorithm](/Search/GraphSearch)  
+#### [- PID Simulator(one dimension)](/PID)  
+#### [- Vehicle Dynamic Model Simulation](Search/GraphSearch)  
     
 =====
     
