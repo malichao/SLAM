@@ -48,6 +48,16 @@ Point_uint RRTSearch::randomPoint(const vector<vector<bool> > &map){
 	return Point_uint(x,y);
 }
 
+
+void RRTSearch::talorApprox(Vehicle &v,
+							const Vehicle::VehicleInput &vi,
+							const Vehicle::VehicleState &old,
+							Vehicle::VehicleState &next){
+	Vehicle::VehicleState k1,k2,k3,k4;
+	v.calculateVehicleState(vi,old,k1);
+	v.calculateVehicleState(vi,old+k1/2,k2);
+}
+
 // According to the target state,generate a best steering angle to
 // get closest to it,assume speed is constant.
 void RRTSearch::stepFromTo(  Vehicle &v,
