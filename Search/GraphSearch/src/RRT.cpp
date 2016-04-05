@@ -1,10 +1,11 @@
 /******************************************************************************
 Author		: Lichao Ma
 Date  		: Mar 31,2016
-Version		: v0.1
+Version		: v0.2
 Built		: Eclipse CDT, -std=c++11
 Description :
-	Rapidly-Exploring Random Tree Searching Algorithm.
+	-v0.2 Add vehicle dynamic model in searching
+	-v0.1 Rapidly-Exploring Random Tree Searching Algorithm.
 *****************************************************************************/
 
 #include <stdlib.h>
