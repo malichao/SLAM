@@ -175,6 +175,9 @@ void RRTSearch::demo(size_t width,size_t height,size_t searchTime,size_t epsilon
 
 	}
 }
+
+//Todo: Use Taylor series to calculate the next vehicle state and increase the
+// calculation period.
 bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
 									 const Point_uint &start,
 									 const Point_uint &target,
