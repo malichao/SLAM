@@ -23,6 +23,7 @@ private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
     QGraphicsView *view;
+    QScrollArea *scrollArea;
 
 };
 
