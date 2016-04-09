@@ -40,9 +40,8 @@ void MainWindow::on_actionOpen_triggered()
     if(fileName==NULL)
         return;
     QPixmap image(fileName);
-    view->setBackgroundBrush(image);
-    view->resize(QSize(image.width()+5,image.height()+5));
-    scene->setSceneRect(0,0,image.width(),image.height());
+    backgroundImage =new QGraphicsPixmapItem(image);
+    scene->addItem(backgroundImage);
     view->show();
     scrollArea->setWidgetResizable(true);
 }

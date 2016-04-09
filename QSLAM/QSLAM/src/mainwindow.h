@@ -24,6 +24,7 @@ private:
     QGraphicsScene *scene;
     QGraphicsView *view;
     QScrollArea *scrollArea;
+    QGraphicsPixmapItem *backgroundImage;
 
 };
 
