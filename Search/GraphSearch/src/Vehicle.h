@@ -57,6 +57,9 @@ public:
 	void calculateVehicleState(  const Vehicle::VehicleInput &vi,
 								 const Vehicle::VehicleState &vs,
 								 Vehicle::VehicleState &vsNew);
+	void calculateVehicleStateDelta(const Vehicle::VehicleInput &vi,
+									 const Vehicle::VehicleState &vs,
+									 Vehicle::VehicleState &vsNew)
 
 private:
 	double Length;

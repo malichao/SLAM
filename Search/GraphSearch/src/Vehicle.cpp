@@ -211,3 +211,32 @@ void Vehicle::calculateVehicleState( const Vehicle::VehicleInput &vi,
 	vsNew.y = vs.y+yDot * vi.period;
 
 }
+
+void Vehicle::calculateVehicleStateDelta(const Vehicle::VehicleInput &vi,
+									 	 const Vehicle::VehicleState &vs,
+										 Vehicle::VehicleState &vsNew){
+
+	vsNew.speedLongitudinal =
+			fabs(vs.speedLongitudinal) < Car::Epsilon ?
+					Car::Epsilon : vs.speedLongitudinal;
+
+	float mass=Car::getMass();
+	float beta=3.14/180.0*3;
+
+	double v=vs.speedLongitudinal/cos(beta);
+	float a11=-(TireCoefFront+TireCoefRear)/(mass*v);
+	float a12=(TireCoefRear-TireCoefFront)/Length/2.0/(mass*v*v);
+	float b11 = TireCoefFront / (mass * v);
+
+	float SpeedYawDot = a11 * beta + a12 * vs.speedYaw + b11 * vi.steerAngle;
+	vsNew.orientation = vs.orientation+SpeedYawDot * vi.period * vi.period;
+
+	float xDot = v * cos(vsNew.orientation + beta);
+	float yDot = v * sin(vsNew.orientation + beta);
+
+	vsNew.x = xDot;
+	vsNew.y = yDot;
+	vsNew.orientation=SpeedYawDot;
+	vsNew.speedLongitudinal=vsNew.speedLongitudinal-vs.speedLongitudinal;
+	vsNew.speedYaw=0;
+}
