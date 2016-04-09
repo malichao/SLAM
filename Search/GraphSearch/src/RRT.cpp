@@ -54,7 +54,9 @@ void RRTSearch::talorApprox(Vehicle &v,
 							const Vehicle::VehicleState &old,
 							Vehicle::VehicleState &next){
 	Vehicle::VehicleState k1,k2,k3,k4;
-	v.calculateVehicleState(vi,old,k1);
+	double period=vi.period;
+	v.calculateVehicleStateDelta(vi,old,k1);
+	vi.period=period/2;
 	v.calculateVehicleState(vi,old+k1/2,k2);
 }
 
