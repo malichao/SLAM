@@ -19,10 +19,12 @@ public:
 private slots:
     void on_actionOpen_triggered();
 
+    void on_actionSetting_triggered();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
-    QGraphicsView *view;
+    //QGraphicsView *view;
     QScrollArea *scrollArea;
     QGraphicsPixmapItem *backgroundImage;
     QPixmap *map;

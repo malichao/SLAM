@@ -10,22 +10,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     scene= new QGraphicsScene();
-    //scene->setSceneRect(0,0,1000,1000);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
 
-    // Show view on main window
-    view=new QGraphicsView(this->centralWidget());
-    view->setScene(scene);
-    view->setRenderHint(QPainter::Antialiasing);
-    view->setCacheMode(QGraphicsView::CacheBackground);
-    view->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-    view->setDragMode(QGraphicsView::ScrollHandDrag);
-    //view->resize(400, 300);
+    ui->view->setScene(scene);
+    ui->view->setRenderHint(QPainter::Antialiasing);
+    ui->view->setCacheMode(QGraphicsView::CacheBackground);
+    ui->view->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    ui->view->setDragMode(QGraphicsView::ScrollHandDrag);
 
-    scrollArea = new QScrollArea;
-    scrollArea->setBackgroundRole(QPalette::Dark);
-    scrollArea->setWidget(view);
-    setCentralWidget(scrollArea);
 }
 
 MainWindow::~MainWindow()
@@ -42,6 +34,9 @@ void MainWindow::on_actionOpen_triggered()
     map=new QPixmap(fileName);
     backgroundImage =new QGraphicsPixmapItem(*map);
     scene->addItem(backgroundImage);
-    view->show();
-    scrollArea->setWidgetResizable(true);
+}
+
+void MainWindow::on_actionSetting_triggered()
+{
+
 }
