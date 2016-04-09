@@ -6,6 +6,6 @@ Here's the main features:
 -Showing how many point data are valid on status bar  
 -Showing all the text data with format 0 - 360   : speed /rpm | point1  point2  point3  point4  
 
-![alt tag](https://github.com/malichao/XV11_LIDAR_Visualizer/blob/master/snapshots/2016%20Feb%2004%20-4.jpg)   
+![alt tag](snapshots/2016%20Feb%2004%20-4.jpg)   
 
-![alt tag](https://github.com/malichao/XV11_LIDAR_Visualizer/blob/master/snapshots/2016%20Feb%2004%20-5.jpg)   
+![alt tag](snapshots/2016%20Feb%2004%20-5.jpg)   
