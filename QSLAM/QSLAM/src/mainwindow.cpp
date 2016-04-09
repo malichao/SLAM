@@ -39,8 +39,8 @@ void MainWindow::on_actionOpen_triggered()
                   tr("BMP (*.bmp);;JPEG (*.jpg);;All types (*.*)"));
     if(fileName==NULL)
         return;
-    QPixmap image(fileName);
-    backgroundImage =new QGraphicsPixmapItem(image);
+    map=new QPixmap(fileName);
+    backgroundImage =new QGraphicsPixmapItem(*map);
     scene->addItem(backgroundImage);
     view->show();
     scrollArea->setWidgetResizable(true);

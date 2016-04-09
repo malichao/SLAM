@@ -25,6 +25,7 @@ private:
     QGraphicsView *view;
     QScrollArea *scrollArea;
     QGraphicsPixmapItem *backgroundImage;
+    QPixmap *map;
 
 };
 
