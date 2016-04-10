@@ -224,13 +224,25 @@ void MainWindow::on_actionSearch_triggered()
     for(int i=0;i<lineItems->size();i++){
         scene->removeItem((*lineItems)[i]);
     }
-    lineItems->resize(tester.getLineSize());
+    lineItems->resize(tester.getLineSize()+route.size());
 
+    // First draw all the search attempts
     for(size_t i=0;i<tester.getLineSize();i++){
         RRTSearch::Line l=tester.getLine(i);
         (*lineItems)[i]=(new QGraphicsLineItem(l.start.y,l.start.x,l.end.y,l.end.x));
         (*lineItems)[i]->setPen(pen);
         scene->addItem((*lineItems)[i]);
+    }
+
+    // Then draw the driving route
+    pen.setWidth(2);
+    pen.setColor(QColor(163,73,164));
+    Point_uint prev=route[0];
+    for(size_t i=1,j=tester.getLineSize();i<route.size();i++){
+        (*lineItems)[j+i]=(new QGraphicsLineItem(prev.y,prev.x,route[i].y,route[i].x));
+        (*lineItems)[j+i]->setPen(pen);
+        scene->addItem((*lineItems)[j+i]);
+        prev=route[i];
     }
 
     ui->actionSearch->setEnabled(true);
