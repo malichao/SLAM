@@ -54,7 +54,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->actionSearch->setIcon(QIcon(":/icon/resources/search.ico"));
     ui->actionOpen->setIcon(QIcon(":/icon/resources/open.ico"));
+    ui->actionDrive->setIcon(QIcon(":/icon/resources/sedan.ico"));
     ui->actionSearch->setEnabled(false);
+    ui->actionDrive->setEnabled(false);
     renewSetPoint=false;
 
     startImage=new QGraphicsPixmapItem(QPixmap(":/image/resources/start.png"));
@@ -64,6 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->actionSetting->setIcon(QIcon(":/icon/resources/wrench.ico"));
     settingDialog=new SettingDialog();
+
 
     lineItems=new QVector<QGraphicsLineItem*>();
 
@@ -123,6 +126,7 @@ void MainWindow::on_actionOpen_triggered()
     renewTarget=false;
     renewSetPoint=renewStart&renewTarget;
     ui->actionSearch->setEnabled(renewSetPoint);
+    ui->actionDrive->setEnabled(renewSetPoint);
 }
 
 void MainWindow::on_actionSetting_triggered()
@@ -262,6 +266,7 @@ void MainWindow::on_actionSearch_triggered()
     }
 
     ui->actionSearch->setEnabled(true);
+    ui->actionDrive->setEnabled(true);
 }
 
 

@@ -89,6 +89,7 @@
     </property>
     <addaction name="actionSearch"/>
     <addaction name="actionSetting"/>
+    <addaction name="actionDrive"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAction"/>
@@ -102,6 +103,7 @@
    </attribute>
    <addaction name="actionOpen"/>
    <addaction name="actionSearch"/>
+   <addaction name="actionDrive"/>
    <addaction name="actionSetting"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -118,6 +120,11 @@
   <action name="actionSetting">
    <property name="text">
     <string>Setting</string>
+   </property>
+  </action>
+  <action name="actionDrive">
+   <property name="text">
+    <string>Drive</string>
    </property>
   </action>
  </widget>

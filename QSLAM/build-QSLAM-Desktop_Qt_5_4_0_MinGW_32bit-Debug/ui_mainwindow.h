@@ -33,6 +33,7 @@ public:
     QAction *actionOpen;
     QAction *actionSearch;
     QAction *actionSetting;
+    QAction *actionDrive;
     QWidget *centralWidget;
     QGridLayout *gridLayout;
     QGridLayout *layoutTop;
@@ -57,6 +58,8 @@ public:
         actionSearch->setObjectName(QStringLiteral("actionSearch"));
         actionSetting = new QAction(MainWindow);
         actionSetting->setObjectName(QStringLiteral("actionSetting"));
+        actionDrive = new QAction(MainWindow);
+        actionDrive->setObjectName(QStringLiteral("actionDrive"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         centralWidget->setEnabled(true);
@@ -121,8 +124,10 @@ public:
         menuFile->addAction(actionOpen);
         menuAction->addAction(actionSearch);
         menuAction->addAction(actionSetting);
+        menuAction->addAction(actionDrive);
         mainToolBar->addAction(actionOpen);
         mainToolBar->addAction(actionSearch);
+        mainToolBar->addAction(actionDrive);
         mainToolBar->addAction(actionSetting);
 
         retranslateUi(MainWindow);
@@ -136,6 +141,7 @@ public:
         actionOpen->setText(QApplication::translate("MainWindow", "Open", 0));
         actionSearch->setText(QApplication::translate("MainWindow", "Search", 0));
         actionSetting->setText(QApplication::translate("MainWindow", "Setting", 0));
+        actionDrive->setText(QApplication::translate("MainWindow", "Drive", 0));
         buttonSetTarget->setText(QApplication::translate("MainWindow", "Set Target", 0));
         buttonSetStart->setText(QApplication::translate("MainWindow", "Set Start", 0));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0));
