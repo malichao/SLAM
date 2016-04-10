@@ -10,5 +10,6 @@ INPUT(
 ./release/PrintCharMap.o
 ./release/RRT.o
 ./release/Vehicle.o
+./release/qrc_resources.o
 ./release/moc_mainwindow.o
 );

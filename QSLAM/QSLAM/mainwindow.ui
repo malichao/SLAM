@@ -31,12 +31,20 @@
         <property name="text">
          <string>Set Target</string>
         </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>resources/target.ico</normaloff>resources/target.ico</iconset>
+        </property>
        </widget>
       </item>
       <item row="0" column="0">
        <widget class="QPushButton" name="buttonSetStart">
         <property name="text">
          <string>Set Start</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>resources/start.ico</normaloff>resources/start.ico</iconset>
         </property>
        </widget>
       </item>

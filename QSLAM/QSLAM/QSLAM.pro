@@ -36,3 +36,6 @@ HEADERS  += src/mainwindow.h \
     src/Vehicle.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    resources.qrc

@@ -31,6 +31,8 @@ private:
     //QGraphicsView *view;
     QScrollArea *scrollArea;
     QGraphicsPixmapItem *backgroundImage;
+    QGraphicsPixmapItem *startImage;
+    QGraphicsPixmapItem *targetImage;
     QPixmap *map;
     bool setStartPressed;
     bool setTargetPressed;

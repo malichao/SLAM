@@ -71,11 +71,17 @@ public:
         layoutTop->setObjectName(QStringLiteral("layoutTop"));
         buttonSetTarget = new QPushButton(centralWidget);
         buttonSetTarget->setObjectName(QStringLiteral("buttonSetTarget"));
+        QIcon icon;
+        icon.addFile(QStringLiteral("resources/target.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        buttonSetTarget->setIcon(icon);
 
         layoutTop->addWidget(buttonSetTarget, 0, 1, 1, 1);
 
         buttonSetStart = new QPushButton(centralWidget);
         buttonSetStart->setObjectName(QStringLiteral("buttonSetStart"));
+        QIcon icon1;
+        icon1.addFile(QStringLiteral("resources/start.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        buttonSetStart->setIcon(icon1);
 
         layoutTop->addWidget(buttonSetStart, 0, 0, 1, 1);
 

@@ -20,6 +20,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setStartPressed=false;
     setTargetPressed=false;
+    ui->buttonSetStart->setIcon(QIcon(":/icon/resources/start.ico"));
+    ui->buttonSetTarget->setIcon(QIcon(":/icon/resources/target.ico"));
+    ui->buttonSetStart->setEnabled(false);
+    ui->buttonSetTarget->setEnabled(false);
+
+    startImage=new QGraphicsPixmapItem(QPixmap(":/image/resources/start.png"));
+    targetImage=new QGraphicsPixmapItem(QPixmap(":/image/resources/target.png"));
 
     coordinateLabel=new QLabel(this);
     //coordinateLabel->setAlignment(Qt::AlignLeft);
@@ -43,6 +50,9 @@ void MainWindow::on_actionOpen_triggered()
     //backgroundImage->setPos();
     scene->addItem(backgroundImage);
 
+    // Enable the buttons
+    ui->buttonSetStart->setEnabled(true);
+    ui->buttonSetTarget->setEnabled(true);
 }
 
 void MainWindow::on_actionSetting_triggered()
@@ -90,10 +100,22 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
             return;
         }
 
-        if(setStartPressed)
-            scene->addEllipse(p.x(),p.y(),5,5,QPen(Qt::red),QBrush());
-        else if(setTargetPressed)
-            scene->addEllipse(p.x(),p.y(),5,5,QPen(Qt::blue),QBrush());
+        if(setStartPressed){
+            // Offset the flag
+            p.setX(p.x()-25);
+            p.setY(p.y()-80);
+            startImage->setPos(p);
+            scene->addItem(startImage);
+            //scene->addEllipse(p.x(),p.y(),5,5,QPen(Qt::red),QBrush());
+        }
+        else if(setTargetPressed){
+            // Offset the flag
+            p.setX(p.x()-5);
+            p.setY(p.y()-80);
+            targetImage->setPos(p);
+            scene->addItem(targetImage);
+            //scene->addEllipse(p.x(),p.y(),5,5,QPen(Qt::blue),QBrush());
+        }
 
         // Enable button again
         setStartPressed=false;
