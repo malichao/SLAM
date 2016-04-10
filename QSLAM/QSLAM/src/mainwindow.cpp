@@ -229,6 +229,7 @@ void MainWindow::on_actionSearch_triggered()
 
     using namespace SearchAlgorithms;
     RRTSearch tester;
+    tester.setScale(settingDialog->setting().carScaleRatio);
     std::vector<Point_uint> route;
     tester.searchUsingVehicle(*map,start,target,route);
 

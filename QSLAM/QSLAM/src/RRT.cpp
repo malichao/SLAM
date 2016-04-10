@@ -195,7 +195,7 @@ bool RRTSearch::searchUsingVehicle(  const vector<vector<bool> > &map,
 									 const Point_uint &start,
 									 const Point_uint &target,
 									 vector<Point_uint> &route){
-	Scale =300.0;	// 22 pixels/meter
+    //Scale =300.0;	// 22 pixels/meter
 
 	setTarget(target);
 	setStart(start);
