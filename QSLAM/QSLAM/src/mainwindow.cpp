@@ -96,6 +96,7 @@ void MainWindow::on_actionOpen_triggered()
         return;
 
     scene->clear();
+    lineItems->clear();
 
     mapImage=new QPixmap(fileName);
     backgroundImage =new QGraphicsPixmapItem(*mapImage);
