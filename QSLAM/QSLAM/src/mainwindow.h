@@ -23,6 +23,8 @@ private slots:
 
     void on_buttonSetStart_clicked();
 
+    void on_buttonSetTarget_clicked();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
