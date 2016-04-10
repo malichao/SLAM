@@ -94,12 +94,8 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
             QMessageBox msgBox(QMessageBox::Warning, tr("Warning"),message, 0, this);
             msgBox.addButton(tr("Continue"), QMessageBox::AcceptRole);
             msgBox.exec();
-
             setStartPressed=false;
             setTargetPressed=false;
-            ui->buttonSetStart->setEnabled(true);
-            ui->buttonSetTarget->setEnabled(true);
-            return;
         }
 
         if(setStartPressed){
@@ -108,7 +104,7 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
             p.setY(p.y()-80);
             startImage->setPos(p);
             scene->addItem(startImage);
-            //scene->addEllipse(p.x(),p.y(),5,5,QPen(Qt::red),QBrush());
+            setStartPressed=false;
         }
         else if(setTargetPressed){
             // Offset the flag
@@ -116,7 +112,7 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
             p.setY(p.y()-80);
             targetImage->setPos(p);
             scene->addItem(targetImage);
-            //scene->addEllipse(p.x(),p.y(),5,5,QPen(Qt::blue),QBrush());
+            setTargetPressed=false;
         }
 
         // Enable button again
@@ -124,6 +120,8 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
         setTargetPressed=false;
         ui->buttonSetStart->setEnabled(true);
         ui->buttonSetTarget->setEnabled(true);
+        ui->view->setCursor(Qt::ArrowCursor);
+        return;
     }
 }
 
