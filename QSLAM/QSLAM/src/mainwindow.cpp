@@ -138,6 +138,7 @@ void MainWindow::on_buttonSetTarget_clicked()
     ui->buttonSetTarget->setEnabled(false);
 }
 
+
 void MainWindow::mousePressEvent(QMouseEvent *e)
 {
     if(setStartPressed||setTargetPressed){
@@ -209,6 +210,8 @@ void MainWindow::on_actionSearch_triggered()
     if(map==NULL)
         return;
 
+    ui->actionSearch->setEnabled(false);
+
     using namespace SearchAlgorithms;
     RRTSearch tester;
     std::vector<Point_uint> route;
@@ -223,14 +226,14 @@ void MainWindow::on_actionSearch_triggered()
     }
     lineItems->resize(tester.getLineSize());
 
-
-    QVector<QLine> lines(tester.getLineSize());
     for(size_t i=0;i<tester.getLineSize();i++){
         RRTSearch::Line l=tester.getLine(i);
         (*lineItems)[i]=(new QGraphicsLineItem(l.start.y,l.start.x,l.end.y,l.end.x));
         (*lineItems)[i]->setPen(pen);
         scene->addItem((*lineItems)[i]);
     }
+
+    ui->actionSearch->setEnabled(true);
 }
 
 
