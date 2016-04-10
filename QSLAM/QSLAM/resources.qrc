@@ -6,5 +6,7 @@
     <qresource prefix="/icon">
         <file>resources/start.ico</file>
         <file>resources/target.ico</file>
+        <file>resources/search.ico</file>
+        <file>resources/open.ico</file>
     </qresource>
 </RCC>

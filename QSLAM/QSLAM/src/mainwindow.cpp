@@ -3,6 +3,30 @@
 #include <QtWidgets>
 #include <QHBoxLayout>
 
+#include "RRT.h"
+
+/*
+ * Be careful,in Qt framework the coordinate is like this:
+ *  map[x][y]
+ *  0------->x
+ *  |
+ *  |
+ *  |
+ *  V
+ *  y
+ *
+ * While in my SearchAlgorithms implementation,the coordinate is like this:
+ *  map[x][y]:
+ *  0-------> y
+ *  |
+ *  |
+ *  v
+ *  x
+ *
+ * */
+
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -24,6 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->buttonSetTarget->setIcon(QIcon(":/icon/resources/target.ico"));
     ui->buttonSetStart->setEnabled(false);
     ui->buttonSetTarget->setEnabled(false);
+    ui->actionSearch->setIcon(QIcon(":/icon/resources/search.ico"));
+    ui->actionOpen->setIcon(QIcon(":/icon/resources/open.ico"));
 
     startImage=new QGraphicsPixmapItem(QPixmap(":/image/resources/start.png"));
     targetImage=new QGraphicsPixmapItem(QPixmap(":/image/resources/target.png"));
@@ -45,11 +71,22 @@ void MainWindow::on_actionOpen_triggered()
                   tr("BMP (*.bmp);;JPEG (*.jpg);;All types (*.*)"));
     if(fileName==NULL)
         return;
-    map=new QPixmap(fileName);
-    backgroundImage =new QGraphicsPixmapItem(*map);
+    mapImage=new QPixmap(fileName);
+    backgroundImage =new QGraphicsPixmapItem(*mapImage);
     //backgroundImage->setPos();
     scene->addItem(backgroundImage);
 
+    using namespace std;
+    map=new vector<vector<bool> >(mapImage->height(),vector<bool>(mapImage->width(),true));
+/*
+    //Convert QPixmap to QImage for IO manipulation
+    QImage image=mapImage->toImage();
+    for(size_t i=0;i<mapImage->height();i++)
+        for(size_t j=0;j<image.width();j++){
+            QColor rgb=image.pixel(i,j);  //black 0 white 255
+            (*map)[i][j]= rgb.red()+rgb.green()+rgb.blue() ==255*3 ? true:false;
+        }
+*/
     // Enable the buttons
     ui->buttonSetStart->setEnabled(true);
     ui->buttonSetTarget->setEnabled(true);
@@ -89,7 +126,7 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
         QPointF p=ui->view->mapToScene(p1);
 
         // Sanity Check
-        if((p.x()<0)||(p.x()>map->width())||(p.y()<0)||(p.y()>map->height())){
+        if((p.x()<0)||(p.x()>mapImage->width())||(p.y()<0)||(p.y()>mapImage->height())){
             QString message("Set point must be whithin the map.");
             QMessageBox msgBox(QMessageBox::Warning, tr("Warning"),message, 0, this);
             msgBox.addButton(tr("Continue"), QMessageBox::AcceptRole);

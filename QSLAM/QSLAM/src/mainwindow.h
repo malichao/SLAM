@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QtWidgets>
+#include <vector>
 
 namespace Ui {
 class MainWindow;
@@ -33,12 +34,16 @@ private:
     QGraphicsPixmapItem *backgroundImage;
     QGraphicsPixmapItem *startImage;
     QGraphicsPixmapItem *targetImage;
-    QPixmap *map;
+    QPixmap *mapImage;
     bool setStartPressed;
     bool setTargetPressed;
+    QLabel *coordinateLabel;
+    QPoint start,target;
+
+    std::vector<std::vector<bool> > *map;
+
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void timerEvent(QTimerEvent *event);
-    QLabel *coordinateLabel;
 };
 
 #endif // MAINWINDOW_H
