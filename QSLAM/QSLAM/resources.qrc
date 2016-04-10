@@ -2,6 +2,7 @@
     <qresource prefix="/image">
         <file>resources/start.png</file>
         <file>resources/target.png</file>
+        <file>resources/car.png</file>
     </qresource>
     <qresource prefix="/icon">
         <file>resources/start.ico</file>
@@ -9,5 +10,6 @@
         <file>resources/search.ico</file>
         <file>resources/open.ico</file>
         <file>resources/nascar_racing_car.ico</file>
+        <file>resources/wrench.ico</file>
     </qresource>
 </RCC>

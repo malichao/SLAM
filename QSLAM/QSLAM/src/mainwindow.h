@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QtWidgets>
+#include "settingdialog.h"
+
 #include <vector>
 #include "RRT.h"
 
@@ -37,6 +39,8 @@ private:
     QGraphicsPixmapItem *backgroundImage;
     QGraphicsPixmapItem *startImage;
     QGraphicsPixmapItem *targetImage;
+    QGraphicsPixmapItem *carImage;
+    double carImageScale;
     QPixmap *mapImage;
     bool setStartPressed;
     bool setTargetPressed;
@@ -48,6 +52,8 @@ private:
 
     std::vector<std::vector<bool> > *map;
     QVector<QGraphicsLineItem*> *lineItems;
+
+    SettingDialog *settingDialog;
 
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void timerEvent(QTimerEvent *event);

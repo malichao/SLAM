@@ -6,6 +6,7 @@ SettingDialog::SettingDialog(QWidget *parent) :
     ui(new Ui::SettingDialog)
 {
     ui->setupUi(this);
+    this->setWindowIcon(QIcon(":/icon/resources/wrench.ico"));
     currentSettings.carScaleRatio=300;
 }
 

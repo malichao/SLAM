@@ -3,6 +3,7 @@
 #include <QtWidgets>
 #include <QHBoxLayout>
 
+
 #include "RRT.h"
 
 /*
@@ -61,6 +62,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->setWindowIcon(QIcon(":/icon/resources/nascar_racing_car.ico"));
 
+    ui->actionSetting->setIcon(QIcon(":/icon/resources/wrench.ico"));
+    settingDialog=new SettingDialog();
+
     lineItems=new QVector<QGraphicsLineItem*>();
 
     coordinateLabel=new QLabel(this);
@@ -111,6 +115,9 @@ void MainWindow::on_actionOpen_triggered()
     ui->buttonSetTarget->setEnabled(true);
     startImage=new QGraphicsPixmapItem(QPixmap(":/image/resources/start.png"));
     targetImage=new QGraphicsPixmapItem(QPixmap(":/image/resources/target.png"));
+    carImage=new QGraphicsPixmapItem(QPixmap(":/image/resources/car.png"));
+    carImageScale=settingDialog->setting().carScaleRatio/584.0;
+    carImage->setScale(carImageScale);
 
     renewStart=false;
     renewTarget=false;
@@ -120,7 +127,10 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_actionSetting_triggered()
 {
-
+    settingDialog->exec();
+    carImageScale=settingDialog->setting().carScaleRatio/584.0;
+    carImage->setScale(carImageScale);
+    scene->addItem(carImage);
 }
 
 void MainWindow::on_buttonSetStart_clicked()
@@ -169,6 +179,8 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
             p.setY(p.y()-80);
             startImage->setPos(p);
             scene->addItem(startImage);
+            carImage->setPos(start.y-129*carImageScale,start.x-292*carImageScale);
+            scene->addItem(carImage);
             setStartPressed=false;
             renewStart=true;
         }

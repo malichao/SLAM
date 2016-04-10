@@ -32,6 +32,7 @@ class Ui_MainWindow
 public:
     QAction *actionOpen;
     QAction *actionSearch;
+    QAction *actionSetting;
     QWidget *centralWidget;
     QGridLayout *gridLayout;
     QGridLayout *layoutTop;
@@ -54,6 +55,8 @@ public:
         actionOpen->setObjectName(QStringLiteral("actionOpen"));
         actionSearch = new QAction(MainWindow);
         actionSearch->setObjectName(QStringLiteral("actionSearch"));
+        actionSetting = new QAction(MainWindow);
+        actionSetting->setObjectName(QStringLiteral("actionSetting"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         centralWidget->setEnabled(true);
@@ -117,8 +120,10 @@ public:
         menuBar->addAction(menuAction->menuAction());
         menuFile->addAction(actionOpen);
         menuAction->addAction(actionSearch);
+        menuAction->addAction(actionSetting);
         mainToolBar->addAction(actionOpen);
         mainToolBar->addAction(actionSearch);
+        mainToolBar->addAction(actionSetting);
 
         retranslateUi(MainWindow);
 
@@ -130,6 +135,7 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "SLAM Simulator", 0));
         actionOpen->setText(QApplication::translate("MainWindow", "Open", 0));
         actionSearch->setText(QApplication::translate("MainWindow", "Search", 0));
+        actionSetting->setText(QApplication::translate("MainWindow", "Setting", 0));
         buttonSetTarget->setText(QApplication::translate("MainWindow", "Set Target", 0));
         buttonSetStart->setText(QApplication::translate("MainWindow", "Set Start", 0));
         menuFile->setTitle(QApplication::translate("MainWindow", "File", 0));
