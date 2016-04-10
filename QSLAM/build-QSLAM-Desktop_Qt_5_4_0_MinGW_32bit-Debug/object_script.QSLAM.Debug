@@ -10,6 +10,8 @@ INPUT(
 ./debug/PrintCharMap.o
 ./debug/RRT.o
 ./debug/Vehicle.o
+./debug/settingdialog.o
 ./debug/qrc_resources.o
 ./debug/moc_mainwindow.o
+./debug/moc_settingdialog.o
 );

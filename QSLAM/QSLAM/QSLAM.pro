@@ -22,7 +22,8 @@ SOURCES += src/main.cpp \
     src/Point.cpp \
     src/PrintCharMap.cpp \
     src/RRT.cpp \
-    src/Vehicle.cpp
+    src/Vehicle.cpp \
+    settingdialog.cpp
 
 HEADERS  += src/mainwindow.h \
     src/AStar.h \
@@ -33,9 +34,11 @@ HEADERS  += src/mainwindow.h \
     src/Point.h \
     src/PrintCharMap.h \
     src/RRT.h \
-    src/Vehicle.h
+    src/Vehicle.h \
+    settingdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    settingdialog.ui
 
 RESOURCES += \
     resources.qrc
