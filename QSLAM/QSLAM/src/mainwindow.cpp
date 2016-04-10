@@ -35,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     scene= new QGraphicsScene();
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
+    scene->setBackgroundBrush(QBrush(QColor(237,237,237)));
+    //scene->setBackgroundBrush(QBrush(QColor(195,195,195)));
 
     ui->view->setScene(scene);
     ui->view->setRenderHint(QPainter::Antialiasing);
