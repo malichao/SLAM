@@ -61,6 +61,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->setWindowIcon(QIcon(":/icon/resources/nascar_racing_car.ico"));
 
+    lineItems=new QVector<QGraphicsLineItem*>();
+
     coordinateLabel=new QLabel(this);
     //coordinateLabel->setAlignment(Qt::AlignLeft);
     ui->statusBar->addPermanentWidget(coordinateLabel);
@@ -215,14 +217,20 @@ void MainWindow::on_actionSearch_triggered()
     QPen pen(1);
     pen.setColor(QColor(0,162,232));
 
-    QPainter painter;
-    QVector<QLine> lines(route.size());
+    // First clear the last result in the scene
+    for(int i=0;i<lineItems->size();i++){
+        scene->removeItem((*lineItems)[i]);
+    }
+    lineItems->resize(tester.getLineSize());
+
+
+    QVector<QLine> lines(tester.getLineSize());
     for(size_t i=0;i<tester.getLineSize();i++){
         RRTSearch::Line l=tester.getLine(i);
-        lines.append(QLine(l.start.y,l.start.x,l.end.y,l.end.x));
-        scene->addLine(lines[i],pen);
+        (*lineItems)[i]=(new QGraphicsLineItem(l.start.y,l.start.x,l.end.y,l.end.x));
+        (*lineItems)[i]->setPen(pen);
+        scene->addItem((*lineItems)[i]);
     }
-    painter.drawLines(lines);
 }
 
 

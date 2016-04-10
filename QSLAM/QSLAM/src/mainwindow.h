@@ -47,6 +47,7 @@ private:
     bool renewTarget;
 
     std::vector<std::vector<bool> > *map;
+    QVector<QGraphicsLineItem*> *lineItems;
 
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void timerEvent(QTimerEvent *event);
