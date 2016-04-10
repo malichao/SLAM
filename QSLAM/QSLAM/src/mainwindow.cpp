@@ -155,6 +155,9 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
         }
 
         if(setStartPressed){
+            start.y=p.x();
+            start.x=p.y();
+
             // Offset the flag
             p.setX(p.x()-25);
             p.setY(p.y()-80);
@@ -164,6 +167,9 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
             renewStart=true;
         }
         else if(setTargetPressed){
+            target.y=p.x();
+            target.x=p.y();
+
             // Offset the flag
             p.setX(p.x()-5);
             p.setY(p.y()-80);
@@ -194,4 +200,35 @@ void MainWindow::timerEvent(QTimerEvent *event)
     coordinateLabel->setText(s);
 
 }
+
+
+void MainWindow::on_actionSearch_triggered()
+{
+    if(map==NULL)
+        return;
+
+    using namespace SearchAlgorithms;
+    RRTSearch tester;
+    std::vector<Point_uint> route;
+    tester.searchUsingVehicle(*map,start,target,route);
+
+    QPen pen(1);
+    pen.setColor(QColor(0,162,232));
+
+    QPainter painter;
+    QVector<QLine> lines(route.size());
+    for(size_t i=0;i<tester.getLineSize();i++){
+        RRTSearch::Line l=tester.getLine(i);
+        lines.append(QLine(l.start.y,l.start.x,l.end.y,l.end.x));
+        scene->addLine(lines[i],pen);
+    }
+    painter.drawLines(lines);
+}
+
+
+
+
+
+
+
 

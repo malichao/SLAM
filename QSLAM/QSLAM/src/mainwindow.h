@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QtWidgets>
 #include <vector>
+#include "RRT.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,6 +27,8 @@ private slots:
 
     void on_buttonSetTarget_clicked();
 
+    void on_actionSearch_triggered();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
@@ -38,7 +41,7 @@ private:
     bool setStartPressed;
     bool setTargetPressed;
     QLabel *coordinateLabel;
-    QPoint start,target;
+    SearchAlgorithms::Point_uint start,target;
     bool renewSetPoint;
     bool renewStart;
     bool renewTarget;
