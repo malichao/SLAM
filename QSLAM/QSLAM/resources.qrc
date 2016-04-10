@@ -8,5 +8,6 @@
         <file>resources/target.ico</file>
         <file>resources/search.ico</file>
         <file>resources/open.ico</file>
+        <file>resources/nascar_racing_car.ico</file>
     </qresource>
 </RCC>

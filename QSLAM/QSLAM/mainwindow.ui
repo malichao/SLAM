@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>SLAM Simulator</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="enabled">

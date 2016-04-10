@@ -39,6 +39,9 @@ private:
     bool setTargetPressed;
     QLabel *coordinateLabel;
     QPoint start,target;
+    bool renewSetPoint;
+    bool renewStart;
+    bool renewTarget;
 
     std::vector<std::vector<bool> > *map;
 

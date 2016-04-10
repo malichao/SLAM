@@ -12,7 +12,7 @@
  *  |
  *  |
  *  |
- *  V
+ *  v
  *  y
  *
  * While in my SearchAlgorithms implementation,the coordinate is like this:
@@ -48,11 +48,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->buttonSetTarget->setIcon(QIcon(":/icon/resources/target.ico"));
     ui->buttonSetStart->setEnabled(false);
     ui->buttonSetTarget->setEnabled(false);
+
     ui->actionSearch->setIcon(QIcon(":/icon/resources/search.ico"));
     ui->actionOpen->setIcon(QIcon(":/icon/resources/open.ico"));
+    ui->actionSearch->setEnabled(false);
+    renewSetPoint=false;
 
     startImage=new QGraphicsPixmapItem(QPixmap(":/image/resources/start.png"));
     targetImage=new QGraphicsPixmapItem(QPixmap(":/image/resources/target.png"));
+
+    this->setWindowIcon(QIcon(":/icon/resources/nascar_racing_car.ico"));
 
     coordinateLabel=new QLabel(this);
     //coordinateLabel->setAlignment(Qt::AlignLeft);
@@ -63,6 +68,13 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete scene;
+    delete backgroundImage;
+    delete startImage;
+    delete targetImage;
+    delete mapImage;
+    delete coordinateLabel;
+    delete map;
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -78,20 +90,25 @@ void MainWindow::on_actionOpen_triggered()
 
     using namespace std;
     map=new vector<vector<bool> >(mapImage->height(),vector<bool>(mapImage->width(),true));
-/*
+
     //Convert QPixmap to QImage for IO manipulation
     QImage image=mapImage->toImage();
-    for(size_t i=0;i<mapImage->height();i++)
-        for(size_t j=0;j<image.width();j++){
+    for(size_t i=0;i<mapImage->width();i++)
+        for(size_t j=0;j<image.height();j++){
             QColor rgb=image.pixel(i,j);  //black 0 white 255
-            (*map)[i][j]= rgb.red()+rgb.green()+rgb.blue() ==255*3 ? true:false;
+            (*map)[j][i]= rgb.red()+rgb.green()+rgb.blue() ==255*3 ? true:false;
         }
-*/
+
     // Enable the buttons
     ui->buttonSetStart->setEnabled(true);
     ui->buttonSetTarget->setEnabled(true);
     scene->removeItem(startImage);
     scene->removeItem(targetImage);
+
+    renewStart=false;
+    renewTarget=false;
+    renewSetPoint=renewStart&renewTarget;
+    ui->actionSearch->setEnabled(renewSetPoint);
 }
 
 void MainWindow::on_actionSetting_triggered()
@@ -142,6 +159,7 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
             startImage->setPos(p);
             scene->addItem(startImage);
             setStartPressed=false;
+            renewStart=true;
         }
         else if(setTargetPressed){
             // Offset the flag
@@ -150,7 +168,11 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
             targetImage->setPos(p);
             scene->addItem(targetImage);
             setTargetPressed=false;
+            renewTarget=true;
         }
+
+        renewSetPoint=renewStart&renewTarget;
+        ui->actionSearch->setEnabled(renewSetPoint);
 
         // Enable button again
         setStartPressed=false;
