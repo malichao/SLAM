@@ -16,8 +16,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->view->setRenderHint(QPainter::Antialiasing);
     ui->view->setCacheMode(QGraphicsView::CacheBackground);
     ui->view->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-    ui->view->setDragMode(QGraphicsView::ScrollHandDrag);
+    //ui->view->setDragMode(QGraphicsView::ScrollHandDrag);
 
+    setStartPressed=false;
+    setTargetPressed=false;
 }
 
 MainWindow::~MainWindow()
@@ -34,9 +36,17 @@ void MainWindow::on_actionOpen_triggered()
     map=new QPixmap(fileName);
     backgroundImage =new QGraphicsPixmapItem(*map);
     scene->addItem(backgroundImage);
+
 }
 
 void MainWindow::on_actionSetting_triggered()
 {
 
+}
+
+void MainWindow::on_buttonSetStart_clicked()
+{
+    if(!setStartPressed)
+        setStartPressed=true;
+    ui->view->setCursor(Qt::PointingHandCursor);
 }

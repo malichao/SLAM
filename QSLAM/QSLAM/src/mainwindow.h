@@ -21,6 +21,8 @@ private slots:
 
     void on_actionSetting_triggered();
 
+    void on_buttonSetStart_clicked();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
@@ -28,6 +30,8 @@ private:
     QScrollArea *scrollArea;
     QGraphicsPixmapItem *backgroundImage;
     QPixmap *map;
+    bool setStartPressed;
+    bool setTargetPressed;
 
 };
 
