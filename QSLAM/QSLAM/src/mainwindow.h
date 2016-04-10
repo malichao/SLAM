@@ -32,7 +32,9 @@ private:
     QPixmap *map;
     bool setStartPressed;
     bool setTargetPressed;
-
+    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void timerEvent(QTimerEvent *event);
+    QLabel *coordinateLabel;
 };
 
 #endif // MAINWINDOW_H
