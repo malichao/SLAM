@@ -53,6 +53,8 @@ void MainWindow::on_actionOpen_triggered()
     // Enable the buttons
     ui->buttonSetStart->setEnabled(true);
     ui->buttonSetTarget->setEnabled(true);
+    scene->removeItem(startImage);
+    scene->removeItem(targetImage);
 }
 
 void MainWindow::on_actionSetting_triggered()
