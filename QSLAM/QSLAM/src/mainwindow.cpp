@@ -87,6 +87,9 @@ void MainWindow::on_actionOpen_triggered()
                   tr("BMP (*.bmp);;JPEG (*.jpg);;All types (*.*)"));
     if(fileName==NULL)
         return;
+
+    scene->clear();
+
     mapImage=new QPixmap(fileName);
     backgroundImage =new QGraphicsPixmapItem(*mapImage);
     //backgroundImage->setPos();
@@ -106,8 +109,8 @@ void MainWindow::on_actionOpen_triggered()
     // Enable the buttons
     ui->buttonSetStart->setEnabled(true);
     ui->buttonSetTarget->setEnabled(true);
-    scene->removeItem(startImage);
-    scene->removeItem(targetImage);
+    startImage=new QGraphicsPixmapItem(QPixmap(":/image/resources/start.png"));
+    targetImage=new QGraphicsPixmapItem(QPixmap(":/image/resources/target.png"));
 
     renewStart=false;
     renewTarget=false;
