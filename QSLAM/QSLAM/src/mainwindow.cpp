@@ -65,6 +65,12 @@ void MainWindow::mousePressEvent(QMouseEvent *e)
         QPoint p1=ui->view->mapFromGlobal(QCursor::pos());
         QPointF p=ui->view->mapToScene(p1);
         if((p.x()<0)||(p.x()>map->width())||(p.y()<0)||(p.y()>map->height())){
+            QString message("Set point must be whithin the map.");
+            QMessageBox msgBox(QMessageBox::Warning, tr("Warning"),message, 0, this);
+            //msgBox.setDetailedText(message);
+            msgBox.addButton(tr("Continue"), QMessageBox::AcceptRole);
+            msgBox.exec();
+
             ui->buttonSetStart->setEnabled(true);
             return;
         }
