@@ -155,8 +155,8 @@ bool RRTSearch::search(const vector<vector<bool> > &map,vector<Point_uint > &rou
 }
 
 void RRTSearch::generateRoute(vector<Point_uint> &route,Node n){
-    auto begin1=route.end()-1;
-    auto begin2=Route.end()-1;
+    //auto begin1=route.begin();
+    //auto begin2=Route.end()-1;
 	do{
         Route.push_back(n);     //Route contains complete vehicle infos
         route.push_back(n.val); // Contains only x,y data
@@ -164,8 +164,8 @@ void RRTSearch::generateRoute(vector<Point_uint> &route,Node n){
 	}while(n.prev!=0);
 	route.push_back(n.val);	// n.prev->Start;
 	route.push_back(Start);
-    std::reverse(begin1,route.end());
-    std::reverse(begin2,Route.end());
+    std::reverse(route.begin(),route.end());
+    std::reverse(Route.begin(),Route.end());
 }
 
 void RRTSearch::getRoute(vector<Node> &route){

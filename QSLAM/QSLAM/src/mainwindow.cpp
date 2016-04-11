@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <math.h>
 #include <QtWidgets>
 #include <QHBoxLayout>
 
@@ -226,7 +227,8 @@ void MainWindow::timerEvent(QTimerEvent *event)
     if(driveAnimationFlag){
         if(animationCount++>animationPeriod){
             animationCount=0;
-            if(driveAnimationIndex==animationRoute.size()){
+            qDebug()<<"tick"<<endl;
+            if(driveAnimationIndex>=animationRoute.size()){
                 driveAnimationFlag=false;
                 return;
             }
@@ -234,10 +236,33 @@ void MainWindow::timerEvent(QTimerEvent *event)
             int i=driveAnimationIndex;
             double x=animationRoute[i].val.y-129*carImageScale;
             double y=animationRoute[i].val.x-292*carImageScale;
+            //carImage->setRotation(animationRoute[i].state.orientation*360/3.14);
+            //carImage->setPos(x,y);
+
+            /*
+            carImage->setPos(0,0);
+            carImage->setTransformOriginPoint(129*carImageScale,292*carImageScale);
+            carImage->setRotation(-animationRoute[i].state.orientation*180/3.14);
             carImage->setPos(x,y);
-            carImage->setRotation(animationRoute[i].state.orientation);
+            */
+
+            QTransform rotate_disc;
+            rotate_disc.translate(129*carImageScale, 292*carImageScale);
+            rotate_disc.rotate(-animationRoute[i].state.orientation*180/3.14);
+            rotate_disc.translate(-129*carImageScale , -292*carImageScale);
+            carImage->setTransform(rotate_disc);
+            carImage->setPos(x,y);
+            /*
+            QPointF c=carImage->mapToScene(x,y);
+            carImage->setRotation(animationRoute[i].state.orientation*180/3.14);
+            QPointF cNew=carImage->mapToScene(x,y);
+            QPointF offset=c-cNew;
+            carImage->moveBy(offset.x(),offset.y());
+            */
             scene->addItem(carImage);
-             qDebug()<<"index="<<driveAnimationIndex<<endl;
+
+            driveAnimationIndex+=4;// Speed up
+             qDebug()<<"orien="<<animationRoute[i].state.orientation<<endl;
         }
     }
 
@@ -299,7 +324,7 @@ void MainWindow::on_actionDrive_triggered()
     driveAnimationFlag=true;
     driveAnimationIndex=0;
     animationCount=0;
-    animationPeriod=100;
+    animationPeriod=1;
     qDebug()<<"start animation"<<endl;
     qDebug()<<"Route length="<<animationRoute.size()<<endl;
 }
