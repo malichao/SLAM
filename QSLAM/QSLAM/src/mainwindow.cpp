@@ -67,6 +67,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionSetting->setIcon(QIcon(":/icon/resources/wrench.ico"));
     settingDialog=new SettingDialog();
 
+    driveAnimationFlag=false;
+
     coordinateLabel=new QLabel(this);
     //coordinateLabel->setAlignment(Qt::AlignLeft);
     ui->statusBar->addPermanentWidget(coordinateLabel);
@@ -220,6 +222,25 @@ void MainWindow::timerEvent(QTimerEvent *event)
     QString s="("+QString::number(p.x(),'f',3)+","+QString::number(p.y(),'f',3)+")";
     coordinateLabel->setText(s);
 
+    //Show animation
+    if(driveAnimationFlag){
+        if(animationCount++>animationPeriod){
+            animationCount=0;
+            if(driveAnimationIndex==animationRoute.size()){
+                driveAnimationFlag=false;
+                return;
+            }
+
+            int i=driveAnimationIndex;
+            double x=animationRoute[i].val.y-129*carImageScale;
+            double y=animationRoute[i].val.x-292*carImageScale;
+            carImage->setPos(x,y);
+            carImage->setRotation(animationRoute[i].state.orientation);
+            scene->addItem(carImage);
+             qDebug()<<"index="<<driveAnimationIndex<<endl;
+        }
+    }
+
 }
 
 
@@ -235,6 +256,8 @@ void MainWindow::on_actionSearch_triggered()
     tester.setScale(settingDialog->setting().carScaleRatio);
     route.resize(0);
     tester.searchUsingVehicle(map,start,target,route);
+    animationRoute.clear();
+    tester.getRoute(animationRoute);
 
     QPen pen(1);
     pen.setColor(QColor(0,162,232));
@@ -268,6 +291,18 @@ void MainWindow::on_actionSearch_triggered()
     ui->actionDrive->setEnabled(true);
 }
 
+
+void MainWindow::on_actionDrive_triggered()
+{
+    if(driveAnimationFlag==true)//Already driving
+        return;
+    driveAnimationFlag=true;
+    driveAnimationIndex=0;
+    animationCount=0;
+    animationPeriod=100;
+    qDebug()<<"start animation"<<endl;
+    qDebug()<<"Route length="<<animationRoute.size()<<endl;
+}
 
 
 

@@ -30,6 +30,7 @@ public:
 		Node():val(Point_uint(0,0)),prev(0){}
 		Node(Point_uint &v,size_t p):val(v),prev(p){}
 		Node(const Point_uint &v,size_t p,const Vehicle::VehicleState &vs):val(v),prev(p),state(vs){}
+
 		Point_uint val;
 		size_t prev;
 
@@ -57,8 +58,11 @@ public:
 	double getScale() const {return Scale;}
 	void setScale(const double s) { Scale=s;}
 
+    void getRoute(vector<Node> &route);
+
 private:
 	vector<Node> Nodes;
+    vector<Node> Route;
 	size_t MaxSearchTime;
 	unsigned int Epsilon;
 	double Scale;	// pixels/meter

@@ -31,6 +31,8 @@ private slots:
 
     void on_actionSearch_triggered();
 
+    void on_actionDrive_triggered();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
@@ -53,6 +55,12 @@ private:
     std::vector<std::vector<bool> > map;
     QVector<QGraphicsLineItem*> lineItems;
     std::vector<SearchAlgorithms::Point_uint> route;
+    std::vector<SearchAlgorithms::RRTSearch::Node> animationRoute;
+
+    bool driveAnimationFlag;
+    int driveAnimationIndex;
+    int animationCount;
+    int animationPeriod;
 
     SettingDialog *settingDialog;
 
