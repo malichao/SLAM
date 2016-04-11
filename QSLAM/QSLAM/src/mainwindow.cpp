@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->actionSearch->setIcon(QIcon(":/icon/resources/search.ico"));
     ui->actionOpen->setIcon(QIcon(":/icon/resources/open.ico"));
-    ui->actionDrive->setIcon(QIcon(":/icon/resources/sedan.ico"));
+    ui->actionDrive->setIcon(QIcon(":/icon/resources/drive.ico"));
     ui->actionSearch->setEnabled(false);
     ui->actionDrive->setEnabled(false);
     renewSetPoint=false;
