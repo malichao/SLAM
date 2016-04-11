@@ -1,0 +1,17 @@
+INPUT(
+./debug/main.o
+./debug/mainwindow.o
+./debug/AStar.o
+./debug/BFS.o
+./debug/car.o
+./debug/DPSearch.o
+./debug/MapSearch.o
+./debug/Point.o
+./debug/PrintCharMap.o
+./debug/RRT.o
+./debug/Vehicle.o
+./debug/settingdialog.o
+./debug/qrc_resources.o
+./debug/moc_mainwindow.o
+./debug/moc_settingdialog.o
+);

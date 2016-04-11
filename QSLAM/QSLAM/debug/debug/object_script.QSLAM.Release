@@ -1,0 +1,17 @@
+INPUT(
+./release/main.o
+./release/mainwindow.o
+./release/AStar.o
+./release/BFS.o
+./release/car.o
+./release/DPSearch.o
+./release/MapSearch.o
+./release/Point.o
+./release/PrintCharMap.o
+./release/RRT.o
+./release/Vehicle.o
+./release/settingdialog.o
+./release/qrc_resources.o
+./release/moc_mainwindow.o
+./release/moc_settingdialog.o
+);
