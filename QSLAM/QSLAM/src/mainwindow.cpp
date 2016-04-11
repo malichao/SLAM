@@ -246,7 +246,7 @@ void MainWindow::timerEvent(QTimerEvent *event)
 
             scene->addItem(carImage);
 
-            driveAnimationIndex+=1;// Speed up
+            driveAnimationIndex+=2;// Speed up
              qDebug()<<"orien="<<animationRoute[i].state.orientation<<endl;
         }
     }
