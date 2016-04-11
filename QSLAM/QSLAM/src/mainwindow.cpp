@@ -67,9 +67,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionSetting->setIcon(QIcon(":/icon/resources/wrench.ico"));
     settingDialog=new SettingDialog();
 
-
-    lineItems=new QVector<QGraphicsLineItem*>();
-
     coordinateLabel=new QLabel(this);
     //coordinateLabel->setAlignment(Qt::AlignLeft);
     ui->statusBar->addPermanentWidget(coordinateLabel);
@@ -85,7 +82,6 @@ MainWindow::~MainWindow()
     delete targetImage;
     delete mapImage;
     delete coordinateLabel;
-    delete map;
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -96,7 +92,7 @@ void MainWindow::on_actionOpen_triggered()
         return;
 
     scene->clear();
-    lineItems->clear();
+    lineItems.clear();
 
     mapImage=new QPixmap(fileName);
     backgroundImage =new QGraphicsPixmapItem(*mapImage);
@@ -104,15 +100,17 @@ void MainWindow::on_actionOpen_triggered()
     scene->addItem(backgroundImage);
 
     using namespace std;
-    map=new vector<vector<bool> >(mapImage->height(),vector<bool>(mapImage->width(),true));
-
+    map.resize(mapImage->height());
+    for(auto &m:map)
+        m=vector<bool> (mapImage->width(),true);
     //Convert QPixmap to QImage for IO manipulation
     QImage image=mapImage->toImage();
-    for(size_t i=0;i<mapImage->width();i++)
+    for(size_t i=0;i<mapImage->width();i++){
         for(size_t j=0;j<image.height();j++){
             QColor rgb=image.pixel(i,j);  //black 0 white 255
-            (*map)[j][i]= rgb.red()+rgb.green()+rgb.blue() ==255*3 ? true:false;
+            map[j][i]= rgb.red()+rgb.green()+rgb.blue() ==255*3 ? true:false;
         }
+    }
 
     // Enable the buttons
     ui->buttonSetStart->setEnabled(true);
@@ -227,7 +225,7 @@ void MainWindow::timerEvent(QTimerEvent *event)
 
 void MainWindow::on_actionSearch_triggered()
 {
-    if(map==NULL)
+    if(map.empty())
         return;
 
     ui->actionSearch->setEnabled(false);
@@ -235,34 +233,34 @@ void MainWindow::on_actionSearch_triggered()
     using namespace SearchAlgorithms;
     RRTSearch tester;
     tester.setScale(settingDialog->setting().carScaleRatio);
-    std::vector<Point_uint> route;
-    tester.searchUsingVehicle(*map,start,target,route);
+    route.resize(0);
+    tester.searchUsingVehicle(map,start,target,route);
 
     QPen pen(1);
     pen.setColor(QColor(0,162,232));
 
     // First clear the last result in the scene
-    for(int i=0;i<lineItems->size();i++){
-        scene->removeItem((*lineItems)[i]);
+    for(int i=0;i<lineItems.size();i++){
+        scene->removeItem(lineItems[i]);
     }
-    lineItems->resize(tester.getLineSize()+route.size());
+    lineItems.resize(tester.getLineSize()+route.size());
 
     // First draw all the search attempts
     for(size_t i=0;i<tester.getLineSize();i++){
         RRTSearch::Line l=tester.getLine(i);
-        (*lineItems)[i]=(new QGraphicsLineItem(l.start.y,l.start.x,l.end.y,l.end.x));
-        (*lineItems)[i]->setPen(pen);
-        scene->addItem((*lineItems)[i]);
+        lineItems[i]=(new QGraphicsLineItem(l.start.y,l.start.x,l.end.y,l.end.x));
+        lineItems[i]->setPen(pen);
+        scene->addItem(lineItems[i]);
     }
 
     // Then draw the driving route
     pen.setWidth(2);
     pen.setColor(QColor(163,73,164));
     Point_uint prev=route[0];
-    for(size_t i=1,j=tester.getLineSize();i<route.size();i++){
-        (*lineItems)[j+i]=(new QGraphicsLineItem(prev.y,prev.x,route[i].y,route[i].x));
-        (*lineItems)[j+i]->setPen(pen);
-        scene->addItem((*lineItems)[j+i]);
+    for(size_t i=1,j=tester.getLineSize();i<route.size()-1;i++){
+        lineItems[j+i]=(new QGraphicsLineItem(prev.y,prev.x,route[i].y,route[i].x));
+        lineItems[j+i]->setPen(pen);
+        scene->addItem(lineItems[j+i]);
         prev=route[i];
     }
 

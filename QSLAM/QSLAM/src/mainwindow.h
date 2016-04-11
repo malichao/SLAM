@@ -50,8 +50,9 @@ private:
     bool renewStart;
     bool renewTarget;
 
-    std::vector<std::vector<bool> > *map;
-    QVector<QGraphicsLineItem*> *lineItems;
+    std::vector<std::vector<bool> > map;
+    QVector<QGraphicsLineItem*> lineItems;
+    std::vector<SearchAlgorithms::Point_uint> route;
 
     SettingDialog *settingDialog;
 
