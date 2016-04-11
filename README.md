@@ -18,7 +18,7 @@ This is a GUI program for visualizing the SLAM algorithms,here are the current p
 -Driving animation
   
 Here are some test results:  
-![alt tag](doc/snapshot1.jpg)   
+![alt tag](QSLAM/doc/snapshot1.jpg)   
     
 =====  
     
