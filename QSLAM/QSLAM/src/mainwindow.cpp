@@ -73,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
     coordinateLabel=new QLabel(this);
     //coordinateLabel->setAlignment(Qt::AlignLeft);
     ui->statusBar->addPermanentWidget(coordinateLabel);
-    startTimer(50);
+    startTimer(20);
 }
 
 MainWindow::~MainWindow()
@@ -225,7 +225,7 @@ void MainWindow::timerEvent(QTimerEvent *event)
 
     //Show animation
     if(driveAnimationFlag){
-        if(animationCount++>animationPeriod){
+        if(animationCount++>=animationPeriod){
             animationCount=0;
             qDebug()<<"tick"<<endl;
             if(driveAnimationIndex>=animationRoute.size()){
@@ -236,15 +236,6 @@ void MainWindow::timerEvent(QTimerEvent *event)
             int i=driveAnimationIndex;
             double x=animationRoute[i].val.y-129*carImageScale;
             double y=animationRoute[i].val.x-292*carImageScale;
-            //carImage->setRotation(animationRoute[i].state.orientation*360/3.14);
-            //carImage->setPos(x,y);
-
-            /*
-            carImage->setPos(0,0);
-            carImage->setTransformOriginPoint(129*carImageScale,292*carImageScale);
-            carImage->setRotation(-animationRoute[i].state.orientation*180/3.14);
-            carImage->setPos(x,y);
-            */
 
             QTransform rotate_disc;
             rotate_disc.translate(129*carImageScale, 292*carImageScale);
@@ -252,16 +243,10 @@ void MainWindow::timerEvent(QTimerEvent *event)
             rotate_disc.translate(-129*carImageScale , -292*carImageScale);
             carImage->setTransform(rotate_disc);
             carImage->setPos(x,y);
-            /*
-            QPointF c=carImage->mapToScene(x,y);
-            carImage->setRotation(animationRoute[i].state.orientation*180/3.14);
-            QPointF cNew=carImage->mapToScene(x,y);
-            QPointF offset=c-cNew;
-            carImage->moveBy(offset.x(),offset.y());
-            */
+
             scene->addItem(carImage);
 
-            driveAnimationIndex+=4;// Speed up
+            driveAnimationIndex+=1;// Speed up
              qDebug()<<"orien="<<animationRoute[i].state.orientation<<endl;
         }
     }
