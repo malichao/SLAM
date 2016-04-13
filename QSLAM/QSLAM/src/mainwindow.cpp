@@ -73,6 +73,9 @@ MainWindow::MainWindow(QWidget *parent) :
     coordinateLabel=new QLabel(this);
     //coordinateLabel->setAlignment(Qt::AlignLeft);
     ui->statusBar->addPermanentWidget(coordinateLabel);
+
+    // Set up a timer for updating the coordinate infos on status bar,as well as
+    // playing animation
     startTimer(20);
 }
 
@@ -87,6 +90,9 @@ MainWindow::~MainWindow()
     delete coordinateLabel;
 }
 
+// Function for opening a map file.After opening the file,we must convert the
+// bitmap to bool map.Qt framework only acts as a GUI tool,all the searching
+// algorithms and computing are purely written in C++ for portability.
 void MainWindow::on_actionOpen_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this,tr("Open Map"), "",
@@ -131,6 +137,7 @@ void MainWindow::on_actionOpen_triggered()
     ui->actionDrive->setEnabled(renewSetPoint);
 }
 
+// Function for setting different simulation paremeters
 void MainWindow::on_actionSetting_triggered()
 {
     settingDialog->exec();
@@ -139,6 +146,9 @@ void MainWindow::on_actionSetting_triggered()
     scene->addItem(carImage);
 }
 
+
+// Funtion for setting the start point on the map.Aftering clicking this button,
+// the corresponding implementation code is enabled in mousePressEvent.
 void MainWindow::on_buttonSetStart_clicked()
 {
     if(!setStartPressed)
@@ -148,6 +158,8 @@ void MainWindow::on_buttonSetStart_clicked()
     ui->buttonSetTarget->setEnabled(false);
 }
 
+// Funtion for setting the target point on the map.Aftering clicking this button,
+// the corresponding implementation code is enabled in mousePressEvent.
 void MainWindow::on_buttonSetTarget_clicked()
 {
     if(!setTargetPressed)
@@ -157,7 +169,8 @@ void MainWindow::on_buttonSetTarget_clicked()
     ui->buttonSetTarget->setEnabled(false);
 }
 
-
+// Mouse left click event for dealing with start/target setting. The code checks if
+// the mouse position is legal and then place an icon on the map.
 void MainWindow::mousePressEvent(QMouseEvent *e)
 {
     if(setStartPressed||setTargetPressed){
