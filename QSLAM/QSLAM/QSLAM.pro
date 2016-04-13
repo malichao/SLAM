@@ -23,7 +23,7 @@ SOURCES += src/main.cpp \
     src/PrintCharMap.cpp \
     src/RRT.cpp \
     src/Vehicle.cpp \
-    settingdialog.cpp
+    src/settingdialog.cpp
 
 HEADERS  += src/mainwindow.h \
     src/AStar.h \
@@ -35,7 +35,8 @@ HEADERS  += src/mainwindow.h \
     src/PrintCharMap.h \
     src/RRT.h \
     src/Vehicle.h \
-    settingdialog.h
+    settingdialog.h \
+    src/settingdialog.h
 
 FORMS    += mainwindow.ui \
     settingdialog.ui
