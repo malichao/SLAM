@@ -1,14 +1,26 @@
 # SLAM
 Robotics Simultaneous Localization and Mapping  
 ### Current Progress:  
-#### [- LIDAR Sensor Data Acquisition and Visulization](https://github.com/malichao/SLAM/tree/master/LIDAR)  
+#### [- QSLAM ,Qt SLAM GUI Program](/QSLAM)
+#### [- LIDAR Sensor Data Acquisition and Visulization](/LIDAR)  
 #### [- Kalman Filter](/KalmanFilter)  
 #### [- Map Search Algorithm Comparison(BFS, A* ,Dynamic Programming,RRT)](/Search/GraphSearch)  
 #### [- Smooth Algorithm](/Search/GraphSearch)  
 #### [- PID Simulator(one dimension)](/PID)  
 #### [- Vehicle Dynamic Model Simulation](Search/GraphSearch)  
     
-=====
+=====  
+###QSLAM - Qt SLAM GUI Program  
+This is a GUI program for visualizing the SLAM algorithms,here are the current progress:   
+-Read bitmap directly as map,can easily create test map  
+-Use mouse to set start and target position arbitarily on the map  
+-Visualize the search trial route and shortest route after searching  
+-Driving animation
+  
+Here are some test results:  
+![alt tag](QSLAM/doc/snapshot1.jpg)   
+    
+=====  
     
 ###XV11_LIDAR_Visualizer
 A small program to debug the XV-11 LIDAR module.Built with Qt and it's cross platform on Windows/Mac/Linux.
