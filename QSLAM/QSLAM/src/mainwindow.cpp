@@ -114,8 +114,8 @@ void MainWindow::on_actionOpen_triggered()
 
     using namespace std;
     map.resize(mapImage->height());
-//    for(const auto &m:map)
-//        m=vector<bool> (mapImage->width(),true);
+    for(auto &m:map)
+        m=vector<bool> (mapImage->width(),true);
     //Convert QPixmap to QImage for IO manipulation
     QImage image=mapImage->toImage();
     for(size_t i=0;i<mapImage->width();i++){
