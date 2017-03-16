@@ -7,7 +7,7 @@
 
 #ifndef SRC_VEHICLE_H_
 #define SRC_VEHICLE_H_
-#include "Car.h"
+#include "car.h"
 
 class Vehicle: public Car {
 public:

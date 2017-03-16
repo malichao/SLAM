@@ -11,6 +11,7 @@ CONFIG += c++11
 TARGET = QSLAM
 TEMPLATE = app
 
+CONFIG += c++11
 
 SOURCES += src/main.cpp \
     src/mainwindow.cpp \

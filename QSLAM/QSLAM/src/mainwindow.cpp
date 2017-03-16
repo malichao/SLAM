@@ -1,9 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <math.h>
-#include <QtWidgets>
+#include <QWidget>
 #include <QHBoxLayout>
-
+#include <QGraphicsPixmapItem>
+#include <QLabel>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QDebug>
 
 #include "RRT.h"
 
@@ -83,10 +87,10 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete scene;
-    delete backgroundImage;
+    //delete backgroundImage;
     delete startImage;
     delete targetImage;
-    delete mapImage;
+    //delete mapImage;
     delete coordinateLabel;
 }
 

@@ -13,7 +13,7 @@ Description :
 
 #include <vector>
 #include "MapSearch.h"
-#include "vehicle.h"
+#include "Vehicle.h"
 
 namespace SearchAlgorithms{
 using namespace std;

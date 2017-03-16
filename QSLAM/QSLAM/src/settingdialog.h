@@ -22,7 +22,7 @@ public:
     Settings setting()const;
 
 private slots:
-    void on_carScaleSpinBox_valueChanged(int arg1);
+    void on_carScaleSpinBox_valueChanged(int arg1) {}
 
     void on_buttonBox_accepted();
 
