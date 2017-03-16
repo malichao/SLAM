@@ -1,9 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <math.h>
-#include <QtWidgets>
+#include <QWidget>
 #include <QHBoxLayout>
-
+#include <QGraphicsPixmapItem>
+#include <QLabel>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QDebug>
 
 #include "RRT.h"
 
@@ -83,10 +87,10 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete scene;
-    delete backgroundImage;
+    //delete backgroundImage;
     delete startImage;
     delete targetImage;
-    delete mapImage;
+    //delete mapImage;
     delete coordinateLabel;
 }
 
@@ -110,8 +114,8 @@ void MainWindow::on_actionOpen_triggered()
 
     using namespace std;
     map.resize(mapImage->height());
-    for(auto &m:map)
-        m=vector<bool> (mapImage->width(),true);
+//    for(const auto &m:map)
+//        m=vector<bool> (mapImage->width(),true);
     //Convert QPixmap to QImage for IO manipulation
     QImage image=mapImage->toImage();
     for(size_t i=0;i<mapImage->width();i++){

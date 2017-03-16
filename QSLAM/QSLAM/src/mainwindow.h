@@ -2,11 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtWidgets>
+#include <QWidget>
 #include "settingdialog.h"
 
 #include <vector>
 #include "RRT.h"
+#include "ui_mainwindow.h"
+
+class QLabel;
 
 namespace Ui {
 class MainWindow;
@@ -64,7 +67,7 @@ private:
 
     SettingDialog *settingDialog;
 
-    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void mousePressEvent(QMouseEvent *event) override;
     void timerEvent(QTimerEvent *event);
 };
 
